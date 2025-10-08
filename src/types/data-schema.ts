@@ -114,7 +114,7 @@ export const localTracksDatabaseSchema = z.object({
   index: z
     .object({
       byArtist: z.record(z.string(), z.array(z.string())),
-      byYear: z.record(z.coerce.number(), z.array(z.string())),
+      byYear: z.record(z.string(), z.array(z.string())),
     })
     .optional(),
 })
@@ -372,15 +372,3 @@ export function generateMockTracksDatabase(
   }
 }
 
-// ============================================================================
-// Export Types
-// ============================================================================
-
-export type {
-  PopularityMetrics,
-  LocalTrackData,
-  LocalTracksDatabase,
-  TrackStateData,
-  DataIntegrityReport,
-  DataIntegrityIssue,
-}
