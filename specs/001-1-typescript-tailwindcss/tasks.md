@@ -94,7 +94,7 @@
   - 建立 `.env.example`（包含 `VITE_SPOTIFY_CLIENT_ID`, `VITE_SPOTIFY_CLIENT_SECRET`）
   - 更新 `.gitignore`（排除 `.env.local`）
 
-- [ ] **T010** 建立基本型別定義
+- [x] **T010** 建立基本型別定義
 
   - 建立 `src/types/index.ts`（匯出所有型別）
   - 複製 `specs/001-1-typescript-tailwindcss/contracts/spotify-api.ts` 至 `src/types/spotify.ts`
