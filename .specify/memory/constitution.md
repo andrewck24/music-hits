@@ -1,14 +1,14 @@
 <!--
 Sync Impact Report:
-Version: 0.0.0 → 1.0.0
-Rationale: Initial constitution creation with 5 core principles
+Version: 1.0.0 → 1.1.0
+Rationale: Added path alias import requirement to TypeScript best practices
 
-Added sections:
-- Core Principles (5 principles defined)
-- 開發工作流程
-- Governance
+Modified principles:
+- I. TypeScript 生態系最佳實踐 - Added path alias requirement
 
-Modified principles: N/A (initial version)
+Added sections: None
+
+Removed sections: None
 
 Templates status:
 ✅ plan-template.md - Constitution Check section present
@@ -31,8 +31,9 @@ Follow-up TODOs: None
 - 採用函數式元件與 Hooks 模式
 - 使用現代化工具鏈（Vite、React 19）
 - 依賴項版本保持更新，避免安全漏洞
+- **所有 import 必須使用 path alias（絕對路徑）**，例如 `@/types/spotify` 而非 `../../types/spotify`
 
-**理由**：TypeScript 提供型別安全，減少執行時錯誤；現代化工具提升開發效率與使用者體驗。
+**理由**：TypeScript 提供型別安全，減少執行時錯誤；現代化工具提升開發效率與使用者體驗；path alias 提升程式碼可讀性與重構安全性。
 
 ### II. MVP 優先原則（不可妥協）
 
@@ -135,4 +136,4 @@ Follow-up TODOs: None
 3. **靜態部署**在成本/規模允許下優先
 4. 記錄衝突決策與權衡理由
 
-**Version**: 1.0.0 | **Ratified**: 2025-10-08 | **Last Amended**: 2025-10-08
+**Version**: 1.1.0 | **Ratified**: 2025-10-08 | **Last Amended**: 2025-10-09
