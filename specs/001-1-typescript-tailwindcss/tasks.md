@@ -154,7 +154,7 @@
   - 建立 `src/features/data/data-types.ts`（DataState 介面）
   - 建立 `src/features/data/data-selectors.ts`（selectDataLoaded, selectDataLoading, selectTracks）
 
-- [ ] **T018** [P] 建立 Spotify Redux Slice 骨架
+- [x] **T018** [P] 建立 Spotify Redux Slice 骨架
 
   - 建立 `src/features/spotify/spotify-slice.ts`（管理 Spotify API token）
   - 建立 `src/features/spotify/spotify-types.ts`（SpotifyState 介面）
