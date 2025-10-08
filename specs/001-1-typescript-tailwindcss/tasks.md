@@ -110,7 +110,7 @@
   - 建立 `tests/setup.ts`（全域測試設定）
   - 新增 `package.json` scripts: `test`, `test:ui`, `test:coverage`, `test:e2e`
 
-- [ ] **T012** [P] 建立測試工具與 Mocks
+- [x] **T012** [P] 建立測試工具與 Mocks
   - 建立 `tests/mocks/spotify-api.mock.ts`（Spotify API Mock 資料）
   - 建立 `tests/mocks/tracks-data.mock.ts`（本地資料庫 Mock）
   - 建立 `tests/utils/test-utils.tsx`（自訂 render function with Redux Provider）
