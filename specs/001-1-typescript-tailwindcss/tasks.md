@@ -41,7 +41,7 @@
 
 **Purpose**: 專案初始化與基礎架構建立
 
-- [ ] **T001** 建立專案目錄結構（按照 plan.md 的 Project Structure）
+- [x] **T001** 建立專案目錄結構（按照 plan.md 的 Project Structure）
 
   - 建立 `src/app/`, `src/features/`, `src/components/`, `src/services/`, `src/hooks/`, `src/lib/`, `src/types/`, `src/styles/`
   - 建立 `public/data/` 目錄
