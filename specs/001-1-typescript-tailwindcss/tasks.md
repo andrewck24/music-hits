@@ -51,7 +51,7 @@
   - 安裝 React 19.2.0, TypeScript 5.x, Vite 7.x
   - 建立 `package.json` 與基本腳本（dev, build, preview, type-check, lint）
 
-- [ ] **T003** [P] 配置 TypeScript 編譯器
+- [x] **T003** [P] 配置 TypeScript 編譯器
 
   - 建立 `tsconfig.json`（strict mode, paths alias `@/*` → `src/*`）
   - 設定 target: ES2020, module: ESNext, jsx: react-jsx
