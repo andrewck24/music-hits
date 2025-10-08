@@ -130,7 +130,7 @@
   - 配置 `configureStore`，設定 middleware（處理 Fuse.js 不可序列化）
   - 匯出 `RootState`, `AppDispatch`, `useAppDispatch`, `useAppSelector` typed hooks
 
-- [ ] **T014** [P] 建立 Artist Redux Slice 骨架
+- [x] **T014** [P] 建立 Artist Redux Slice 骨架
 
   - 建立 `src/features/artist/artist-slice.ts`（初始 state、reducers 骨架）
   - 建立 `src/features/artist/artist-types.ts`（ArtistState 介面）
