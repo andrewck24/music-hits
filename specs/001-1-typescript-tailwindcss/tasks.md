@@ -89,7 +89,7 @@
   - Zod: `zod`
   - Date-fns 或 Day.js（時間格式化）
 
-- [ ] **T009** 建立環境變數範本
+- [x] **T009** 建立環境變數範本
 
   - 建立 `.env.example`（包含 `VITE_SPOTIFY_CLIENT_ID`, `VITE_SPOTIFY_CLIENT_SECRET`）
   - 更新 `.gitignore`（排除 `.env.local`）
