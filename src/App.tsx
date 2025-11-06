@@ -1,40 +1,140 @@
-import { Provider } from 'react-redux';
-import { store } from '@/app/store';
-import { ErrorBoundary } from '@/components/error-boundary';
+import { useMemo } from 'react';
+import { useAppSelector } from '@/app/store';
+import { useDataLoader } from '@/hooks/use-data-loader';
+import { useArtist } from '@/hooks/use-artist';
+import { useTrack } from '@/hooks/use-track';
+import { LoadingFallback } from '@/components/layout/loading-fallback';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { Header } from '@/components/layout/header';
+import { Sidebar } from '@/components/layout/sidebar';
+import { SearchResults } from '@/components/search/search-results';
+import { ArtistProfile } from '@/components/artist/artist-profile';
+import { TrackList } from '@/components/track/track-list';
+import { TrackDetail } from '@/components/track/track-detail';
+import { PopularityChart } from '@/components/track/popularity-chart';
+import { FeatureChart } from '@/components/track/feature-chart';
+import { selectCurrentArtist } from '@/features/artist/artist-selectors';
+import { selectTracks } from '@/features/data/data-selectors';
+import { getTracksByArtist } from '@/features/search/search-service';
 
 /**
- * Main Application Component
+ * App Component
  *
- * Purpose: Root component with Redux Provider and Error Boundary
+ * Purpose: Main application component
  *
  * Features:
- * - Redux Toolkit state management
- * - Error Boundary for graceful error handling
- * - React Router (to be added in Phase 3)
+ * - Data loading with useDataLoader
+ * - Artist selection with useArtist
+ * - Track selection with useTrack
+ * - Responsive layout
+ * - Error boundaries
  *
- * Usage:
- *   Imported by main.tsx and wrapped with React.StrictMode
+ * T052: Integrate all components
+ * T053: Implement state management logic
+ * T054: Handle error scenarios
  */
 
 function App() {
-  return (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <div className="min-h-screen bg-background text-foreground">
-          <div className="container mx-auto p-8">
-            <h1 className="text-4xl font-bold text-primary mb-4">
-              Spotify YouTube Hits
-            </h1>
-            <p className="text-muted-foreground">
-              Application is initializing...
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Phase 2 (Foundational) completed. Ready for Phase 3 development.
-            </p>
-          </div>
+  // T031: Load data and initialize search engine
+  const { dataLoading, error: dataError } = useDataLoader();
+
+  // Redux state
+  const currentArtist = useAppSelector(selectCurrentArtist);
+  const allTracks = useAppSelector(selectTracks);
+
+  // T050: Fetch artist details if selected
+  const { artist } = useArtist(currentArtist?.id);
+
+  // T051: Fetch track details if selected
+  const artistTracks = useMemo(() => {
+    if (!currentArtist || !allTracks) return [];
+    return getTracksByArtist(allTracks, currentArtist.name);
+  }, [currentArtist, allTracks]);
+
+  // T053: Determine current track ID for useTrack
+  const currentTrackId = useAppSelector((state) => state.track.currentTrack?.id);
+  const { track, features, loading: trackLoading } = useTrack(currentTrackId);
+
+  // Find the corresponding local track for YouTube data
+  const localTrack = useMemo(() => {
+    if (!track || !allTracks) return undefined;
+    return allTracks.find((t) => t.trackId === track.id);
+  }, [track, allTracks]);
+
+  // T032: Show loading screen
+  if (dataLoading) {
+    return <LoadingFallback />;
+  }
+
+  // T054: Handle errors
+  if (dataError) {
+    return (
+      <div className="min-h-screen bg-[#121212] text-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl font-bold">錯誤</h1>
+          <p className="text-[#B3B3B3]">{dataError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-[#1DB954] text-white rounded-full font-semibold hover:bg-[#1ed760]"
+          >
+            重新載入
+          </button>
         </div>
-      </Provider>
-    </ErrorBoundary>
+      </div>
+    );
+  }
+
+  // T053: Main app layout
+  // 不顯示搜尋結果，改為直接顯示藝人資訊
+  const showSearchResults = false; // 可根據需要改為顯示搜尋結果的邏輯
+
+  return (
+    <DashboardLayout
+      header={<Header />}
+      sidebar={
+        <Sidebar
+          artist={
+            <ArtistProfile artist={artist || currentArtist} />
+          }
+          tracks={
+            <TrackList tracks={artistTracks} />
+          }
+        />
+      }
+    >
+      {/* Main Content Area */}
+      <div className="space-y-6">
+        {/* T054: Show search results if query is active */}
+        {showSearchResults && (
+          <div>
+            <SearchResults />
+          </div>
+        )}
+
+        {/* Track Detail Section */}
+        {track && (
+          <TrackDetail track={track} loading={trackLoading} />
+        )}
+
+        {/* Charts Section (T048-T049) */}
+        {track && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Popularity Chart - T048 */}
+            <PopularityChart track={track} localTrack={localTrack} />
+
+            {/* Feature Chart - T049 */}
+            <FeatureChart features={features} />
+          </div>
+        )}
+
+        {/* Placeholder for no track selected */}
+        {!track && (
+          <div className="bg-[#282828] rounded-lg p-8 text-center text-[#B3B3B3]">
+            選擇一首歌曲以查看詳細資訊與圖表
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
   );
 }
 
