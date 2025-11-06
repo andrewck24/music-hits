@@ -394,7 +394,7 @@
   - 顯示：歌曲封面（album.coverUrl）、名稱、藝人、專輯、發行年份、時長
   - 使用 Grid 布局（左側封面、右側資訊）
 
-- [ ] **T048** [P] [US1] 建立人氣圖表元件
+- [x] **T048** [P] [US1] 建立人氣圖表元件
 
   - 建立 `src/components/track/popularity-chart.tsx`
   - 使用 Recharts BarChart
@@ -402,7 +402,7 @@
   - Y 軸：數值（使用 log scale）
   - 使用 shadcn/ui Chart wrapper + Spotify 配色
 
-- [ ] **T049** [P] [US1] 建立音樂特徵圖表元件
+- [x] **T049** [P] [US1] 建立音樂特徵圖表元件
 
   - 建立 `src/components/track/feature-chart.tsx`
   - 使用 Recharts RadarChart
