@@ -3,6 +3,7 @@ import { useAppSelector } from '@/app/store';
 import { useDataLoader } from '@/hooks/use-data-loader';
 import { useArtist } from '@/hooks/use-artist';
 import { useTrack } from '@/hooks/use-track';
+import { useSearch } from '@/hooks/use-search';
 import { LoadingFallback } from '@/components/layout/loading-fallback';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Header } from '@/components/layout/header';
@@ -41,6 +42,9 @@ function App() {
   // Redux state
   const currentArtist = useAppSelector(selectCurrentArtist);
   const allTracks = useAppSelector(selectTracks);
+
+  // Search state
+  const { query: searchQuery } = useSearch();
 
   // T050: Fetch artist details if selected
   const { artist } = useArtist(currentArtist?.id);
@@ -85,8 +89,8 @@ function App() {
   }
 
   // T053: Main app layout
-  // 不顯示搜尋結果，改為直接顯示藝人資訊
-  const showSearchResults = false; // 可根據需要改為顯示搜尋結果的邏輯
+  // 當有搜尋查詢且沒有選擇藝人時，顯示搜尋結果
+  const showSearchResults = searchQuery.length > 0 && !currentArtist;
 
   return (
     <DashboardLayout

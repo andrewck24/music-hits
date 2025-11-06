@@ -87,7 +87,7 @@ export function SearchResults() {
                 <div>
                   <div className="text-white font-medium">{track.artistName}</div>
                   <div className="text-xs text-[#B3B3B3] mt-1">
-                    人氣度: {track.popularity.spotifyPopularity}/100
+                    人氣度: {track.popularity.spotifyPopularity ?? 0}/100
                   </div>
                 </div>
                 <div className="text-xs text-[#1DB954] ml-2">

@@ -44,7 +44,7 @@ export function PopularityChart({ track, localTrack }: PopularityChartProps) {
       return [];
     }
 
-    const spotifyPopularity = track.popularity || 0;
+    const spotifyPopularity = localTrack.popularity.spotifyPopularity ?? track.popularity ?? 0;
     const youtubeViews = localTrack.popularity.youtubeViews;
     const youtubeLikes = localTrack.popularity.youtubeLikes;
     const youtubeComments = localTrack.popularity.youtubeComments;

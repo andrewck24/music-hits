@@ -73,7 +73,7 @@ export function TrackList({ tracks }: TrackListProps) {
       href: '',
       is_local: false,
       is_playable: true,
-      popularity: track.popularity.spotifyPopularity,
+      popularity: track.popularity.spotifyPopularity ?? 0,
       preview_url: null,
       track_number: 0,
       type: 'track' as const,
@@ -109,7 +109,7 @@ export function TrackList({ tracks }: TrackListProps) {
                 </div>
               </div>
               <div className="text-xs text-[#1DB954] ml-2 flex-shrink-0">
-                {track.popularity.spotifyPopularity}
+                {track.popularity.spotifyPopularity ?? 0}
               </div>
             </div>
           </button>

@@ -19,7 +19,8 @@ import { z } from "zod"
  */
 export interface PopularityMetrics {
   // === Spotify 指標 ===
-  spotifyPopularity: number // 0-100，Spotify 演算法計算
+  playCount?: number // Spotify 播放次數（若有）
+  spotifyPopularity?: number // 0-100，Spotify 演算法計算（可選）
   spotifyStreams?: number // 總播放次數（若有）
 
   // === YouTube 指標 ===
@@ -42,13 +43,14 @@ export interface LocalTrackData {
   trackName: string // 歌曲名稱
   artistId: string // Spotify Artist ID
   artistName: string // 藝人名稱
+  artistMonthlyListeners?: number // 藝人每月聽眾數（快照時間點）
   releaseYear: number // 發行年份 (YYYY)
 
   // === 人氣指標 ===
   popularity: PopularityMetrics
 
   // === UI 狀態 ===
-  indicator: 0 | 1 // 內部使用的指示器（用途待確認）
+  indicator: 0 | 1 | 2 // 內部使用的指示器（用途待確認）
 }
 
 /**
@@ -78,7 +80,8 @@ export interface LocalTracksDatabase {
  * 人氣指標驗證規則
  */
 export const popularityMetricsSchema = z.object({
-  spotifyPopularity: z.number().int().min(0).max(100),
+  playCount: z.number().int().nonnegative().optional(),
+  spotifyPopularity: z.number().int().min(0).max(100).optional(),
   spotifyStreams: z.number().int().nonnegative().optional(),
   youtubeViews: z.number().int().nonnegative(),
   youtubeLikes: z.number().int().nonnegative(),
@@ -94,13 +97,14 @@ export const localTrackDataSchema = z.object({
   trackName: z.string().min(1, "歌曲名稱不可為空"),
   artistId: z.string().min(1, "Artist ID 不可為空"),
   artistName: z.string().min(1, "藝人名稱不可為空"),
+  artistMonthlyListeners: z.number().int().nonnegative().optional(),
   releaseYear: z
     .number()
     .int()
     .min(1900, "發行年份不得早於 1900")
     .max(new Date().getFullYear() + 1, "發行年份不得超過明年"),
   popularity: popularityMetricsSchema,
-  indicator: z.union([z.literal(0), z.literal(1)]),
+  indicator: z.union([z.literal(0), z.literal(1), z.literal(2)]),
 })
 
 /**
