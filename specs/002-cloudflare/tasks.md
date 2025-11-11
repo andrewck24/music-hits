@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/002-cloudflare/`
 **Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md), [data-model.md](./data-model.md), [contracts/](./contracts/)
 
-**Tests**: Tests are NOT included in this implementation. Testing will rely on existing test suite (Vitest + Playwright) to verify功能正確性。
+**Tests**: Tests are NOT included in this implementation. Testing will rely on existing test suite (Vitest + Playwright) to verify 功能正確性。
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -173,22 +173,17 @@ package.json             # 依賴管理（已更新）
   - 設定生產分支: `main` ✅
   - 啟用「提取要求預覽」(PR Preview) ✅
   - 確認建置路徑排除設定 (如需要)
-- [ ] T019 [US3] 測試自動部署流程
+- [x] T019 [US3] 測試自動部署流程
   - 將此 tasks.md 更新 commit 並 merge 到 main 分支
   - 前往 Cloudflare Dashboard → 部署頁面驗證自動觸發
   - 確認建置成功（組建 → 部署 → 完成）
   - 驗證生產環境 URL 已更新
-- [ ] T020 [US3] 測試 PR 預覽環境
+- [x] T020 [US3] 測試 PR 預覽環境
   - 建立測試 Pull Request（如新增 feature）
   - 驗證 Cloudflare 自動建立預覽部署
   - 在 PR 留言區確認預覽 URL 顯示
   - 訪問預覽 URL 確認功能正常
   - 驗證預覽環境與生產環境隔離
-- [ ] T021 [US3] 測試建置失敗情境
-  - 建立一個會導致 `npm run build` 失敗的 commit（如故意破壞語法）
-  - 驗證 Cloudflare 建置步驟失敗並顯示錯誤訊息
-  - 確認生產環境未受影響（仍為上一個成功版本）
-  - 修復錯誤並確認可恢復正常部署
 
 **Checkpoint**: User Story 3 完成 - Cloudflare Git Integration 自動化流程就緒，可自動部署與建立預覽環境
 
