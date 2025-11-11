@@ -100,7 +100,7 @@ package.json             # 依賴管理（已更新）
 
 - [x] T009 [US1] 手動部署測試：執行 `npm run build && npx wrangler deploy`
   - 驗證部署成功 ✅
-  - 記錄部署 URL：https://spotify-youtube-hits.andrewck24.workers.dev ✅
+  - 記錄部署 URL：[https://spotify-youtube-hits.andrewck24.workers.dev](https://spotify-youtube-hits.andrewck24.workers.dev) ✅
   - 註：SSL 證書配置中，需等待 5-10 分鐘後進行後續驗證
 - [x] T010 [US1] 驗證首頁載入
   - 瀏覽器訪問部署 URL ✅
@@ -252,44 +252,46 @@ package.json             # 依賴管理（已更新）
 
 #### 4.1 Edge Functions 基礎架構
 
-- [ ] T026 [P] [US4] 建立 worker/ 目錄結構
-  - `worker/index.ts` - Worker entry point
-  - `worker/spotify/` - Spotify API 相關邏輯
-  - `worker/types/` - TypeScript types
-- [ ] T027 [P] [US4] 建立 worker/types/env.ts
-  - 定義 `Env` interface（包含 ASSETS, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET）
-  - 符合 Cloudflare Workers types
+- [x] T026 [P] [US4] 建立 worker/ 目錄結構
+  - `worker/index.ts` - Worker entry point ✅
+  - `worker/spotify/` - Spotify API 相關邏輯 ✅
+  - `worker/types/` - TypeScript types ✅
+- [x] T027 [P] [US4] 建立 worker/types/env.ts
+  - 定義 `Env` interface（包含 ASSETS, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET）✅
+  - 符合 Cloudflare Workers types ✅
+  - 安裝 `@cloudflare/workers-types` 並更新 tsconfig.json ✅
 
 #### 4.2 Spotify API Token Exchange
 
-- [ ] T028 [US4] 實作 worker/spotify/token.ts
-  - 定義 `getSpotifyToken` 函數
-  - 實作 Client Credentials Flow
-  - 實作 in-memory token 快取（55 分鐘 TTL）
-  - 錯誤處理（MISSING_ENV_VARS, SPOTIFY_AUTH_FAILED）
-- [ ] T029 [US4] 實作 worker/spotify/tracks.ts
-  - 定義 `getTrackById` 函數
-  - 實作 track ID 驗證（22 字元 base62）
-  - 呼叫 Spotify API `/v1/tracks/{id}`
-  - 錯誤處理（INVALID_TRACK_ID, TRACK_NOT_FOUND, SPOTIFY_API_ERROR）
+- [x] T028 [US4] 實作 worker/spotify/token.ts
+  - 定義 `getSpotifyToken` 函數 ✅
+  - 實作 Client Credentials Flow ✅
+  - 實作 in-memory token 快取（55 分鐘 TTL）✅
+  - 錯誤處理（MISSING_ENV_VARS, SPOTIFY_AUTH_FAILED）✅
+- [x] T029 [US4] 實作 worker/spotify/tracks.ts
+  - 定義 `getTrackById` 函數 ✅
+  - 實作 track ID 驗證（22 字元 base62）✅
+  - 呼叫 Spotify API `/v1/tracks/{id}` ✅
+  - 錯誤處理（INVALID_TRACK_ID, TRACK_NOT_FOUND, SPOTIFY_API_ERROR）✅
 
 #### 4.3 Worker Entry Point
 
-- [ ] T030 [US4] 實作 worker/index.ts
-  - 實作 `fetch` handler
-  - 路由邏輯：
+- [x] T030 [US4] 實作 worker/index.ts
+  - 實作 `fetch` handler ✅
+  - 路由邏輯：✅
     - `POST /api/spotify/token` → `getSpotifyToken`
     - `GET /api/spotify/tracks/:id` → `getTrackById`
     - 其他路徑 → `env.ASSETS.fetch(request)`（靜態資源）
-  - CORS headers 設定
-  - 錯誤處理與標準化錯誤回應格式
+  - CORS headers 設定 ✅
+  - 錯誤處理與標準化錯誤回應格式 ✅
 
 #### 4.4 Wrangler 配置更新
 
-- [ ] T031 [US4] 更新 wrangler.jsonc
-  - 新增 `main: "worker/index.ts"`
-  - 更新 `assets.binding: "ASSETS"`
-  - 確保 `assets.not_found_handling: "single-page-application"` 保留
+- [x] T031 [US4] 更新 wrangler.jsonc
+  - 新增 `main: "worker/index.ts"` ✅
+  - 更新 `assets.binding: "ASSETS"` ✅
+  - 確保 `assets.not_found_handling: "single-page-application"` 保留 ✅
+  - 修正既有 TypeScript 類型錯誤（測試 mocks）✅
 
 #### 4.5 Cloudflare Secrets 設定
 

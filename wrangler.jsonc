@@ -5,10 +5,14 @@
   "name": "spotify-youtube-hits",
   "compatibility_date": "2025-11-09",
 
+  // Worker entry point with custom logic
+  "main": "worker/index.ts",
+
   // Workers Assets configuration
   // Serves static files from the dist/ directory with SPA routing support
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "single-page-application"
   }
 }

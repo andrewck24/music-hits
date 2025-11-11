@@ -298,10 +298,12 @@ export class SpotifyApiService implements ISpotifyApiService {
 
       await this.handleApiError(response);
 
-      const data = await response.json();
+      const data = (await response.json()) as {
+        audio_features: (SpotifyAudioFeatures | null)[];
+      };
 
       // Spotify API 回傳 { audio_features: [...] }
-      const features = data.audio_features as (SpotifyAudioFeatures | null)[];
+      const features = data.audio_features;
 
       const result = new Map<string, SpotifyAudioFeatures>();
       features.forEach((feature) => {
