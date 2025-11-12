@@ -54,15 +54,6 @@ if (import.meta.env.DEV) {
 
 export class SpotifyApiService implements ISpotifyApiService {
   /**
-   * 初始化 Spotify API
-   * Note: 認證現在由 Cloudflare Worker 處理，此方法保留用於向後兼容
-   */
-  async initialize(): Promise<void> {
-    // No-op: Worker handles authentication
-    return Promise.resolve();
-  }
-
-  /**
    * 取得藝人資訊
    * Note: 透過 Worker proxy，Worker 處理認證
    */
