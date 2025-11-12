@@ -281,14 +281,10 @@ export class SpotifyApiError extends Error {
  * Spotify API Service 契約
  *
  * 所有與 Spotify API 互動的 service 必須實作此介面
+ *
+ * Note: 認證由 Cloudflare Worker 處理，前端服務不需要 initialize 方法
  */
 export interface ISpotifyApiService {
-  /**
-   * 初始化 Spotify API (取得 access token)
-   * @throws {SpotifyApiError} 當認證失敗時
-   */
-  initialize(): Promise<void>;
-
   /**
    * 取得藝人資訊
    * @param artistId Spotify Artist ID
@@ -320,17 +316,6 @@ export interface ISpotifyApiService {
   getAudioFeaturesBatch(
     trackIds: string[],
   ): Promise<Map<string, SpotifyAudioFeatures>>;
-
-  /**
-   * 檢查 token 是否有效
-   */
-  isTokenValid(): boolean;
-
-  /**
-   * 重新整理 token (當 token 即將過期時)
-   * @throws {SpotifyApiError} 當認證失敗時
-   */
-  refreshToken(): Promise<void>;
 }
 
 // ============================================================================

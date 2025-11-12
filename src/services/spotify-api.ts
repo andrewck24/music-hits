@@ -2,8 +2,6 @@ import type {
   ISpotifyApiService,
   SpotifyArtist,
   SpotifyAudioFeatures,
-  SpotifyToken,
-  SpotifyTokenResponse,
   SpotifyTrack,
 } from "@/types/spotify";
 import {
@@ -20,130 +18,49 @@ import {
  * Purpose: 處理所有與 Spotify Web API 的互動
  *
  * Features:
- * - Client Credentials Flow 認證
- * - Token 自動管理（過期檢查、自動更新）
+ * - 透過 Cloudflare Worker 代理 Spotify API 請求
+ * - Worker 處理認證和 token 管理
  * - 型別安全的 API 呼叫
  * - 完整的錯誤處理
  *
  * Usage:
  *   import { spotifyApi } from '@/services/spotify-api'
- *   await spotifyApi.initialize()
  *   const artist = await spotifyApi.getArtist('artistId')
+ *
+ * Note: API 請求會透過 Worker proxy，不需要在前端處理認證
  */
 
-const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
-const SPOTIFY_API_BASE_URL = "https://api.spotify.com/v1";
+/**
+ * Spotify API Base URL
+ *
+ * Configuration:
+ * - Development: http://localhost:8787/api/spotify (direct to Worker dev server)
+ * - Production: /api/spotify (relative path, same origin as frontend)
+ *
+ * Override via environment variable VITE_API_BASE_URL
+ * See: .env.development, .env.production, .env.example
+ */
+const WORKER_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/spotify";
+
+// Development debug logging
+if (import.meta.env.DEV) {
+  // eslint-disable-next-line no-console
+  console.log("[Spotify API Service] Initialized");
+  // eslint-disable-next-line no-console
+  console.log("[Spotify API Service] Base URL:", WORKER_API_BASE_URL);
+  // eslint-disable-next-line no-console
+  console.log("[Spotify API Service] Mode:", import.meta.env.MODE);
+}
 
 export class SpotifyApiService implements ISpotifyApiService {
-  private token: SpotifyToken | null = null;
-
-  /**
-   * 初始化 Spotify API (取得 access token)
-   * 使用 Client Credentials Flow
-   */
-  async initialize(): Promise<void> {
-    const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-    const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
-
-    if (!clientId || !clientSecret) {
-      throw new SpotifyApiError(
-        "BAD_REQUEST",
-        400,
-        "Missing Spotify API credentials. Please set VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET environment variables.",
-      );
-    }
-
-    try {
-      const response = await fetch(SPOTIFY_TOKEN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
-        },
-        body: "grant_type=client_credentials",
-      });
-
-      if (!response.ok) {
-        try {
-          const errorData = await response.json();
-          if (isSpotifyErrorResponse(errorData)) {
-            throw new SpotifyApiError(
-              "INVALID_TOKEN",
-              errorData.error.status,
-              errorData.error.message,
-            );
-          }
-        } catch (jsonError) {
-          // 如果無法解析錯誤訊息，使用通用錯誤
-          if (jsonError instanceof SpotifyApiError) {
-            throw jsonError;
-          }
-        }
-        throw new SpotifyApiError(
-          "SERVER_ERROR",
-          response.status,
-          "Failed to authenticate with Spotify API",
-        );
-      }
-
-      const data: SpotifyTokenResponse = await response.json();
-
-      // 計算 token 過期時間（提前 5 分鐘過期，避免邊界情況）
-      const expiresAt = Date.now() + (data.expires_in - 300) * 1000;
-
-      this.token = {
-        accessToken: data.access_token,
-        tokenType: data.token_type,
-        expiresAt,
-      };
-    } catch (error) {
-      if (error instanceof SpotifyApiError) {
-        throw error;
-      }
-      throw new SpotifyApiError(
-        "NETWORK_ERROR",
-        0,
-        "Network error while authenticating with Spotify API",
-        error,
-      );
-    }
-  }
-
-  /**
-   * 檢查 token 是否有效
-   */
-  isTokenValid(): boolean {
-    if (!this.token) {
-      return false;
-    }
-    return Date.now() < this.token.expiresAt;
-  }
-
-  /**
-   * 重新整理 token (當 token 即將過期時)
-   */
-  async refreshToken(): Promise<void> {
-    await this.initialize();
-  }
-
   /**
    * 取得藝人資訊
+   * Note: 透過 Worker proxy，Worker 處理認證
    */
   async getArtist(artistId: string): Promise<SpotifyArtist> {
-    await this.ensureValidToken();
-    if (!this.token) {
-      throw new SpotifyApiError("INVALID_TOKEN", 401, "Token not available");
-    }
-
     try {
-      const response = await fetch(
-        `${SPOTIFY_API_BASE_URL}/artists/${artistId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.token.accessToken}`,
-          },
-        },
-      );
+      const url = `${WORKER_API_BASE_URL}/artists/${artistId}`;
+      const response = await fetch(url);
 
       await this.handleApiError(response);
 
@@ -153,7 +70,7 @@ export class SpotifyApiService implements ISpotifyApiService {
         throw new SpotifyApiError(
           "SERVER_ERROR",
           500,
-          "Invalid artist data received from Spotify API",
+          "Invalid artist data received from Spotify API"
         );
       }
 
@@ -166,31 +83,23 @@ export class SpotifyApiService implements ISpotifyApiService {
         "NETWORK_ERROR",
         0,
         "Network error while fetching artist",
-        error,
+        error
       );
     }
   }
 
   /**
    * 取得歌曲詳細資訊
+   * Note: 透過 Worker proxy，Worker 處理認證
+   * @param _market ISO 3166-1 alpha-2 country code (currently not supported by Worker)
    */
-  async getTrack(trackId: string, market?: string): Promise<SpotifyTrack> {
-    await this.ensureValidToken();
-    if (!this.token) {
-      throw new SpotifyApiError("INVALID_TOKEN", 401, "Token not available");
-    }
-
+  async getTrack(trackId: string, _market?: string): Promise<SpotifyTrack> {
     try {
-      const url = new URL(`${SPOTIFY_API_BASE_URL}/tracks/${trackId}`);
-      if (market) {
-        url.searchParams.append("market", market);
-      }
+      // Note: Worker endpoint 目前不支援 market 參數
+      // 如果需要 market 參數，需要擴展 Worker API
+      const url = `${WORKER_API_BASE_URL}/tracks/${trackId}`;
 
-      const response = await fetch(url.toString(), {
-        headers: {
-          Authorization: `Bearer ${this.token.accessToken}`,
-        },
-      });
+      const response = await fetch(url);
 
       await this.handleApiError(response);
 
@@ -200,7 +109,7 @@ export class SpotifyApiService implements ISpotifyApiService {
         throw new SpotifyApiError(
           "SERVER_ERROR",
           500,
-          "Invalid track data received from Spotify API",
+          "Invalid track data received from Spotify API"
         );
       }
 
@@ -213,29 +122,19 @@ export class SpotifyApiService implements ISpotifyApiService {
         "NETWORK_ERROR",
         0,
         "Network error while fetching track",
-        error,
+        error
       );
     }
   }
 
   /**
    * 取得歌曲音樂特徵
+   * Note: 透過 Worker proxy，Worker 處理認證
    */
   async getAudioFeatures(trackId: string): Promise<SpotifyAudioFeatures> {
-    await this.ensureValidToken();
-    if (!this.token) {
-      throw new SpotifyApiError("INVALID_TOKEN", 401, "Token not available");
-    }
-
     try {
-      const response = await fetch(
-        `${SPOTIFY_API_BASE_URL}/audio-features/${trackId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.token.accessToken}`,
-          },
-        },
-      );
+      const url = `${WORKER_API_BASE_URL}/audio-features/${trackId}`;
+      const response = await fetch(url);
 
       await this.handleApiError(response);
 
@@ -245,7 +144,7 @@ export class SpotifyApiService implements ISpotifyApiService {
         throw new SpotifyApiError(
           "SERVER_ERROR",
           500,
-          "Invalid audio features data received from Spotify API",
+          "Invalid audio features data received from Spotify API"
         );
       }
 
@@ -258,16 +157,17 @@ export class SpotifyApiService implements ISpotifyApiService {
         "NETWORK_ERROR",
         0,
         "Network error while fetching audio features",
-        error,
+        error
       );
     }
   }
 
   /**
    * 批次取得音樂特徵 (最多 100 筆)
+   * Note: 透過 Worker proxy，Worker 處理認證
    */
   async getAudioFeaturesBatch(
-    trackIds: string[],
+    trackIds: string[]
   ): Promise<Map<string, SpotifyAudioFeatures>> {
     if (trackIds.length === 0) {
       return new Map();
@@ -277,31 +177,27 @@ export class SpotifyApiService implements ISpotifyApiService {
       throw new SpotifyApiError(
         "BAD_REQUEST",
         400,
-        "Maximum 100 track IDs allowed per batch request",
+        "Maximum 100 track IDs allowed per batch request"
       );
     }
 
-    await this.ensureValidToken();
-    if (!this.token) {
-      throw new SpotifyApiError("INVALID_TOKEN", 401, "Token not available");
-    }
-
     try {
-      const url = new URL(`${SPOTIFY_API_BASE_URL}/audio-features`);
+      const url = new URL(
+        `${WORKER_API_BASE_URL}/audio-features`,
+        window.location.origin
+      );
       url.searchParams.append("ids", trackIds.join(","));
 
-      const response = await fetch(url.toString(), {
-        headers: {
-          Authorization: `Bearer ${this.token.accessToken}`,
-        },
-      });
+      const response = await fetch(url.toString());
 
       await this.handleApiError(response);
 
-      const data = await response.json();
+      const data = (await response.json()) as {
+        audio_features: (SpotifyAudioFeatures | null)[];
+      };
 
       // Spotify API 回傳 { audio_features: [...] }
-      const features = data.audio_features as (SpotifyAudioFeatures | null)[];
+      const features = data.audio_features;
 
       const result = new Map<string, SpotifyAudioFeatures>();
       features.forEach((feature) => {
@@ -319,43 +215,51 @@ export class SpotifyApiService implements ISpotifyApiService {
         "NETWORK_ERROR",
         0,
         "Network error while fetching audio features batch",
-        error,
+        error
       );
     }
   }
 
   /**
-   * 確保 token 有效，若無效則自動更新
-   */
-  private async ensureValidToken(): Promise<void> {
-    if (!this.isTokenValid()) {
-      await this.refreshToken();
-    }
-  }
-
-  /**
    * 處理 API 錯誤回應
+   * 支援 Worker 錯誤格式和 Spotify API 錯誤格式
    */
   private async handleApiError(response: Response): Promise<void> {
     if (response.ok) {
       return;
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as unknown;
 
+    // Worker error format: { error: string, message: string, status: number }
+    if (
+      data &&
+      typeof data === "object" &&
+      "error" in data &&
+      typeof data.error === "string" &&
+      "message" in data &&
+      typeof data.message === "string" &&
+      "status" in data &&
+      typeof data.status === "number"
+    ) {
+      const errorType = this.mapHttpStatusToErrorType(response.status);
+      throw new SpotifyApiError(errorType, data.status, data.message);
+    }
+
+    // Spotify API error format: { error: { status: number, message: string } }
     if (isSpotifyErrorResponse(data)) {
       const errorType = this.mapHttpStatusToErrorType(response.status);
       throw new SpotifyApiError(
         errorType,
         data.error.status,
-        data.error.message,
+        data.error.message
       );
     }
 
     throw new SpotifyApiError(
       "SERVER_ERROR",
       response.status,
-      "Unexpected error from Spotify API",
+      "Unexpected error from API"
     );
   }
 
@@ -363,7 +267,7 @@ export class SpotifyApiService implements ISpotifyApiService {
    * 將 HTTP status code 映射到錯誤類型
    */
   private mapHttpStatusToErrorType(
-    status: number,
+    status: number
   ):
     | "INVALID_TOKEN"
     | "RATE_LIMIT"
