@@ -320,17 +320,6 @@ export interface ISpotifyApiService {
   getAudioFeaturesBatch(
     trackIds: string[],
   ): Promise<Map<string, SpotifyAudioFeatures>>;
-
-  /**
-   * 檢查 token 是否有效
-   */
-  isTokenValid(): boolean;
-
-  /**
-   * 重新整理 token (當 token 即將過期時)
-   * @throws {SpotifyApiError} 當認證失敗時
-   */
-  refreshToken(): Promise<void>;
 }
 
 // ============================================================================
