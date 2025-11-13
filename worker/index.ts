@@ -33,6 +33,64 @@ function validateSpotifyId(id: string, type: "track" | "artist"): void {
 }
 
 /**
+ * Fetch with exponential backoff retry logic for handling rate limiting (429)
+ * Used for ReccoBeats API calls which may have rate limits
+ *
+ * @param url - URL to fetch
+ * @param maxRetries - Maximum number of retries (default: 3)
+ * @param initialDelayMs - Initial delay in milliseconds (default: 1000)
+ * @returns Response from fetch
+ */
+async function fetchWithRetry(
+  url: string,
+  maxRetries: number = 3,
+  initialDelayMs: number = 1000,
+): Promise<Response> {
+  let lastError: Error | undefined;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(10000), // 10 second timeout
+      });
+
+      // Return successful responses (including 404, 500, etc.)
+      // Only retry on 429 (rate limit)
+      if (response.status !== 429) {
+        return response;
+      }
+
+      // Handle 429: Extract retry-after header if available
+      const retryAfter = response.headers.get("Retry-After");
+      const delayMs = retryAfter
+        ? parseInt(retryAfter) * 1000
+        : Math.pow(2, attempt) * initialDelayMs;
+
+      // Don't retry on last attempt
+      if (attempt === maxRetries - 1) {
+        return response;
+      }
+
+      // Wait before retrying
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+
+      // Don't retry on last attempt
+      if (attempt === maxRetries - 1) {
+        throw lastError;
+      }
+
+      // Wait before retrying
+      const delay = Math.pow(2, attempt) * initialDelayMs;
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError || new Error("Unknown error in fetchWithRetry");
+}
+
+/**
  * Main Hono application
  */
 const app = new Hono<{ Bindings: Env }>();
@@ -192,129 +250,112 @@ app.get("/api/spotify/artists/:id", async (c) => {
 
 /**
  * Route: GET /api/spotify/audio-features/:id
- * Returns audio features for a single track
+ * Returns audio features for a single track from ReccoBeats API
+ *
+ * Migration Note: Changed from Spotify API (/v1/audio-features/{id})
+ * to ReccoBeats API (/v1/audio-features?ids={id}) to restore functionality
+ * after Spotify API deprecated this endpoint.
  */
 app.get("/api/spotify/audio-features/:id", async (c) => {
   const trackId = c.req.param("id");
   validateSpotifyId(trackId, "track");
 
   try {
-    const audioFeatures = await callSpotifyApi(
-      `/v1/audio-features/${trackId}`,
-      c.env,
-      "audio features"
+    // Call ReccoBeats API instead of Spotify API
+    // ReccoBeats uses query parameter ?ids= instead of path parameter
+    const response = await fetchWithRetry(
+      `https://api.reccobeats.com/v1/audio-features?ids=${encodeURIComponent(trackId)}`,
+      3, // max retries
+      1000, // initial delay (ms)
     );
-    return c.json(audioFeatures);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
 
-    if (message.includes("NOT_FOUND")) {
+    // Handle 404: Audio features not found
+    if (response.status === 404) {
       return c.json(
         {
           error: "AUDIO_FEATURES_NOT_FOUND",
-          message,
+          message: "Audio features not found for this track",
           status: 404,
         } satisfies ErrorResponse,
-        404
+        404,
       );
     }
 
-    if (message.includes("SPOTIFY_API_ERROR")) {
+    // Handle 429: Rate limit exceeded (after retries exhausted)
+    if (response.status === 429) {
       return c.json(
         {
-          error: "SPOTIFY_API_ERROR",
-          message,
-          status: 502,
+          error: "RATE_LIMIT_EXCEEDED",
+          message:
+            "ReccoBeats API rate limit exceeded. Please try again later.",
+          status: 429,
         } satisfies ErrorResponse,
-        502
+        429,
       );
     }
 
-    throw new HTTPException(500, { message });
-  }
-});
-
-/**
- * Route: GET /api/spotify/audio-features?ids=...
- * Returns audio features for multiple tracks (batch)
- */
-app.get("/api/spotify/audio-features", async (c) => {
-  const idsParam = c.req.query("ids");
-
-  if (!idsParam) {
-    return c.json(
-      {
-        error: "BAD_REQUEST",
-        message:
-          "Missing 'ids' query parameter. Use /api/spotify/audio-features?ids=id1,id2,id3 for batch request.",
-        status: 400,
-      } satisfies ErrorResponse,
-      400
-    );
-  }
-
-  const trackIds = idsParam.split(",").map((id) => id.trim());
-
-  // Validate batch size
-  if (trackIds.length === 0) {
-    return c.json(
-      {
-        error: "INVALID_BATCH_REQUEST",
-        message: "At least one track ID is required.",
-        status: 400,
-      } satisfies ErrorResponse,
-      400
-    );
-  }
-
-  if (trackIds.length > 100) {
-    return c.json(
-      {
-        error: "INVALID_BATCH_REQUEST",
-        message: `Maximum 100 track IDs allowed per batch request, got ${trackIds.length}.`,
-        status: 400,
-      } satisfies ErrorResponse,
-      400
-    );
-  }
-
-  // Validate each track ID
-  for (const trackId of trackIds) {
-    if (!SPOTIFY_ID_REGEX.test(trackId)) {
+    // Handle 500: ReccoBeats server error
+    if (response.status === 500) {
       return c.json(
         {
-          error: "INVALID_BATCH_REQUEST",
-          message: `Invalid track ID: "${trackId}". All IDs must be 22 alphanumeric characters.`,
-          status: 400,
+          error: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred while fetching audio features",
+          status: 500,
         } satisfies ErrorResponse,
-        400
+        500,
       );
     }
-  }
 
-  try {
-    const ids = trackIds.join(",");
-    const audioFeatures = await callSpotifyApi(
-      `/v1/audio-features?ids=${encodeURIComponent(ids)}`,
-      c.env,
-      "audio features batch"
+    // Handle timeout (504 from our side)
+    if (response.status === 408) {
+      return c.json(
+        {
+          error: "GATEWAY_TIMEOUT",
+          message: "ReccoBeats API request timed out",
+          status: 504,
+        } satisfies ErrorResponse,
+        504,
+      );
+    }
+
+    // Success: 200 OK
+    if (response.ok) {
+      const audioFeatures = await response.json();
+      return c.json(audioFeatures);
+    }
+
+    // Unexpected status - default to 500
+    return c.json(
+      {
+        error: "INTERNAL_SERVER_ERROR",
+        message: `Unexpected response status: ${response.status}`,
+        status: response.status,
+      } satisfies ErrorResponse,
+      500,
     );
-    return c.json(audioFeatures);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 
-    if (message.includes("SPOTIFY_API_ERROR")) {
+    // Handle timeout error
+    if (
+      message.includes("timeout") ||
+      message.includes("TimeoutError") ||
+      message.includes("AbortError")
+    ) {
       return c.json(
         {
-          error: "SPOTIFY_API_ERROR",
-          message,
-          status: 502,
+          error: "GATEWAY_TIMEOUT",
+          message: "ReccoBeats API request timed out",
+          status: 504,
         } satisfies ErrorResponse,
-        502
+        504,
       );
     }
 
-    throw new HTTPException(500, { message });
+    // Network error or other unexpected error
+    throw new HTTPException(500, {
+      message: `Failed to fetch audio features: ${message}`,
+    });
   }
 });
 

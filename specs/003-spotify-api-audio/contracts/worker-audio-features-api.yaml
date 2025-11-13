@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: Worker Audio Features API
+  description: |
+    Cloudflare Worker API for retrieving audio features data from ReccoBeats.
+
+    本 API 提供單一歌曲的音樂特徵查詢功能，作為前端與 ReccoBeats API 之間的代理層。
+  version: 1.0.0
+  contact:
+    name: Spotify YouTube Hits
+servers:
+  - url: https://spotify-youtube-hits.andrewck24.workers.dev/api/spotify
+    description: Production (Cloudflare Workers)
+  - url: http://localhost:8787/api/spotify
+    description: Development (Local Wrangler)
+
+paths:
+  /audio-features/{id}:
+    get:
+      summary: 取得單一歌曲的音樂特徵
+      description: |
+        根據 Spotify Track ID 查詢該歌曲的音樂特徵資料（acousticness, danceability, energy 等）。
+
+        **資料來源**: ReccoBeats API (`GET /v1/audio-features?ids={id}`)
+
+        **錯誤處理**:
+        - Track ID 格式驗證（22 字元 Base-62）
+        - 429 錯誤自動重試（Exponential Backoff，最多 3 次）
+        - 10 秒逾時保護
+      operationId: getAudioFeatures
+      tags:
+        - Audio Features
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Spotify Track ID (22 字元 Base-62 格式)
+          schema:
+            type: string
+            pattern: ^[a-zA-Z0-9]{22}$
+            example: 06HL4z0CvFAxyc27GXpf02
+      responses:
+        "200":
+          description: 成功取得音樂特徵資料
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AudioFeatures"
+              example:
+                acousticness: 0.3287
+                danceability: 0.4065
+                energy: 0.6529
+                instrumentalness: 0.0269
+                liveness: 0.131
+                loudness: -6.5329
+                speechiness: 0.0493
+                tempo: 140.7761
+                valence: 0.3396
+        "400":
+          description: 無效的 Track ID 格式
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: INVALID_TRACK_ID
+                message: Invalid track ID format. Expected 22 characters (Base-62)
+        "404":
+          description: ReccoBeats 無此歌曲的音樂特徵資料
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: AUDIO_FEATURES_NOT_FOUND
+                message: Audio features not found for this track
+        "429":
+          description: ReccoBeats API 超過速率限制（已重試 3 次失敗）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: RATE_LIMIT_EXCEEDED
+                message: ReccoBeats API rate limit exceeded. Please try again later.
+          headers:
+            Retry-After:
+              description: 建議等待時間（秒）後重試
+              schema:
+                type: integer
+                example: 60
+        "500":
+          description: ReccoBeats API 或 Worker 發生錯誤
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An unexpected error occurred while fetching audio features
+        "504":
+          description: ReccoBeats API 回應逾時（超過 10 秒）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: GATEWAY_TIMEOUT
+                message: ReccoBeats API request timed out
+
+components:
+  schemas:
+    AudioFeatures:
+      type: object
+      description: 歌曲的音樂特徵分析資料
+      required:
+        - acousticness
+        - danceability
+        - energy
+        - instrumentalness
+        - liveness
+        - loudness
+        - speechiness
+        - tempo
+        - valence
+      properties:
+        acousticness:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 聲學程度（0.0-1.0）。1.0 表示高度確信為原聲樂器演奏
+          example: 0.3287
+        danceability:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 適合跳舞程度（0.0-1.0）。1.0 表示最適合跳舞
+          example: 0.4065
+        energy:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 能量（0.0-1.0）。1.0 表示高能量（快速、響亮、嘈雜）
+          example: 0.6529
+        instrumentalness:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 器樂程度（0.0-1.0）。接近 1.0 表示高機率為器樂曲
+          example: 0.0269
+        liveness:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 現場錄音可能性（0.0-1.0）。>0.8 表示高機率為現場錄音
+          example: 0.131
+        loudness:
+          type: number
+          format: float
+          minimum: -60
+          maximum: 0
+          description: 響度（dB）。整首歌曲的平均音量，典型範圍為 -60 to 0 dB
+          example: -6.5329
+        speechiness:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 語音內容比例（0.0-1.0）。>0.66 表示可能為 podcast 或有聲書
+          example: 0.0493
+        tempo:
+          type: number
+          format: float
+          minimum: 0
+          description: 速度（BPM）。每分鐘拍數，表示音樂的節奏快慢
+          example: 140.7761
+        valence:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: 音樂正向度/快樂度（0.0-1.0）。1.0 表示非常正向（快樂、愉悅）
+          example: 0.3396
+
+    Error:
+      type: object
+      description: 錯誤回應格式
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: 錯誤代碼
+          enum:
+            - INVALID_TRACK_ID
+            - AUDIO_FEATURES_NOT_FOUND
+            - RATE_LIMIT_EXCEEDED
+            - INTERNAL_SERVER_ERROR
+            - GATEWAY_TIMEOUT
+          example: INVALID_TRACK_ID
+        message:
+          type: string
+          description: 錯誤訊息（英文）
+          example: Invalid track ID format. Expected 22 characters (Base-62)
+        details:
+          type: object
+          description: 額外的錯誤詳情（可選）
+          additionalProperties: true
+
+tags:
+  - name: Audio Features
+    description: 音樂特徵查詢相關 API

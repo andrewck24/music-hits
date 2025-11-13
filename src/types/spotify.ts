@@ -205,31 +205,43 @@ export interface GetAudioFeaturesRequest {
  *
  * 所有數值型指標範圍為 0.0 - 1.0（除非另有說明）
  */
+/**
+ * Audio Features from ReccoBeats API
+ *
+ * Simplified interface containing 9 core audio features.
+ * Migrated from Spotify Audio Features API which is now deprecated.
+ *
+ * See: data-model.md for field descriptions and validation rules
+ */
 export interface SpotifyAudioFeatures {
-  id: string; // Spotify Track ID
-  type: "audio_features";
-  uri: string;
-  track_href: string; // API endpoint URL for the track
-  analysis_url: string; // Audio analysis endpoint
+  // === 核心音樂特徵指標 (ReccoBeats 提供) ===
 
-  // === 音樂特徵指標 (0.0 - 1.0) ===
-  acousticness: number; // 聲學程度 (1.0 = 純聲學，0.0 = 電子音樂)
-  danceability: number; // 適合跳舞程度 (基於節奏、穩定性、速度)
-  energy: number; // 能量 (1.0 = 快速、吵雜、嘈雜)
-  instrumentalness: number; // 器樂程度 (1.0 = 無人聲)
-  liveness: number; // 現場錄音可能性 (> 0.8 很可能是現場)
-  speechiness: number; // 語音內容比例 (> 0.66 可能是 podcast/spoken word)
-  valence: number; // 音樂正向度 (1.0 = 快樂/歡樂，0.0 = 悲傷/憤怒)
+  /** 聲學程度 (0.0-1.0): 音樂是否為原聲樂器演奏。1.0 表示高度確信為原聲演奏 */
+  acousticness: number;
 
-  // === 音樂理論屬性 ===
-  key: number; // 音調 (0 = C, 1 = C♯/D♭, ..., 11 = B, -1 = 無法偵測)
-  mode: 0 | 1; // 調式 (1 = Major, 0 = Minor)
-  time_signature: number; // 拍號 (3-7，估計值)
+  /** 適合跳舞程度 (0.0-1.0): 基於節奏穩定性、速度、拍子強度。1.0 表示最適合跳舞 */
+  danceability: number;
 
-  // === 物理屬性 ===
-  loudness: number; // 響度 (dB，範圍通常 -60 ~ 0)
-  tempo: number; // 速度 (BPM，每分鐘拍數)
-  duration_ms: number; // 時長 (毫秒)
+  /** 能量 (0.0-1.0): 音樂的強度與活力。1.0 表示高能量（快速、響亮、嘈雜） */
+  energy: number;
+
+  /** 器樂程度 (0.0-1.0): 音樂是否不含人聲。接近 1.0 表示高機率為器樂曲 */
+  instrumentalness: number;
+
+  /** 現場錄音可能性 (0.0-1.0): 音樂是否為現場演出錄音。>0.8 表示高機率為現場錄音 */
+  liveness: number;
+
+  /** 響度 (dB, -60 to 0): 整首歌曲的平均音量。典型範圍為 -60 到 0 dB */
+  loudness: number;
+
+  /** 語音內容比例 (0.0-1.0): 音樂中語音（非歌唱）的比例。>0.66 表示可能為 podcast 或有聲書 */
+  speechiness: number;
+
+  /** 速度 (BPM): 每分鐘拍數，表示音樂的節奏快慢 */
+  tempo: number;
+
+  /** 音樂正向度/快樂度 (0.0-1.0): 音樂傳達的情緒正向程度。1.0 = 快樂，0.0 = 悲傷 */
+  valence: number;
 }
 
 // ============================================================================
@@ -306,16 +318,6 @@ export interface ISpotifyApiService {
    * @throws {SpotifyApiError} 當 API 呼叫失敗時
    */
   getAudioFeatures(trackId: string): Promise<SpotifyAudioFeatures>;
-
-  /**
-   * 批次取得音樂特徵 (最多 100 筆)
-   * @param trackIds Spotify Track IDs (max 100)
-   * @returns Map<trackId, AudioFeatures>
-   * @throws {SpotifyApiError} 當 API 呼叫失敗時
-   */
-  getAudioFeaturesBatch(
-    trackIds: string[],
-  ): Promise<Map<string, SpotifyAudioFeatures>>;
 }
 
 // ============================================================================
@@ -367,18 +369,66 @@ export function isValidSpotifyTrack(data: unknown): data is SpotifyTrack {
 }
 
 /**
- * 檢查是否為有效的 Audio Features
+ * 檢查是否為有效的 Audio Features (ReccoBeats API)
+ *
+ * Validates all 9 required fields:
+ * - acousticness, danceability, energy, instrumentalness, liveness
+ * - loudness, speechiness, tempo, valence
+ *
+ * Validation ranges per data-model.md:
+ * - [0.0 - 1.0]: acousticness, danceability, energy, instrumentalness, liveness, speechiness, valence
+ * - [-60 to 0]: loudness (dB)
+ * - positive number: tempo (BPM)
  */
 export function isValidAudioFeatures(
   data: unknown,
 ): data is SpotifyAudioFeatures {
+  if (typeof data !== "object" || data === null) return false;
+
+  const af = data as Record<string, unknown>;
+
+  // Check all 9 required fields exist and have correct types
   return (
-    typeof data === "object" &&
-    data !== null &&
-    "id" in data &&
-    "type" in data &&
-    (data as SpotifyAudioFeatures).type === "audio_features" &&
-    "acousticness" in data &&
-    "danceability" in data
+    typeof af.acousticness === "number" &&
+    af.acousticness >= 0 &&
+    af.acousticness <= 1 &&
+    typeof af.danceability === "number" &&
+    af.danceability >= 0 &&
+    af.danceability <= 1 &&
+    typeof af.energy === "number" &&
+    af.energy >= 0 &&
+    af.energy <= 1 &&
+    typeof af.instrumentalness === "number" &&
+    af.instrumentalness >= 0 &&
+    af.instrumentalness <= 1 &&
+    typeof af.liveness === "number" &&
+    af.liveness >= 0 &&
+    af.liveness <= 1 &&
+    typeof af.loudness === "number" &&
+    af.loudness >= -60 &&
+    af.loudness <= 0 &&
+    typeof af.speechiness === "number" &&
+    af.speechiness >= 0 &&
+    af.speechiness <= 1 &&
+    typeof af.tempo === "number" &&
+    af.tempo > 0 &&
+    typeof af.valence === "number" &&
+    af.valence >= 0 &&
+    af.valence <= 1
+  );
+}
+
+/**
+ * 檢查是否為有效的 Spotify Track ID 格式
+ *
+ * Format: 22 characters, Base-62 (a-z, A-Z, 0-9)
+ * Example: "06HL4z0CvFAxyc27GXpf02"
+ *
+ * See: data-model.md for format specification
+ */
+export function isValidTrackId(id: unknown): id is string {
+  return (
+    typeof id === "string" &&
+    /^[a-zA-Z0-9]{22}$/.test(id)
   );
 }
