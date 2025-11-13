@@ -196,13 +196,14 @@ export class SpotifyApiService implements ISpotifyApiService {
         audio_features: (SpotifyAudioFeatures | null)[];
       };
 
-      // Spotify API 回傳 { audio_features: [...] }
+      // API 回傳 { audio_features: [...] }，與請求的 trackIds 順序對應
       const features = data.audio_features;
 
       const result = new Map<string, SpotifyAudioFeatures>();
-      features.forEach((feature) => {
-        if (feature && isValidAudioFeatures(feature)) {
-          result.set(feature.id, feature);
+      features.forEach((feature, index) => {
+        if (feature && isValidAudioFeatures(feature) && index < trackIds.length) {
+          // Use trackId from request since AudioFeatures no longer contains id
+          result.set(trackIds[index], feature);
         }
       });
 
