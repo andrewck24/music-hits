@@ -35,7 +35,7 @@
 
 ### T001: 建立 RTK Query API slice [Setup] ✅ DONE
 
-**File**: `src/features/api/spotify-api.ts`
+**File**: `src/services/spotify-api.ts`
 **Description**: 建立 RTK Query API slice，定義 3 個 endpoints (getArtist, getTrack, getAudioFeatures)
 **Dependencies**: None
 **Checklist**:
@@ -49,16 +49,16 @@
 - [x] 每個 endpoint 使用 `providesTags` 標記快取
 - [x] 匯出自動生成的 hooks
 
-### T002: 建立 API index 檔案 [Setup] ✅ DONE
+### T002: 建立 Services index 檔案 [Setup] ✅ DONE
 
-**File**: `src/features/api/index.ts`
+**File**: `src/services/index.ts`
 **Description**: 匯出 spotifyApi 與所有 hooks
 **Dependencies**: T001
 **Checklist**:
 
 - [x] 匯出 `spotifyApi`
 - [x] 匯出所有 auto-generated hooks
-- [x] 使用 path alias `@/features/api`
+- [x] 使用 path alias `@/services`
 
 ### T003: 整合 RTK Query 至 Redux store [Setup] ✅ DONE
 
@@ -375,7 +375,7 @@
 
 ### T025: 配置 RTK Query 快取參數 [US4]
 
-**File**: `src/features/api/spotify-api.ts`
+**File**: `src/services/spotify-api.ts`
 **Description**: 調整 RTK Query 快取設定
 **Dependencies**: T001
 **Checklist**:
@@ -506,7 +506,7 @@
 
 ### T034: 實作 AbortController 請求取消 [Polish]
 
-**File**: `src/features/api/spotify-api.ts`
+**File**: `src/services/spotify-api.ts`
 **Description**: 配置 RTK Query 支援請求取消
 **Dependencies**: T001
 **Checklist**:

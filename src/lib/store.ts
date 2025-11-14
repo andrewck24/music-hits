@@ -1,3 +1,4 @@
+import { spotifyApi } from "@/services";
 import { configureStore } from "@reduxjs/toolkit";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,9 +9,6 @@ import dataReducer from "@/features/data/data-slice";
 import searchReducer from "@/features/search/search-slice";
 import spotifyReducer from "@/features/spotify/spotify-slice";
 import trackReducer from "@/features/track/track-slice";
-
-// RTK Query
-import { spotifyApi } from "@/features/api";
 
 /**
  * Redux Store Configuration
@@ -27,6 +25,7 @@ import { spotifyApi } from "@/features/api";
  * - search: Search query and results (with Fuse.js instance)
  * - data: Local tracks database
  * - spotify: API authentication token
+ * - spotifyApi: RTK Query cache for Spotify API data
  *
  * Usage:
  *   import { store, useAppDispatch, useAppSelector } from '@/lib/store'
@@ -42,14 +41,7 @@ export const store = configureStore({
     [spotifyApi.reducerPath]: spotifyApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        // Ignore these paths in the state for serialization checks
-        // Required for storing Fuse.js instance in search slice
-        ignoredActions: ["search/initializeSearch"],
-        ignoredPaths: ["search.fuseInstance"],
-      },
-    }).concat(spotifyApi.middleware),
+    getDefaultMiddleware().concat(spotifyApi.middleware),
   devTools: process.env.NODE_ENV !== "production", // Enable Redux DevTools in development
 });
 

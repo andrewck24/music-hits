@@ -89,7 +89,6 @@ if (isError) {
 
 ## Cache Behavior
 
-- **TTL**: 60 seconds (RTK Query default)
 - **Invalidation**: Automatic based on tags
 - **Deduplication**: Automatic for concurrent requests
 - **Persistence**: Memory only (cleared on page close)

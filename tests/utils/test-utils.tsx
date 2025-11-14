@@ -3,6 +3,7 @@ import dataReducer from "@/features/data/data-slice";
 import searchReducer from "@/features/search/search-slice";
 import spotifyReducer from "@/features/spotify/spotify-slice";
 import trackReducer from "@/features/track/track-slice";
+import { spotifyApi } from "@/services";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { render, RenderOptions } from "@testing-library/react";
 import { ReactElement } from "react";
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   search: searchReducer,
   data: dataReducer,
   spotify: spotifyReducer,
+  [spotifyApi.reducerPath]: spotifyApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -31,12 +33,7 @@ export function setupStore(preloadedState?: Partial<RootState>) {
     reducer: rootReducer,
     preloadedState,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: ["search/initializeSearch"],
-          ignoredPaths: ["search.fuseInstance"],
-        },
-      }),
+      getDefaultMiddleware().concat(spotifyApi.middleware),
   });
 }
 
