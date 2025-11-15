@@ -1,4 +1,3 @@
-import dataReducer from "@/features/data/data-slice";
 import { spotifyApi } from "@/services";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { render, RenderOptions } from "@testing-library/react";
@@ -7,7 +6,6 @@ import { Provider } from "react-redux";
 
 // Create root reducer for testing
 const rootReducer = combineReducers({
-  data: dataReducer,
   [spotifyApi.reducerPath]: spotifyApi.reducer,
 });
 

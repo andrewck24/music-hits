@@ -3,9 +3,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 
-// Import all reducers
-import dataReducer from "@/features/data/data-slice";
-
 /**
  * Redux Store Configuration
  *
@@ -15,8 +12,10 @@ import dataReducer from "@/features/data/data-slice";
  * - Redux DevTools integration (enabled in development)
  *
  * State Structure:
- * - data: Local tracks database
  * - spotifyApi: RTK Query cache for Spotify API data
+ *
+ * Note: Local tracks database (tracks.json) is now loaded via React Router loader
+ * instead of Redux state. See @/loaders/tracks-loader.ts
  *
  * Usage:
  *   import { store, useAppDispatch, useAppSelector } from '@/lib/store'
@@ -24,7 +23,6 @@ import dataReducer from "@/features/data/data-slice";
 
 export const store = configureStore({
   reducer: {
-    data: dataReducer,
     [spotifyApi.reducerPath]: spotifyApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

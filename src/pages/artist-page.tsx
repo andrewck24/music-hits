@@ -1,12 +1,9 @@
-import { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/lib/store";
-import { useGetArtistQuery } from "@/services";
-import { selectTracks } from "@/features/data/data-selectors";
-import { loadLocalData } from "@/features/data/data-slice";
 import { ArtistProfile } from "@/components/artist/artist-profile";
-import { Spinner } from "@/components/ui/spinner";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
+import type { tracksLoader } from "@/loaders/tracks-loader";
+import { useGetArtistQuery } from "@/services";
+import { Link, useParams, useRouteLoaderData } from "react-router-dom";
 
 /**
  * ArtistPage Component
@@ -25,40 +22,37 @@ import { Card } from "@/components/ui/card";
 
 export default function ArtistPage() {
   const { artistId } = useParams<{ artistId: string }>();
-  const dispatch = useAppDispatch();
 
-  // Load local data on mount to get artist tracks
-  useEffect(() => {
-    dispatch(loadLocalData());
-  }, [dispatch]);
+  // Get tracks from loader (loaded before page render)
+  const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
+    ReturnType<typeof tracksLoader>
+  >;
 
   // Get artist data from Spotify API
-  const { data: artist, isLoading, error } = useGetArtistQuery(
-    artistId || "",
-    { skip: !artistId }
-  );
+  const {
+    data: artist,
+    isLoading,
+    error,
+  } = useGetArtistQuery(artistId || "", { skip: !artistId });
 
-  // Get local tracks and filter by artist
-  const tracks = useAppSelector(selectTracks);
-  const artistTracks = tracks.filter(
-    (track) => track.artistId === artistId
+  // Filter local tracks by artist
+  const artistTracks = tracksDatabase.tracks.filter(
+    (track) => track.artistId === artistId,
   );
 
   if (!artistId) {
     return (
-      <div className="min-h-screen bg-background p-6">
+      <div className="bg-background min-h-screen p-6">
         <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">
-            找不到藝人ID
-          </p>
+          <p className="text-muted-foreground text-lg">找不到藝人ID</p>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-background min-h-screen p-6">
+      <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8">
           <Link
@@ -67,7 +61,7 @@ export default function ArtistPage() {
           >
             ← 返回首頁
           </Link>
-          <h1 className="text-4xl font-bold text-foreground">藝人詳情</h1>
+          <h1 className="text-foreground text-4xl font-bold">藝人詳情</h1>
         </div>
 
         {/* Artist Info Section */}
@@ -78,11 +72,9 @@ export default function ArtistPage() {
             </div>
           ) : error ? (
             <Card className="p-8 text-center">
-              <p className="text-destructive text-lg mb-4">
-                無法載入藝人資訊
-              </p>
+              <p className="text-destructive mb-4 text-lg">無法載入藝人資訊</p>
               <p className="text-muted-foreground text-sm">
-                {error && typeof error === 'object' && 'message' in error
+                {error && typeof error === "object" && "message" in error
                   ? (error.message as string)
                   : String(error)}
               </p>
@@ -94,7 +86,7 @@ export default function ArtistPage() {
 
         {/* Tracks Section */}
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-4">
+          <h2 className="text-foreground mb-4 text-2xl font-bold">
             該藝人的歌曲
           </h2>
 
@@ -112,18 +104,19 @@ export default function ArtistPage() {
                   to={`/track/${track.trackId}`}
                   className="block"
                 >
-                  <Card className="p-4 hover:bg-secondary transition-colors cursor-pointer">
+                  <Card className="hover:bg-secondary cursor-pointer p-4 transition-colors">
                     <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground truncate">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-foreground truncate font-semibold">
                           {track.trackName}
                         </h3>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-muted-foreground mt-1 text-sm">
                           {track.releaseYear}
                         </p>
                       </div>
-                      <div className="ml-4 text-sm text-primary">
-                        人氣度: {(track.popularity.playCount || 0).toLocaleString()}
+                      <div className="text-primary ml-4 text-sm">
+                        人氣度:{" "}
+                        {(track.popularity.playCount || 0).toLocaleString()}
                       </div>
                     </div>
                   </Card>

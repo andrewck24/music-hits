@@ -151,10 +151,10 @@ src/
 │   ├── recommendations/       # 新增：首頁推薦
 │   │   └── constants.ts      # 硬編碼 artistId 清單
 │   │
-│   ├── data/                  # 保留：本地資料管理
-│   │   ├── data-slice.ts     # 保留
-│   │   ├── data-selectors.ts # 保留
-│   │   └── data-types.ts     # 保留
+│   ├── data/                  # 完全移除（改用 React Router loader）
+│   │   ├── [DELETED] data-slice.ts
+│   │   ├── [DELETED] data-selectors.ts
+│   │   └── [DELETED] data-types.ts
 │   │
 │   ├── search/                # 簡化
 │   │   ├── search-service.ts # 保留
@@ -196,15 +196,18 @@ src/
 │   ├── [DELETE] use-artist.ts
 │   ├── [DELETE] use-track.ts
 │   ├── [DELETE] use-search.ts
-│   └── use-data-loader.ts         # 保留
+│   └── [DELETED] use-data-loader.ts
 │
 ├── lib/
-│   ├── store.ts                   # 修改
+│   ├── store.ts                   # 修改：移除 data reducer
 │   └── router.tsx                 # 新增
+│
+├── loaders/                        # 新增：React Router loaders
+│   └── tracks-loader.ts           # 載入 tracks.json 資料
 │
 ├── services/
 │   ├── [DELETE] spotify-api.ts
-│   ├── data-loader.ts             # 保留
+│   ├── [DELETED] data-loader.ts   # 改用 loaders/tracks-loader.ts
 │   └── storage.ts                 # 保留
 │
 └── main.tsx                       # 修改
@@ -218,10 +221,12 @@ public/
 
 **核心變更**：
 
-- ✅ **完全保留**: data/ (slice, selectors, types 全保留)
-- ❌ **完全移除**: artist/, track/, spotify/ (slice, selectors, types 全刪除)
+- ❌ **完全移除**: data/, artist/, track/, spotify/ (slice, selectors, types 全刪除)
 - ⚠️ **部分移除**: search/ (刪除 slice/selectors，保留 service/types)
-- 💡 **移除原因 (spotify/)**: Worker 已完全處理 Spotify 認證，前端無需管理 token
+- 💡 **移除原因**:
+  - **data/**: 改用 React Router loader (loaders/tracks-loader.ts) 載入本地資料
+  - **spotify/**: Worker 已完全處理 Spotify 認證，前端無需管理 token
+  - **artist/, track/**: 改用 RTK Query API endpoints 替代 Redux slices
 
 ### SPA 路由配置說明
 

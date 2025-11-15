@@ -9,9 +9,9 @@
  */
 
 export {
+  default,
   spotifyApi,
   useGetArtistQuery,
-  useGetTrackQuery,
   useGetAudioFeaturesQuery,
-} from './spotify-api';
-export { default } from './spotify-api';
+  useGetTrackQuery,
+} from "@/services/spotify-api";

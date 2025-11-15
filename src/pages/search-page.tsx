@@ -1,13 +1,11 @@
 import { Card } from "@/components/ui/card";
-import { selectTracks } from "@/features/data/data-selectors";
-import { loadLocalData } from "@/features/data/data-slice";
 import {
   createSearchIndex,
   searchArtists,
 } from "@/features/search/search-service";
-import { useAppDispatch, useAppSelector } from "@/lib/store";
-import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import type { tracksLoader } from "@/loaders/tracks-loader";
+import { useMemo, useState } from "react";
+import { Link, useRouteLoaderData, useSearchParams } from "react-router-dom";
 
 /**
  * SearchPage Component
@@ -33,18 +31,15 @@ export default function SearchPage() {
   const query = searchParams.get("q") || "";
   const [searchInput, setSearchInput] = useState(query);
 
-  const dispatch = useAppDispatch();
-  const tracks = useAppSelector(selectTracks);
-
-  // Load local data on mount
-  useEffect(() => {
-    dispatch(loadLocalData());
-  }, [dispatch]);
+  // Get tracks from loader (loaded before page render)
+  const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
+    ReturnType<typeof tracksLoader>
+  >;
 
   // Create search index from tracks
   const fuseInstance = useMemo(() => {
-    return tracks.length > 0 ? createSearchIndex(tracks) : null;
-  }, [tracks]);
+    return createSearchIndex(tracksDatabase.tracks);
+  }, [tracksDatabase]);
 
   // Perform search and get unique artists
   const searchResults = useMemo(() => {

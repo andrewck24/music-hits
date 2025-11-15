@@ -719,3 +719,23 @@ Setup (T001-T006)
    - 快取命中切換 <0.5 秒 (T028)
 
 5. **Deployment**: SPA 路由透過 `wrangler.jsonc` 中的 `not_found_handling: "single-page-application"` 自動處理，無需額外配置。在 T023 中驗證 production build 的路由功能。
+
+6. **data-slice 重構** (2025-11-15):
+   - **背景**: T003 原計畫保留 data-slice 用於管理本地 tracks.json 資料
+   - **重構決策**: 改用 React Router v7 loader API 替代 Redux data-slice
+   - **實作內容**:
+     - 建立 `src/loaders/tracks-loader.ts` 載入 tracks.json
+     - 在 router.tsx 根路由配置 loader（子路由透過 Outlet 共享資料）
+     - 更新 SearchPage 和 ArtistPage 使用 `useRouteLoaderData("root")` 取得資料
+     - 移除 `src/features/data/` 目錄（data-slice.ts, data-selectors.ts, data-types.ts）
+     - 移除 `src/hooks/use-data-loader.ts`
+     - 移除 `src/services/data-loader.ts` 和其測試檔案
+     - 更新 store.ts 移除 data reducer
+     - 更新 test-utils.tsx 移除 data reducer
+   - **優勢**:
+     - ✅ 資料在頁面渲染前載入完成（無 loading 狀態）
+     - ✅ React Router 自動處理重複請求去除
+     - ✅ sessionStorage 快取確保單次載入
+     - ✅ 子路由自動繼承資料（透過 Outlet）
+     - ✅ TypeScript 類型安全（透過 typeof loader）
+   - **影響檔案**: T003（更新 Redux store 配置），各頁面元件資料載入方式

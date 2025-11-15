@@ -103,7 +103,7 @@ const {
   error,
 } = useGetArtistQuery(
   artistId,
-  { skip: !artistId } // 防止無效請求
+  { skip: !artistId }, // 防止無效請求
 );
 ```
 
@@ -128,20 +128,88 @@ const {
 
 ---
 
-### 3. Redux 應用狀態
+### 3. 本地資料載入（React Router Loader）
+
+**來源**: React Router v7 loader API
+**管理方式**: `react-router-dom` loaders
+**生命週期**: 頁面導航前載入，透過 useRouteLoaderData 存取
+
+#### tracks-loader (新增)
+
+**用途**: 在所有路由渲染前載入本地 tracks.json 資料
+
+**檔案位置**: `src/loaders/tracks-loader.ts`
+
+```typescript
+// loaders/tracks-loader.ts
+import type { LocalTracksDatabase } from "@/types/data-schema";
+
+export async function tracksLoader() {
+  // 1. 檢查 sessionStorage 快取
+  const cachedData = sessionStorage.getItem(STORAGE_KEY);
+  if (cachedData) {
+    return { tracks: JSON.parse(cachedData) };
+  }
+
+  // 2. 載入遠端資料
+  const response = await fetch("/data/tracks.json");
+  const rawData = await response.json();
+
+  // 3. Zod schema 驗證
+  const validatedData = localTracksDatabaseSchema.parse(rawData);
+
+  // 4. 儲存至 sessionStorage
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(validatedData));
+
+  return { tracks: validatedData };
+}
+```
+
+**使用方式**:
+
+```tsx
+// 在 router.tsx 中配置
+{
+  path: "/",
+  loader: tracksLoader, // 根路由載入資料
+  element: <Outlet />,  // 子路由共享資料
+  children: [...]
+}
+
+// 在頁面元件中存取
+import { useRouteLoaderData } from "react-router-dom";
+import type { tracksLoader } from "@/loaders/tracks-loader";
+
+const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
+  ReturnType<typeof tracksLoader>
+>;
+```
+
+**優勢**:
+
+- ✅ 資料在頁面渲染前載入完成（無 loading 狀態）
+- ✅ React Router 自動處理重複請求去除
+- ✅ sessionStorage 快取確保單次載入
+- ✅ 子路由自動繼承資料（透過 Outlet）
+- ✅ TypeScript 類型安全（透過 typeof loader）
+
+---
+
+### 4. Redux 應用狀態
 
 **來源**: Redux slices
 **管理方式**: `@reduxjs/toolkit`
 **生命週期**: 應用程式執行期間
 
-#### 保留的 Slices
+**Note**: 本專案已移除所有 Redux slices（data, artist, track, search），僅保留 RTK Query API cache
 
-##### data-slice (保留)
+#### 歷史記錄：已移除的 Slices
 
-**用途**: 管理本地 tracks.json 資料載入
+##### data-slice (已移除，改用 React Router loader)
+
+**重構前**:
 
 ```typescript
-// features/data/data-types.ts
 interface DataState {
   tracks: LocalTrackData[]; // 本地歌曲資料
   version: string; // 資料版本
@@ -151,11 +219,11 @@ interface DataState {
 }
 ```
 
-**不變**: 此 slice 功能保持不變
+**移除原因**: React Router loader 提供更好的資料載入體驗，資料在頁面渲染前完成載入
 
-##### search 相關（簡化）
+##### search-slice (已移除)
 
-**重構前** (search-slice, 移除):
+**重構前**:
 
 ```typescript
 interface SearchState {
@@ -166,56 +234,11 @@ interface SearchState {
 }
 ```
 
-**重構後** (僅保留 fuseInstance):
+**移除原因**: query 改用 URL searchParams，results 改用 useMemo 純函數計算，fuseInstance 在元件內建立
 
-```typescript
-// 選項 1：保留 search-slice，僅儲存 fuseInstance
-interface SearchState {
-  fuseInstance: Fuse<LocalTrackData> | null;
-}
+##### artist-slice (已移除)
 
-// 選項 2：移至 data-slice
-interface DataState {
-  tracks: LocalTrackData[];
-  fuseInstance: Fuse<LocalTrackData> | null; // 與 tracks 一起初始化
-  // ...
-}
-```
-
-**推薦**: 選項 2，因為 fuseInstance 與 tracks 資料緊密相關
-
-**search-service.ts** (保留為純函數):
-
-```typescript
-// features/search/search-service.ts
-export function createFuseInstance(
-  tracks: LocalTrackData[]
-): Fuse<LocalTrackData> {
-  return new Fuse(tracks, {
-    keys: ["artistName"],
-    threshold: 0.3,
-  });
-}
-
-export function performSearch(
-  fuseInstance: Fuse<LocalTrackData>,
-  query: string
-): SearchResult[] {
-  if (!query) return [];
-  return fuseInstance.search(query).map((result) => ({
-    artist: result.item,
-    score: result.score,
-  }));
-}
-```
-
----
-
-### 4. 移除的 Slices
-
-#### artist-slice (移除)
-
-**原因**: URL params + RTK Query 完全取代
+**移除原因**: URL params + RTK Query 完全取代
 
 ```typescript
 // ❌ 移除前
@@ -230,9 +253,9 @@ const { artistId } = useParams();
 const { data: artist, isLoading, error } = useGetArtistQuery(artistId!);
 ```
 
-#### track-slice (移除)
+##### track-slice (已移除)
 
-**原因**: URL params + RTK Query 完全取代
+**移除原因**: URL params + RTK Query 完全取代
 
 ```typescript
 // ❌ 移除前
