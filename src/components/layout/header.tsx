@@ -1,14 +1,14 @@
 import Spotify from "@/components/icons/spotify.svg?react";
-import { SearchBar } from "@/components/search/search-bar";
+import { Link } from "react-router-dom";
 
 /**
  * Header Component
  *
- * Purpose: 應用頂部欄（Logo + SearchBar）
+ * Purpose: 應用頂部欄（Logo + Navigation）
  *
  * Features:
  * - Application branding
- * - Search bar integration
+ * - Navigation links
  * - Spotify 主題
  *
  * Usage:
@@ -20,20 +20,32 @@ export function Header() {
     <header className="border-border bg-background w-full border-b">
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
+          {/* Logo / Home Link */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          >
             <Spotify className="size-8" />
-            <h1 className="text-xl font-bold text-white max-lg:hidden">
+            <h1 className="text-foreground text-xl font-bold max-lg:hidden">
               Spotify YouTube Hits
             </h1>
-          </div>
+          </Link>
 
-          {/* SearchBar */}
-          <div className="mx-8 flex max-w-md flex-1 justify-center">
-            <div className="bg-secondary overflow-hidden rounded-full">
-              <SearchBar />
-            </div>
-          </div>
+          {/* Navigation Links */}
+          <nav className="flex items-center gap-4">
+            <Link
+              to="/"
+              className="text-foreground hover:text-primary text-sm font-medium transition-colors"
+            >
+              首頁
+            </Link>
+            <Link
+              to="/search"
+              className="text-foreground hover:text-primary text-sm font-medium transition-colors"
+            >
+              搜尋
+            </Link>
+          </nav>
         </div>
       </div>
     </header>

@@ -1,5 +1,6 @@
-import { createBrowserRouter, type RouteObject } from "react-router-dom";
+import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { lazy, Suspense } from "react";
+import { createBrowserRouter, type RouteObject } from "react-router-dom";
 
 /**
  * Router Configuration for Spotify YouTube Hits
@@ -25,9 +26,6 @@ const HomePage = lazy(() => import("@/pages/home-page"));
 const SearchPage = lazy(() => import("@/pages/search-page"));
 const ArtistPage = lazy(() => import("@/pages/artist-page"));
 const TrackPage = lazy(() => import("@/pages/track-page"));
-
-// Loading fallback component
-const LoadingFallback = () => <div>Loading...</div>;
 
 // Route definitions
 const routes: RouteObject[] = [

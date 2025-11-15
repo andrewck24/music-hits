@@ -127,89 +127,89 @@
 
 **Independent Test**: 開啟應用程式 → 點擊歌手 → 點擊歌曲 → 按瀏覽器「上一頁」→ 確認返回歌手頁 → 按「下一頁」→ 確認前進到歌曲頁。
 
-### T008: 建立 HomePage 元件 [US1]
+### T008: 建立 HomePage 元件 [US1] ✅ DONE
 
 **File**: `src/pages/home-page.tsx`
 **Description**: 首頁框架（暫時顯示佔位內容，P2 再實作推薦）
 **Dependencies**: None
 **Checklist**:
 
-- [ ] 建立 HomePage 元件
-- [ ] 使用 `<Link to="/search">` 導航到搜尋頁
-- [ ] 暫時顯示 "Home Page - Artists will be displayed in P2"
-- [ ] 驗證路由 `/` 正確渲染此元件
+- [x] 建立 HomePage 元件
+- [x] 使用 `<Link to="/search">` 導航到搜尋頁
+- [x] 暫時顯示 "Home Page - Artists will be displayed in P2"
+- [x] 驗證路由 `/` 正確渲染此元件
 
-### T009: 建立 SearchPage 元件 [US1]
+### T009: 建立 SearchPage 元件 [US1] ✅ DONE
 
 **File**: `src/pages/search-page.tsx`
 **Description**: 搜尋結果頁框架，使用 URL query parameter
 **Dependencies**: None
 **Checklist**:
 
-- [ ] 使用 `useSearchParams` 讀取 `q` 參數
-- [ ] 顯示當前搜尋關鍵字
-- [ ] 實作搜尋輸入框，使用 `setSearchParams({ q: newQuery }, { replace: true })`
-- [ ] 使用現有的 `performSearch` 函數執行搜尋
-- [ ] 顯示搜尋結果（歌手列表）
-- [ ] 每個結果連結到 `/artist/:artistId`
-- [ ] 處理空白搜尋關鍵字（顯示提示訊息）
+- [x] 使用 `useSearchParams` 讀取 `q` 參數
+- [x] 顯示當前搜尋關鍵字
+- [x] 實作搜尋輸入框，使用 `setSearchParams({ q: newQuery }, { replace: true })`
+- [x] 使用現有的 `performSearch` 函數執行搜尋
+- [x] 顯示搜尋結果（歌手列表）
+- [x] 每個結果連結到 `/artist/:artistId`
+- [x] 處理空白搜尋關鍵字（顯示提示訊息）
 
-### T010: 建立 ArtistPage 元件 [US1]
+### T010: 建立 ArtistPage 元件 [US1] ✅ DONE
 
 **File**: `src/pages/artist-page.tsx`
 **Description**: 歌手資訊頁，從 URL params 獲取 artistId 並載入資料
 **Dependencies**: T001, T002
 **Checklist**:
 
-- [ ] 使用 `useParams` 獲取 `artistId`
-- [ ] 使用 `useGetArtistQuery(artistId, { skip: !artistId })` 載入歌手資料
-- [ ] 處理 loading 狀態（顯示 loading indicator）
-- [ ] 處理 error 狀態（暫時顯示錯誤訊息，P7 再實作統一錯誤元件）
-- [ ] 渲染歌手資訊（使用現有的 `ArtistProfile` 元件）
-- [ ] 顯示歌曲列表，每首歌連結到 `/track/:trackId`
-- [ ] 驗證瀏覽器「上一頁」「下一頁」正常運作
+- [x] 使用 `useParams` 獲取 `artistId`
+- [x] 使用 `useGetArtistQuery(artistId, { skip: !artistId })` 載入歌手資料
+- [x] 處理 loading 狀態（顯示 loading indicator）
+- [x] 處理 error 狀態（暫時顯示錯誤訊息，P7 再實作統一錯誤元件）
+- [x] 渲染歌手資訊（使用現有的 `ArtistProfile` 元件）
+- [x] 顯示歌曲列表，每首歌連結到 `/track/:trackId`
+- [x] 驗證瀏覽器「上一頁」「下一頁」正常運作
 
-### T011: 建立 TrackPage 元件 [US1]
+### T011: 建立 TrackPage 元件 [US1] ✅ DONE
 
 **File**: `src/pages/track-page.tsx`
 **Description**: 歌曲資訊頁，從 URL params 獲取 trackId 並載入資料
 **Dependencies**: T001, T002
 **Checklist**:
 
-- [ ] 使用 `useParams` 獲取 `trackId` (無需 artistId)
-- [ ] 使用 `useGetTrackQuery(trackId, { skip: !trackId })` 載入歌曲資料
-- [ ] 使用 `useGetAudioFeaturesQuery(trackId, { skip: !trackId })` 載入音樂特徵
-- [ ] 處理 loading 狀態
-- [ ] 處理 error 狀態
-- [ ] 渲染歌曲資訊（使用現有的 `TrackDetail` 元件）
-- [ ] 從 track 資料中提取 artist 資訊，顯示 artist 連結到 `/artist/:artistId`
-- [ ] 驗證瀏覽器「上一頁」「下一頁」正常運作
+- [x] 使用 `useParams` 獲取 `trackId` (無需 artistId)
+- [x] 使用 `useGetTrackQuery(trackId, { skip: !trackId })` 載入歌曲資料
+- [x] 使用 `useGetAudioFeaturesQuery(trackId, { skip: !trackId })` 載入音樂特徵
+- [x] 處理 loading 狀態
+- [x] 處理 error 狀態
+- [x] 渲染歌曲資訊（使用現有的 `TrackDetail` 元件）
+- [x] 從 track 資料中提取 artist 資訊，顯示 artist 連結到 `/artist/:artistId`
+- [x] 驗證瀏覽器「上一頁」「下一頁」正常運作
 
-### T012: 更新 ArtistProfile 元件接收 props [US1]
+### T012: 更新 ArtistProfile 元件接收 props [US1] ✅ DONE
 
 **File**: `src/components/artist/artist-profile.tsx`
 **Description**: 移除 Redux 依賴，改為接收 artist 資料作為 props
 **Dependencies**: None
 **Checklist**:
 
-- [ ] 將元件改為接收 `artist: SpotifyArtist` prop
-- [ ] 移除所有 Redux selector 引用
-- [ ] 保留現有的 UI 邏輯
-- [ ] 更新歌曲列表連結格式為 `/track/:trackId`（扁平結構）
-- [ ] 驗證元件正常渲染
+- [x] 將元件改為接收 `artist: SpotifyArtist` prop
+- [x] 移除所有 Redux selector 引用
+- [x] 保留現有的 UI 邏輯
+- [x] 更新歌曲列表連結格式為 `/track/:trackId`（扁平結構）
+- [x] 驗證元件正常渲染
 
-### T013: 更新 TrackDetail 元件接收 props [US1]
+### T013: 更新 TrackDetail 元件接收 props [US1] ✅ DONE
 
 **File**: `src/components/track/track-detail.tsx`
 **Description**: 移除 Redux 依賴，改為接收 track 與 audioFeatures 作為 props
 **Dependencies**: None
 **Checklist**:
 
-- [ ] 將元件改為接收 `track: SpotifyTrack` 和 `audioFeatures?: SpotifyAudioFeatures` props
-- [ ] 移除所有 Redux selector 引用
-- [ ] 保留現有的 UI 邏輯（圖表、播放按鈕等）
-- [ ] 更新 artist 連結格式為 `/artist/:artistId`
-- [ ] 驗證元件正常渲染
+- [x] 將元件改為接收 `track: SpotifyTrack` 和 `audioFeatures?: SpotifyAudioFeatures` props
+- [x] 移除所有 Redux selector 引用
+- [x] 保留現有的 UI 邏輯（圖表、播放按鈕等）
+- [x] 更新 artist 連結格式為 `/artist/:artistId`
+- [x] 驗證元件正常渲染
 
 ### T014: 移除舊的 artist slice 與相關檔案 [US1] [P]
 
