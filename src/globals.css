@@ -1,29 +1,31 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-@theme {
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
   /* ============================================
    * Base Colors - Spotify Classic Dark Theme
    * ============================================ */
 
   /* Background - Spotify classic deep black */
-  --color-background: oklch(0.13 0 0); /* #121212 */
-  --color-foreground: oklch(0.98 0 0); /* #fafafa white text */
+  --color-background: oklch(0.1822 0 0); /* #121212 */
+  --color-foreground: oklch(1 0 0); /* #ffffff white text */
 
   /* Card background - slightly lighter than background for layering */
   --color-card: oklch(0.16 0 0); /* #1a1a1a */
-  --color-card-foreground: oklch(0.98 0 0); /* #fafafa */
-
+  --color-card-foreground: oklch(1 0 0); /* #ffffff */
   /* Popover/Dropdown background */
   --color-popover: oklch(0.18 0 0); /* #1f1f1f */
-  --color-popover-foreground: oklch(0.98 0 0); /* #fafafa */
+  --color-popover-foreground: oklch(1 0 0); /* #ffffff */
 
   /* ============================================
    * Spotify Green - Primary Brand Color
    * ============================================ */
 
   /* Primary - Spotify Green (#1DB954) */
-  --color-primary: oklch(0.65 0.18 150); /* Spotify Green */
-  --color-primary-foreground: oklch(0.13 0 0); /* Black text (high contrast) */
+  --color-primary: oklch(0.7697 0.2124 148.67); /* Spotify Green */
+  --color-primary-foreground: oklch(0.1822 0 0); /* Black text (high contrast) */
 
   /* ============================================
    * Secondary Colors
@@ -31,7 +33,7 @@
 
   /* Secondary - light gray for secondary buttons */
   --color-secondary: oklch(0.25 0 0); /* #282828 dark gray */
-  --color-secondary-foreground: oklch(0.98 0 0); /* white text */
+  --color-secondary-foreground: oklch(1 0 0); /* white text */
 
   /* Muted - soft gray for disabled states or backgrounds */
   --color-muted: oklch(0.22 0 0); /* #242424 */
@@ -39,7 +41,7 @@
 
   /* Accent - emphasis color for hover states */
   --color-accent: oklch(0.2 0 0); /* #202020 */
-  --color-accent-foreground: oklch(0.98 0 0); /* white text */
+  --color-accent-foreground: oklch(1 0 0); /* white text */
 
   /* ============================================
    * Functional Colors
@@ -47,7 +49,7 @@
 
   /* Destructive - error/delete actions (using Spotify red tone) */
   --color-destructive: oklch(0.55 0.22 25); /* #e22134 red */
-  --color-destructive-foreground: oklch(0.98 0 0); /* white text */
+  --color-destructive-foreground: oklch(1 0 0); /* white text */
 
   /* ============================================
    * Borders & Inputs
@@ -60,14 +62,14 @@
   --color-input: oklch(0.25 0 0); /* #282828 */
 
   /* Ring - focus state outline (using Spotify Green) */
-  --color-ring: oklch(0.65 0.18 150); /* Spotify Green */
+  --color-ring: oklch(0.7697 0.2124 148.67); /* Spotify Green */
 
   /* ============================================
    * Chart Colors - Spotify Color Palette
    * ============================================ */
 
   /* Chart 1 - Spotify Green (primary) */
-  --color-chart-1: oklch(0.65 0.18 150); /* #1DB954 */
+  --color-chart-1: oklch(0.7697 0.2124 148.67); /* #1DB954 */
 
   /* Chart 2 - Cyan-green (secondary) */
   --color-chart-2: oklch(0.6 0.15 200); /* #1ed760 */
@@ -104,13 +106,14 @@
  * Global Styles
  * ============================================ */
 
-* {
-  @apply border-border;
-}
-
-body {
-  @apply bg-background text-foreground;
-  font-feature-settings:
-    "rlig" 1,
-    "calt" 1;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
 }

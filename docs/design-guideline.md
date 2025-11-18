@@ -1,21 +1,21 @@
 # Design & Branding Guidelines for `music-hits`
 
-## Attribution
+## 1. Attribution
 
 ![attribution](https://developer-assets.spotifycdn.com/images/guidelines/design/attribution.svg)
 
-### When does this apply?
+### 1.1 When does this apply?
 
 In the `music-hits` project, any usage of Spotify-provided data—such as artist, album, track names, metadata, album artwork, or playback-related assets—must follow proper attribution requirements. Whenever contributors or AI agents surface Spotify-sourced metadata or artwork, the display must be accompanied by appropriate Spotify branding.
 
-### Attribute with the Spotify logo
+### 1.2 Attribute with the Spotify logo
 
 To respect Spotify’s licensing expectations, always include the Spotify logo when showing content sourced from Spotify.
 
 - In components or views that present Spotify metadata, use the **full logo (icon + wordmark)** whenever possible.
 - The **icon-only** version should only be used when space is very limited (e.g., device app icon or extremely compact UI elements).
 
-### Spotify full logo and icon
+### 1.3 Spotify full logo and icon
 
 - The full logo includes both the wordmark and the icon.
 - The icon-only version is a compact alternative and should be used only when the full logo cannot fit.
@@ -30,7 +30,7 @@ Full logo and icon usage must comply with the official [Logo & Color Guidelines]
 
 ---
 
-## Using our content
+## 2. Using our content
 
 ![using-our-content](https://developer-assets.spotifycdn.com/images/guidelines/design/using-our-content.svg)
 
@@ -54,11 +54,11 @@ Do not overlay text, images, controls, or UI elements on top of artwork.
 NO
 Do not place your own branding or logo on top of album artwork.
 
-### When does this apply?
+### 2.1 When does this apply?
 
 Whenever contributors or agents use artwork or metadata provided by Spotify.
 
-### Follow these guidelines:
+### 2.2 Follow these guidelines
 
 #### For album and podcast artwork
 
@@ -101,23 +101,23 @@ Layouts should accommodate:
 
 ---
 
-## Browsing Spotify content
+## 3. Browsing Spotify content
 
 ![browsing-spotify-content](https://developer-assets.spotifycdn.com/images/guidelines/design/browsing-spotify-content.svg)
 
-### When does this apply?
+### 3.1 When does this apply?
 
 Whenever `music-hits` integrates Spotify browsing features or displays rows of Spotify-provided recommendations. If the UI aggregates content from multiple providers, Spotify must receive equal treatment.
 
-### Follow these guidelines:
+### 3.2 Follow these guidelines
 
-### Content provided by Spotify
+#### Content provided by Spotify
 
 - Spotify supplies rows (“shelves”) of recommended content.
 - Spotify decides which metadata should be shown on all relevant surfaces.
 - Spotify defines and populates categories using optimized API endpoints.
 
-### How to display provided content
+#### How to display provided content
 
 - Never alter provided metadata.
 - Do not place Spotify content adjacent to similar-service content.
@@ -137,18 +137,18 @@ Do not mix adjacent Spotify and similar-service items.
 
 ---
 
-## Linking to Spotify
+## 4. Linking to Spotify
 
 ![linking-to-spotify](https://developer-assets.spotifycdn.com/images/guidelines/design/linking-to-spotify.svg)
 
-### When does this apply?
+### 4.1 When does this apply?
 
 When `music-hits` is used on platforms where the Spotify app already exists.
 Playback must default to the Spotify client. If the user has not installed Spotify, link them to the app store.
 
 Any Spotify metadata (names, artwork, playback) must link back to Spotify.
 
-### How to link to Spotify
+### 4.2 How to link to Spotify
 
 - If Spotify is **not installed**, use: **GET SPOTIFY FREE**
 - If Spotify **is installed**, use one of:
@@ -160,15 +160,15 @@ Links must follow Spotify's official attribution requirements.
 
 ---
 
-## Playing views
+## 5. Playing views
 
 ![playing-views](https://developer-assets.spotifycdn.com/images/guidelines/design/playing-views.svg)
 
-### When does this apply?
+### 5.1 When does this apply?
 
 Any time `music-hits` displays a playing or now-playing view.
 
-### Follow these guidelines:
+### 5.2 Follow these guidelines
 
 - Always attribute Spotify content using the Spotify logo or icon.
 - Follow artwork & metadata rules.
@@ -176,11 +176,11 @@ Any time `music-hits` displays a playing or now-playing view.
 
 It is recommended to provide **only Play/Pause** controls.
 
-### Why?
+### 5.3 Why?
 
 Spotify Free has action restrictions that could confuse users if controls are enabled/disabled unpredictably. To avoid poor UX, limit controls or avoid showing restricted ones.
 
-### If you choose to show controls:
+### 5.4 If you choose to show controls
 
 #### Handling Spotify Free restricted actions
 
@@ -188,19 +188,19 @@ Spotify Free has action restrictions that could confuse users if controls are en
 - Restricted controls must either appear disabled or be hidden.
 - Progress bar must be informational only (no seeking).
 
-### Upgrade information for Spotify Free
+### 5.5 Upgrade information for Spotify Free
 
 When a user triggers a restricted action:
 
 > Spotify Premium lets you play any track, podcast episode or audiobook, ad-free and with better audio quality. Go to spotify.com/premium to try it for free.
 
-### Podcasts and audiobooks
+### 5.6 Podcasts and audiobooks
 
 - Podcasts must support ±15-second seeking.
 - Audiobook samples must also support ±15-second seeking.
 - Use track URI to distinguish podcasts from music.
 
-### Playback view DOs and DON'Ts
+### 5.7 Playback view DOs and DON'Ts
 
 ![playback-views-dont](https://developer-assets.spotifycdn.com/images/guidelines/design/playback-views-dont.svg)
 
@@ -217,7 +217,7 @@ DO
 - Extract artwork colors for background (e.g., Android Palette)
 - If extraction fails, use Spotify #191414
 
-### Liking a song
+### 5.8 Liking a song
 
 The Like action must signal back to Spotify.
 
@@ -233,15 +233,15 @@ Download Like icon:
 
 ---
 
-## Showing entities
+## 6. Showing entities
 
 ![Graphic of Spotify tracks being displayed on a mobile phone](https://developer-assets.spotifycdn.com/images/guidelines/design/showing-entities.svg)
 
-### When does this apply?
+### 6.1 When does this apply?
 
 When displaying playlist/album entities for Spotify Free users.
 
-### Follow these guidelines
+### 6.2 Follow these guidelines
 
 Two display modes must be supported:
 
@@ -252,7 +252,7 @@ Two display modes must be supported:
   User sees a content summary and playback starts in shuffle mode.
   They cannot choose individual tracks.
 
-### Displaying explicit content
+### 6.3 Displaying explicit content
 
 Use the Web API `explicit` field.
 
@@ -264,7 +264,7 @@ Use the Web API `explicit` field.
 
 ---
 
-## Using our logo
+## 7. Using Spotify logo
 
 ![using-our-logo](https://developer-assets.spotifycdn.com/images/guidelines/design/using-our-logo.svg)
 
@@ -275,34 +275,34 @@ Follow these rules to keep the Spotify logo consistent and clear in your UI.
 
 ![logo](https://developer-assets.spotifycdn.com/images/guidelines/design/logo.svg)
 
-### Using the icon
+### 7.1 Using the icon
 
 Use icon-only when the brand is already established or space is limited.
 Never display the wordmark _without_ the icon.
 
-### Using the logo
+### 7.2 Using the logo
 
 Spotify’s green logo works only on black, white, or non-duotoned photography.
 
-### Which color to use
+### 7.3 Which color to use
 
 - Green logo → black or white background
 - Black logo → light backgrounds
 - White logo → dark backgrounds
 
-### Legibility
+### 7.4 Legibility
 
 Maintain sufficient contrast and respect the exclusion zone:
 Half the height of the icon on all sides.
 
 ![legibility](https://developer-assets.spotifycdn.com/images/guidelines/design/legibility.svg)
 
-### Minimum size
+### 7.5 Minimum size
 
 - Logo ≥ **70px digital**, **20mm print**
 - Icon ≥ **21px digital**, **6mm print**
 
-### Logo misuse
+### 7.6 Logo misuse
 
 Do not modify, distort, recolor, rotate, or integrate the logo into other shapes or sentences.
 
@@ -310,7 +310,7 @@ Do not modify, distort, recolor, rotate, or integrate the logo into other shapes
 
 ---
 
-## Using our colors
+## 8. Using Spotify colors
 
 Spotify Green is the anchor color.
 
@@ -331,30 +331,30 @@ NO — Avoid oversaturated CMYK colors
 
 ---
 
-## Logo and naming restrictions
+## 9. Logo and naming restrictions
 
-### Naming your application
+### 9.1 Naming your application
 
 If registering an app within the `music-hits` ecosystem:
 
 - Do **not** include “Spotify” or anything confusingly similar.
 - You **may** indicate “for Spotify,” but not imply endorsement.
 
-### Your application's logo
+### 9.2 Your application's logo
 
 Your logo must not resemble Spotify’s (no waves, green, circular iconography).
 
-### Don’t pair brands
+### 9.3 Don’t pair brands
 
 No co-branding involving Spotify and other brands.
 
 ---
 
-## Fonts
+## 10. Fonts
 
 ![fonts](https://developer-assets.spotifycdn.com/images/guidelines/design/fonts.svg)
 
-### What font to use?
+### 10.1 What font to use?
 
 Use the platform’s default sans-serif font when possible.
 Fallback order:

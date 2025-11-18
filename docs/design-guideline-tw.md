@@ -1,20 +1,20 @@
 # Music Hits 設計與品牌指南
 
-## Attribution（內容來源標示）
+## 1. Attribution（內容來源標示）
 
 ![attribution](https://developer-assets.spotifycdn.com/images/guidelines/design/attribution.svg)
 
-### 什麼時候需要標示？
+### 1.1 什麼時候需要標示？
 
 在 `music-hits` 中，如果你使用 Spotify 的任何內容或中繼資料（例如：藝人名稱、專輯名稱、曲名、專輯封面、播放能力…），你必須 **明確標示 Spotify 品牌**。
 
-### 使用 Spotify Logo 標示
+### 1.2 使用 Spotify Logo 標示
 
 依據 Spotify 授權要求：
 只要使用到 Spotify 的內容，在 `music-hits` 中都必須附上 Spotify logo。
 若在整合視圖或夥伴畫面中，也請優先使用「完整 logo（icon + wordmark）」；只有在空間有限或作為 app icon 時，才可使用純 icon。
 
-### Spotify Full Logo 與 Icon
+### 1.3 Spotify Full Logo 與 Icon
 
 - Full Logo = Wordmark + Icon
 - Icon 是較短版，只能在空間不足時使用
@@ -29,7 +29,7 @@ Icon
 
 ---
 
-## 使用 Spotify 內容
+## 2. 使用 Spotify 內容
 
 ![using-our-content](https://developer-assets.spotifycdn.com/images/guidelines/design/using-our-content.svg)
 
@@ -53,11 +53,11 @@ NO
 NO
 禁止將你的品牌或 logo 放在 Spotify 專輯封面上
 
-### 適用情境
+### 2.1 適用情境
 
 當你在 `music-hits` 中顯示任何由 Spotify 提供的封面或 metadata。
 
-### 必須遵循
+### 2.2 必須遵循
 
 #### 專輯與 Podcast 封面
 
@@ -96,24 +96,24 @@ NO
 
 ---
 
-## 在 `music-hits` 中瀏覽 Spotify 內容
+## 3. 在 `music-hits` 中瀏覽 Spotify 內容
 
 ![browsing-spotify-content](https://developer-assets.spotifycdn.com/images/guidelines/design/browsing-spotify-content.svg)
 
-### 適用情境
+### 3.1 適用情境
 
 當 `music-hits` 連接使用者的 Spotify 帳號並在 UI 中展示 Spotify 內容時。
 
 如果平台是多內容供應商的聚合頁，Spotify 內容須接受公平展示，例如：
 其他平台有的展示區，Spotify 也必須有。
 
-### 規範
+### 3.2 規範
 
 - Spotify 會提供「內容列（shelves）」
 - Spotify 決定 metadata 顯示方式（例如分類命名、群組標題）
 - 內容分類由 Spotify 決定與填充
 
-### 如何展示 Spotify 內容
+### 3.3 如何展示 Spotify 內容
 
 - 禁止修改 Spotify 內容或 metadata
 - Spotify 內容不可放在與其他類似服務內容相鄰的位置
@@ -130,17 +130,17 @@ NO
 
 ---
 
-## 對 Spotify 的連結
+## 4. 對 Spotify 的連結
 
 ![linking-to-spotify](https://developer-assets.spotifycdn.com/images/guidelines/design/linking-to-spotify.svg)
 
-### 適用情境
+### 4.1 適用情境
 
 在使用者安裝或可安裝 Spotify 的平台上運作時。
 
 只要使用 Spotify metadata，就必須提供返回 Spotify 服務的連結。
 
-### 如何連結
+### 4.2 如何連結
 
 - 若 Spotify 未安裝 → 按鈕文字：**GET SPOTIFY FREE**
 - 若 Spotify 已安裝 → 可使用：OPEN SPOTIFY / PLAY ON SPOTIFY / LISTEN ON SPOTIFY
@@ -149,38 +149,38 @@ NO
 
 ---
 
-## Playing Views（播放畫面）
+## 5. Playing Views（播放畫面）
 
 ![playing-views](https://developer-assets.spotifycdn.com/images/guidelines/design/playing-views.svg)
 
-### 適用情境
+### 5.1 適用情境
 
 在 `music-hits` 中顯示任何 Spotify 播放畫面的時候。
 
-### 要求
+### 5.2 要求
 
 - 必須標示 Spotify（logo 或 icon）
 - 必須遵守 metadata 與 artwork 規範
 - Spotify app 存在時，必須提供跳轉連結
 - 建議只提供 Play / Pause，不建議提供其他播放控制
 
-### 勿提供過多播放控制的原因
+### 5.3 勿提供過多播放控制的原因
 
 因 Spotify Free 有操作限制，其他控制可能造成混亂。例如：skip 會被限制，使用者可能不懂為何按鈕失效。
 
 如仍要提供播放控制，請遵循：
 
-### Spotify Free 限制處理
+### 5.4 Spotify Free 限制處理
 
 - 使用 PlaybackRestrictions 顯示 disabled 狀態
 - 禁止提供 seek bar 的可拖動體驗（僅顯示資訊）
 
-### Podcast 播放
+### 5.5 Podcast 播放
 
 需提供 15 秒前/後跳功能。
 Audiobook sample 也需要。
 
-### Playback 視圖規範
+### 5.6 Playback 視圖規範
 
 ![playback-views-dont](https://developer-assets.spotifycdn.com/images/guidelines/design/playback-views-dont.svg)
 DON'T
@@ -190,11 +190,11 @@ DO
 
 ---
 
-## Like 功能
+## 6. Like 功能
 
 Like 功能需要回報 Spotify，不能儲存在 `music-hits` 端。
 
-### Icon 行為
+### 6.1 Icon 行為
 
 - 按一次 + → Added to Liked Songs / Added to New Episodes
 - 再按一次 → Removed from Liked Songs / Removed from New Episodes
@@ -207,20 +207,20 @@ Like Icon 可下載：
 
 ---
 
-## Showing Entities（顯示播放實體）
+## 7. Showing Entities（顯示播放實體）
 
 ![Graphic of Spotify tracks being displayed on a mobile phone](https://developer-assets.spotifycdn.com/images/guidelines/design/showing-entities.svg)
 
-### 適用情境
+### 7.1 適用情境
 
 Spotify Free 的 on-demand 與 shuffle 模式。
 
-### 錯落模式
+### 7.2 錯落模式
 
 - On-demand → 可看見完整 tracklist
 - Shuffle → 只能看簡要摘要，不能點選單曲播放
 
-### 顯示 Explicit Content
+### 7.3 顯示 Explicit Content
 
 透過 Web API 判斷 explicit = true 時，顯示 badge。
 
@@ -228,19 +228,74 @@ Spotify Free 的 on-demand 與 shuffle 模式。
 
 ---
 
-## 使用 Spotify Logo
+## 8. 使用 Spotify Logo
 
-（保持原圖與同樣結構，可略）
+![using-our-logo](https://developer-assets.spotifycdn.com/images/guidelines/design/using-our-logo.svg)
+
+Follow these rules to keep the Spotify logo consistent and clear in your UI.
+
+[Download Full Logo](https://developer.spotify.com/images/guidelines/design/2024-spotify-full-logo.zip)
+[Download Icon](https://developer.spotify.com/images/guidelines/design/2024-spotify-logo-icon.zip)
+
+![logo](https://developer-assets.spotifycdn.com/images/guidelines/design/logo.svg)
+
+### 8.1 Using the icon
+
+Use icon-only when the brand is already established or space is limited.
+Never display the wordmark _without_ the icon.
+
+### 8.2 Using the logo
+
+Spotify’s green logo works only on black, white, or non-duotoned photography.
+
+### 8.3 Which color to use
+
+- Green logo → black or white background
+- Black logo → light backgrounds
+- White logo → dark backgrounds
+
+### 8.4 Legibility
+
+Maintain sufficient contrast and respect the exclusion zone:
+Half the height of the icon on all sides.
+
+![legibility](https://developer-assets.spotifycdn.com/images/guidelines/design/legibility.svg)
+
+### 8.5 Minimum size
+
+- Logo ≥ **70px digital**, **20mm print**
+- Icon ≥ **21px digital**, **6mm print**
+
+### 8.6 Logo misuse
+
+Do not modify, distort, recolor, rotate, or integrate the logo into other shapes or sentences.
+
+(Images preserved)
 
 ---
 
-## 使用 Spotify Colors
+## 9. 使用 Spotify Colors
 
-（保持原圖與同樣結構，可略）
+Spotify Green is the anchor color.
+
+![colors](https://developer-assets.spotifycdn.com/images/guidelines/design/colors.svg)
+
+![using-colors1](https://developer-assets.spotifycdn.com/images/guidelines/design/using-colors1.svg)
+
+YES — Creative combinations allowed
+![using-colors2](https://developer-assets.spotifycdn.com/images/guidelines/design/using-colors2.svg)
+
+YES — High-contrast palettes
+![using-colors3](https://developer-assets.spotifycdn.com/images/guidelines/design/using-colors3.svg)
+
+NO — Do not invent new brand colors
+![using-colors4](https://developer-assets.spotifycdn.com/images/guidelines/design/using-colors4.svg)
+
+NO — Avoid oversaturated CMYK colors
 
 ---
 
-## Logo 與命名限制（對 `music-hits` 貢獻者）
+## 10. Logo 與命名限制（對 `music-hits` 貢獻者）
 
 ### Application 命名
 
@@ -253,7 +308,7 @@ Spotify Free 的 on-demand 與 shuffle 模式。
 
 ---
 
-## Fonts
+## 11. Fonts
 
 建議使用平台預設 sans-serif，依序 fallback：
 
