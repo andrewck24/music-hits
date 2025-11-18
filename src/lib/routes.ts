@@ -1,8 +1,9 @@
+import { Layout } from "@/components/layout";
 import { tracksLoader } from "@/loaders/tracks-loader";
 import type { RouteObject } from "react-router-dom";
 
 /**
- * Router Configuration for Spotify YouTube Hits
+ * Router Configuration for Music Hits
  *
  * This module defines all routes for the application using react-router v7.
  * Routes are organized to support deep linking and browser history navigation.
@@ -32,6 +33,7 @@ export const routes: RouteObject[] = [
     id: "root",
     path: "/",
     loader: tracksLoader, // Load tracks.json at root level
+    Component: Layout,
     children: [
       {
         index: true,

@@ -25,7 +25,7 @@ export function HomePage() {
 
 function HomePageContent() {
   return (
-    <div className="bg-background min-h-screen p-6">
+    <div className="bg-background p-6">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-12">

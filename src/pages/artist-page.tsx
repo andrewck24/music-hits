@@ -52,7 +52,7 @@ function ArtistPageContent() {
 
   if (!artistId) {
     return (
-      <div className="bg-background min-h-screen p-6">
+      <div className="bg-background p-6">
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">找不到藝人ID</p>
         </Card>
@@ -61,7 +61,7 @@ function ArtistPageContent() {
   }
 
   return (
-    <div className="bg-background min-h-screen p-6">
+    <div className="bg-background p-6">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8">
