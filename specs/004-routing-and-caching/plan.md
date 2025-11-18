@@ -17,6 +17,7 @@
 - **搜尋體驗**：使用 `setSearchParams(newParams, { replace: true })` 避免污染瀏覽歷史
 - **請求管理**：使用 AbortController 取消 pending requests，避免快速導航時的競態條件
 - **漸進式載入**：Track 頁面先顯示 track API 的部分 artist 資料與 skeleton UI，待完整 artist 資料載入後更新
+- **搜尋增強**（US1.5）：重構搜尋邏輯使用方案 B（一次搜尋，過濾顯示）。全局 SearchBar 整合至 Header，支援即時導航。建立可重用的 ArtistCard 和 TrackItem 元件，遵循 Spotify Design Guidelines。實作動態頁面 title 提升辨識度
 
 ## Technical Context
 
@@ -138,10 +139,10 @@ specs/[###-feature]/
 ```plaintext
 src/
 ├── pages/                      # 新增：路由頁面元件
-│   ├── home-page.tsx          # 首頁（歌手推薦）
-│   ├── search-page.tsx        # 搜尋結果頁
-│   ├── artist-page.tsx        # 歌手資訊頁
-│   └── track-page.tsx         # 歌曲資訊頁
+│   ├── home-page.tsx          # 修改（US1.5）：新增 title
+│   ├── search-page.tsx        # 修改（US1.5）：使用 useSearch + 分類篩選 + title
+│   ├── artist-page.tsx        # 修改（US1.5）：使用 TrackItem + title
+│   └── track-page.tsx         # 修改（US1.5）：新增 title
 │
 ├── features/                  # 完全移除（重構至其他目錄）
 │   ├── data/                  # [DELETED] 改用 React Router loader
@@ -174,13 +175,19 @@ src/
 │       └── [DELETED] spotify-types.ts
 │
 ├── components/
+│   ├── layout/                    # 修改（US1.5）
+│   │   ├── header.tsx            # 修改：整合 SearchBar
+│   │   └── search-bar.tsx        # 新增：全局搜尋框元件
+│   │
 │   ├── artist/
 │   │   ├── artist-profile.tsx    # 修改
-│   │   ├── artist-card.tsx       # 新增
+│   │   ├── card.tsx              # 新增（US1.5）：可重用藝人卡片
 │   │   └── artist-skeleton.tsx   # 新增：skeleton UI
+│   │
 │   ├── track/
 │   │   ├── track-detail.tsx      # 修改
 │   │   ├── track-list.tsx        # 修改
+│   │   ├── item.tsx              # 新增（US1.5）：可重用歌曲列表項
 │   │   ├── feature-chart.tsx     # 保留
 │   │   └── popularity-chart.tsx  # 保留
 │   ├── error/                    # 新增：錯誤處理元件
@@ -191,13 +198,15 @@ src/
 ├── hooks/
 │   ├── [DELETE] use-artist.ts
 │   ├── [DELETE] use-track.ts
-│   ├── [DELETE] use-search.ts
+│   ├── [DELETE] use-search.ts           # 舊的 search hook
+│   ├── [NEW] use-search.ts              # 新的搜尋邏輯 Hook（US1.5）
+│   ├── [NEW] use-document-title.ts      # 動態 Title Hook（US1.5）
 │   └── [DELETED] use-data-loader.ts
 │
 ├── lib/
-│   ├── constants.ts               # 修改：新增 RECOMMENDED_ARTIST_IDS，移除未使用之 Application Constants
-│   ├── formatters.ts              # 修改：新增 formatCompactNumber (從 utils 整合)
-│   ├── search.ts                  # 新增：Fuse.js 搜尋邏輯 (從 features/search 移動)
+│   ├── constants.ts               # 修改：新增 RECOMMENDED_ARTIST_IDS
+│   ├── formatters.ts              # 修改：新增 formatCompactNumber
+│   ├── search.ts                  # 修改（US1.5）：更新 FUSE_OPTIONS，移除 getTracksByArtist
 │   ├── store.ts                   # 修改：整合 RTK Query API
 │   ├── router.tsx                 # 新增
 │   └── utils.ts                   # 保留
@@ -231,7 +240,7 @@ public/
   - **RTK Query API**: services/spotify-api.ts (符合官方最佳實踐)
   - **搜尋邏輯**: features/search → lib/search.ts (核心業務邏輯)
   - **推薦常數**: features/recommendations → lib/constants.ts (應用配置)
-  - **格式化工具**: utils/*.js → lib/formatters.ts (統一使用 TypeScript)
+  - **格式化工具**: utils/\*.js → lib/formatters.ts (統一使用 TypeScript)
 - 💡 **移除原因**:
   - **data/**: 改用 React Router loader (loaders/tracks-loader.ts) 載入本地資料
   - **spotify/**: Worker 已完全處理 Spotify 認證，前端無需管理 token
@@ -286,3 +295,237 @@ public/
 - 此配置已在 `wrangler.jsonc` 中完成，無需建立 `_redirects` 檔案
 - 適用於所有部署到 Cloudflare Pages 的場景
 - 本地開發使用 Vite dev server，已原生支援 SPA 路由
+
+## Technical Details - 搜尋功能重構 (US1.5)
+
+### 搜尋邏輯架構
+
+架構決策：**一次搜尋，過濾顯示**
+
+**運作流程**：
+
+1. **搜尋執行**（`use-search.ts`）：
+
+   ```typescript
+   const allResults = fuseInstance.search(query); // 一次性搜尋
+   ```
+
+2. **結果提取與去重**：
+
+   ```typescript
+   const uniqueArtists = new Map<string, UniqueArtist>();
+   const tracksList: LocalTrackData[] = [];
+
+   allResults.forEach((result) => {
+     // 提取唯一藝人
+     if (!uniqueArtists.has(result.item.artistId)) {
+       uniqueArtists.set(result.item.artistId, {
+         artistName: result.item.artistName,
+         artistId: result.item.artistId,
+       });
+     }
+     // 收集所有歌曲
+     tracksList.push(result.item);
+   });
+   ```
+
+3. **分類篩選**（`search-page.tsx`）：
+
+   ```typescript
+   const displayResults =
+     category === "artists"
+       ? { artists: results.artists, tracks: [] }
+       : category === "tracks"
+         ? { artists: [], tracks: results.tracks }
+         : results; // 'all' 顯示全部
+   ```
+
+**效能優化**：
+
+- ✅ 分類切換不重新搜尋，僅篩選顯示
+- ✅ 使用 `useMemo` 快取搜尋結果
+- ✅ Map 結構確保藝人去重（O(1) 查找）
+- ✅ 單次搜尋涵蓋 `["artistName", "trackName"]` 兩個 key
+
+**Fuse.js 配置更新**：
+
+```typescript
+// lib/search.ts
+const FUSE_OPTIONS = {
+  keys: ["artistName", "trackName"], // 修改：新增 trackName
+  threshold: 0.3,
+  includeScore: true,
+  minMatchCharLength: 1,
+};
+```
+
+### 動態頁面 Title 實作
+
+**Hook 設計**（`use-document-title.ts`）：
+
+```typescript
+export function useDocumentTitle(title: string) {
+  useEffect(() => {
+    const prevTitle = document.title;
+    document.title = title;
+
+    return () => {
+      document.title = prevTitle; // 清理函數還原
+    };
+  }, [title]);
+}
+```
+
+**各頁面應用**：
+
+| 頁面       | Title 格式                    | 範例                         |
+| ---------- | ----------------------------- | ---------------------------- |
+| HomePage   | `Music Hits`                  | `Music Hits`                 |
+| SearchPage | `搜尋 \| Music Hits`          | `搜尋 \| Music Hits`         |
+| ArtistPage | `${artistName} \| Music Hits` | `Taylor Swift \| Music Hits` |
+| TrackPage  | `${trackName} \| Music Hits`  | `Anti-Hero \| Music Hits`    |
+
+**實作範例**（ArtistPage）：
+
+```typescript
+const artist = useGetArtistQuery(artistId).data;
+useDocumentTitle(artist ? `${artist.name} | Music Hits` : "Music Hits");
+```
+
+### 可重用元件設計
+
+#### ArtistCard 元件（`components/artist/card.tsx`）
+
+**設計原則**：
+
+- **基礎元件**：shadcn/ui Card
+- **佈局**：垂直排列（圓形頭像 + 藝人名稱）
+- **尺寸**：響應式，支援 grid 佈局
+- **互動**：整卡可點擊，導航至 `/artist/:artistId`
+
+**Spotify Design Guidelines 遵循**：
+
+```typescript
+// 圓形頭像（Spotify 藝人頭像標準）
+<img
+  className="aspect-square rounded-full object-cover"
+  src={imageUrl}
+  alt={artistName}
+/>
+
+// 顏色使用 globals.css 變數
+className="bg-muted hover:bg-muted/80"
+```
+
+**Props 介面**：
+
+```typescript
+interface ArtistCardProps {
+  artistId: string;
+  artistName: string;
+  imageUrl?: string; // Optional：未載入時顯示 placeholder
+}
+```
+
+#### TrackItem 元件（`components/track/item.tsx`）
+
+**設計原則**：
+
+- **基礎元件**：shadcn/ui Card
+- **佈局**：水平排列（[封面 48x48] [曲名/藝人] [年份]）
+- **封面圓角**：4px（Spotify 專輯封面標準）
+- **藝人連結**：可選（`showArtistLink` prop）
+
+**Spotify Design Guidelines 遵循**：
+
+```typescript
+// 專輯封面 4px 圓角
+<img
+  className="h-12 w-12 rounded object-cover"  // 4px = rounded
+  src={imageUrl}
+  alt={trackName}
+/>
+
+// 連結顏色（使用 Spotify green accent）
+<Link className="text-primary hover:underline">
+  {artistName}
+</Link>
+```
+
+**Props 介面**：
+
+```typescript
+interface TrackItemProps {
+  trackId: string;
+  trackName: string;
+  artistName: string;
+  artistId: string;
+  releaseYear?: string;
+  imageUrl?: string;
+  showArtistLink?: boolean; // ArtistPage 使用時設為 false
+}
+```
+
+### SearchBar 元件（`components/layout/search-bar.tsx`）
+
+**Spotify 風格設計**：
+
+```typescript
+// 背景與圓角
+className="bg-muted rounded-full px-4 py-2"
+
+// Icon 配置
+<RiSearchLine className="text-muted-foreground" />  // 左側搜尋 icon
+<RiCloseLine className="cursor-pointer" />         // 右側清除按鈕（條件顯示）
+```
+
+**即時導航邏輯**：
+
+```typescript
+const navigate = useNavigate();
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setInputValue(value);
+
+  // 即時導航，使用 replace 避免污染歷史
+  navigate(`/search?q=${encodeURIComponent(value)}`, { replace: true });
+};
+```
+
+**響應式顯示**：
+
+```typescript
+// Header 中的 SearchBar
+<SearchBar className="max-lg:hidden" />  // 小螢幕隱藏
+```
+
+### Spotify Design Guidelines 符合性檢查
+
+| 指引項目     | 實作方式                                                                                      | 檔案位置             |
+| ------------ | --------------------------------------------------------------------------------------------- | -------------------- |
+| **圓角規範** | 藝人頭像：`rounded-full`<br>專輯封面：`rounded` (4px)<br>卡片：`rounded-lg` (8px)             | card.tsx<br>item.tsx |
+| **色彩系統** | 使用 `globals.css` CSS 變數<br>`--color-primary` (Spotify green)<br>`--color-muted` (#242424) | 所有元件             |
+| **間距標準** | `p-4`, `p-6`, `gap-4` (16px 基礎間距)                                                         | card.tsx, item.tsx   |
+| **字體層級** | `text-lg` (18px 標題)<br>`text-sm` (14px 次要資訊)                                            | card.tsx, item.tsx   |
+| **互動回饋** | `hover:bg-muted/80`<br>`hover:underline`                                                      | 所有可點擊元件       |
+
+### 未來優化方向
+
+**批次 API 優化（T046-T048）**：
+
+1. **getSeveralArtists** (T046)：
+   - 搜尋結果若包含多位藝人，一次請求獲取所有藝人資料
+   - 減少 API 呼叫次數（n 次 → 1 次）
+   - RTK Query `providesTags` 確保快取共享
+
+2. **getSeveralTracks** (T047)：
+   - ArtistPage 顯示該藝人歌曲時批次載入
+   - 適用於首頁推薦歌曲載入
+
+3. **RTK Query 快取策略** (T048)：
+   - 配置 `providesTags: (result, error, id) => [{ type: 'Artist', id }]`
+   - 單一 artist 查詢與批次查詢共享快取
+   - 避免重複請求
+
+**實作時機**：US2+ 效能優化階段，當前 US1.5 聚焦核心功能

@@ -277,6 +277,254 @@
 
 ---
 
+## Phase 3.5: P1 - 搜尋功能增強與頁面 Title [US1.5]
+
+**Goal**: 重構搜尋功能，實現全局搜尋、分類篩選、可重用元件，並新增動態頁面 title。
+
+**Independent Test**: 在任何頁面使用搜尋框 → 查看搜尋結果 → 切換分類 → 點擊結果項目 → 觀察 title 更新。
+
+### T037: 擴展搜尋邏輯支援多欄位 [US1.5]
+
+**File**: `src/lib/search.ts`
+**Description**: 更新 Fuse.js 配置，支援搜尋藝人和歌曲，移除未使用的函式
+**Dependencies**: None
+**Checklist**:
+
+- [ ] 更新 `FUSE_OPTIONS.keys` 為 `["artistName", "trackName"]`
+- [ ] 保留 `createSearchIndex` 函式（不變）
+- [ ] **移除 `getTracksByArtist` 函式**（未被使用，ArtistPage 使用 artistId 過濾）
+- [ ] 驗證搜尋同時匹配藝人和歌曲名稱
+- [ ] 更新函式文件註解
+
+### T038: 建立搜尋邏輯 Hook [US1.5]
+
+**File**: `src/hooks/use-search.ts`
+**Description**: 封裝搜尋邏輯（方案 B：一次搜尋，過濾顯示）
+**Dependencies**: T037
+**Checklist**:
+
+- [ ] 接收 props: `tracks: LocalTrackData[]`, `query: string`
+- [ ] 使用 `useMemo` 建立 Fuse 搜尋索引
+- [ ] 使用 `useMemo` 執行搜尋（一次 `fuseInstance.search(query)`）
+- [ ] 後處理：同時提取唯一藝人（去重）和歌曲列表
+- [ ] 返回型別：`{ artists: UniqueArtist[], tracks: LocalTrackData[] }`
+- [ ] 定義 `UniqueArtist` interface: `{ artistName: string, artistId: string }`
+- [ ] 驗證效能（只執行一次底層搜尋）
+- [ ] 添加 JSDoc 註解
+
+### T038.5: 建立動態 Title Hook [US1.5]
+
+**File**: `src/hooks/use-document-title.ts`
+**Description**: 封裝頁面 title 設定邏輯
+**Dependencies**: None
+**Checklist**:
+
+- [ ] 建立 `useDocumentTitle(title: string)` hook
+- [ ] 使用 `useEffect` 更新 `document.title`
+- [ ] 支援動態 title 更新（deps: [title]）
+- [ ] 元件卸載時恢復預設 title（「Music Hits」）
+- [ ] 添加 JSDoc 註解說明用法
+
+### T039: 建立 ArtistCard 元件 [US1.5]
+
+**File**: `src/components/artist/card.tsx`
+**Description**: 藝人卡片元件（可重用），使用預設佔位圖
+**Dependencies**: None
+**Checklist**:
+
+- [ ] 使用 shadcn/ui `Card` 元件作為基礎
+- [ ] Props interface: `artistId`, `artistName`, `imageUrl?`
+- [ ] 圓形頭像區域（`aspect-square rounded-full`）
+  - 目前使用 `bg-muted` 佔位圖
+  - 未來支援實際圖片時使用 `imageUrl` prop
+- [ ] 藝人名稱（`text-foreground font-semibold truncate`）
+- [ ] 「藝人」標籤（`text-muted-foreground text-sm`）
+- [ ] 懸停效果（`hover:bg-secondary transition-colors`）
+- [ ] 使用 `Link` 導航到 `/artist/:artistId`
+- [ ] 遵循 Spotify Design Guidelines（準備 4px 圓角）
+- [ ] 響應式設計（適配網格佈局）
+- [ ] 添加 JSDoc 註解
+
+### T040: 建立 TrackItem 元件 [US1.5]
+
+**File**: `src/components/track/item.tsx`
+**Description**: 歌曲列表項元件（可重用），使用預設佔位圖
+**Dependencies**: None
+**Checklist**:
+
+- [ ] 使用 shadcn/ui `Card` 元件作為基礎
+- [ ] Props interface: `trackId`, `trackName`, `artistName`, `artistId`, `releaseYear?`, `imageUrl?`, `showArtistLink?` (default true)
+- [ ] 水平佈局：`flex items-center gap-4`
+  - 封面縮圖（48x48，`rounded` = 4px）
+  - 歌曲資訊區（`flex-1`）
+  - 年份（右側對齊）
+- [ ] 封面：目前使用 `bg-muted` 佔位圖
+- [ ] 歌曲名稱（`text-foreground font-semibold truncate`）
+- [ ] 藝人名稱（`text-muted-foreground text-sm truncate`）
+  - 條件渲染連結（基於 `showArtistLink`）
+  - 連結懸停效果（`hover:underline`）
+- [ ] 年份（`text-muted-foreground text-sm`）
+- [ ] 懸停效果（`hover:bg-secondary transition-colors`）
+- [ ] 使用 `Link` 導航到 `/track/:trackId`
+- [ ] 遵循 Spotify Design Guidelines
+- [ ] 添加 JSDoc 註解
+
+### T041: 建立 SearchBar 元件 [US1.5]
+
+**File**: `src/components/layout/search-bar.tsx`
+**Description**: 全局搜尋框元件，Spotify 風格設計
+**Dependencies**: None
+**Checklist**:
+
+- [ ] 使用 `useNavigate` 和 `useSearchParams` hooks
+- [ ] 讀取 URL `?q=` 參數作為初始值
+- [ ] 輸入變更時即時導航：`navigate(\`/search?q=${encodeURIComponent(value)}\`, { replace: true })`
+- [ ] Spotify 風格設計：
+  - 容器：`bg-muted rounded-full px-4 py-2 flex items-center gap-2`
+  - 左側搜尋圖示：`RiSearchLine` (`text-muted-foreground`)
+  - Input：`bg-transparent border-none focus:outline-none flex-1`
+  - 右側清空按鈕：`RiCloseLine`（條件渲染，有輸入時顯示）
+- [ ] placeholder：「輸入藝人或歌曲」
+- [ ] `font-size: 16px`（`text-base`，避免手機縮放）
+- [ ] `autocomplete="off"`, `spellCheck={false}`
+- [ ] 響應式：
+  - 桌面：`max-w-md`（448px）
+  - 平板：`max-w-sm`
+  - 手機：`w-full`
+- [ ] 可訪問性：
+  - 外層容器：`role="search"`
+  - Input：`aria-label="搜尋藝人或歌曲"`
+  - 清空按鈕：`aria-label="清空搜尋"`
+- [ ] 添加 JSDoc 註解
+
+### T042: 更新 Header 整合 SearchBar [US1.5]
+
+**File**: `src/components/layout/header.tsx`
+**Description**: 在 Header 中央顯示 SearchBar
+**Dependencies**: T041
+**Checklist**:
+
+- [ ] 匯入 `SearchBar` 元件
+- [ ] 更新佈局，SearchBar 居中（大螢幕顯示）
+- [ ] 驗證響應式佈局（桌面顯示，平板/手機隱藏）
+- [ ] 保持現有的樣式與間距一致
+- [ ] 驗證 Logo 和 GitHub 連結位置不受影響
+
+### T043: 重構 SearchPage 並新增動態 Title [US1.5]
+
+**File**: `src/pages/search-page.tsx`
+**Description**: 簡化 SearchPage，使用 useSearch hook 和分類篩選，新增動態 title
+**Dependencies**: T038, T038.5, T039, T040
+**Checklist**:
+
+- [ ] 移除本地搜尋輸入框、searchInput state、handleSearchChange
+- [ ] 使用 `useSearch(tracksDatabase.tracks, query)` 取得結果
+- [ ] 新增動態 title：`useDocumentTitle('搜尋 | Music Hits')`
+- [ ] 新增分類狀態：`useState<'all' | 'tracks' | 'artists'>('all')`
+- [ ] 使用 `useMemo` 根據分類過濾顯示結果
+- [ ] 實作分類標籤 Pills（使用 shadcn/ui Button）
+- [ ] 歌曲區塊：列表佈局，使用 `TrackItem`
+- [ ] 藝人區塊：網格佈局，使用 `ArtistCard`
+- [ ] 處理空結果狀態
+- [ ] 驗證切換分類不重新搜尋
+
+### T044: 更新 ArtistPage 並新增動態 Title [US1.5]
+
+**File**: `src/pages/artist-page.tsx`
+**Description**: 替換 inline 歌曲列表為 TrackItem 元件，新增動態 title
+**Dependencies**: T038.5, T040
+**Checklist**:
+
+- [ ] 匯入 `useDocumentTitle` 和 `TrackItem`
+- [ ] 新增動態 title：`useDocumentTitle(artist ? \`${artist.name} | Music Hits\` : 'Music Hits')`
+- [ ] 替換歌曲列表為 `TrackItem` 元件
+- [ ] 傳遞 `showArtistLink={false}`
+- [ ] 保持 `space-y-2` 佈局
+- [ ] 驗證 title 在資料載入後更新
+
+### T044.5: 更新 HomePage 和 TrackPage 的動態 Title [US1.5]
+
+**Files**: `src/pages/home-page.tsx`, `src/pages/track-page.tsx`
+**Description**: 新增動態 title
+**Dependencies**: T038.5
+**Checklist**:
+
+- [ ] HomePage：`useDocumentTitle('Music Hits')`
+- [ ] TrackPage：`useDocumentTitle(track ? \`${track.name} | Music Hits\` : 'Music Hits')`
+- [ ] 驗證 title 正確顯示
+
+### T045: 驗證搜尋功能與動態 Title 端到端 [US1.5]
+
+**Description**: 手動測試搜尋功能和動態 title 完整流程
+**Dependencies**: T042, T043, T044, T044.5
+**Checklist**:
+
+- [ ] Header 搜尋框測試（輸入、導航、URL 更新）
+- [ ] 搜尋結果測試（藝人+歌曲、去重）
+- [ ] 分類篩選測試（切換不重新搜尋）
+- [ ] 導航測試（點擊、上一頁）
+- [ ] 邊界情況測試（清空、無結果）
+- [ ] 響應式測試（桌面/平板/手機）
+- [ ] **動態 Title 測試**：
+  - 首頁：「Music Hits」
+  - 搜尋頁：「搜尋 | Music Hits」
+  - 藝人頁：「{藝人名} | Music Hits」
+  - 歌曲頁：「{歌曲名} | Music Hits」
+  - 驗證書籤和歷史記錄顯示正確
+
+**Checkpoint US1.5**: 全局搜尋功能完整，分類篩選正常，元件可重用，動態 title 正確顯示。
+
+---
+
+## 未來實作：Spotify API 圖片與 Batch 優化 [Future]
+
+**Note**: 以下任務標記為未來實作，不在本次 US1.5 範圍內。
+
+### T046: 整合 Spotify API 獲取圖片 [Future - US2]
+
+**Description**: 在 ArtistCard 和 TrackItem 中顯示實際圖片
+**Estimated Priority**: US2 或 US3
+**Estimated Effort**: 2-3 tasks
+
+**Sub-tasks**:
+
+- 在 ArtistCard 中使用 `useGetArtistQuery(artistId)` 獲取圖片
+- 在 TrackItem 中使用 `useGetTrackQuery(trackId)` 獲取專輯封面
+- 處理 loading 狀態（skeleton）
+- 處理 error 狀態（fallback 圖片）
+- 遵循 Spotify Design Guidelines（artwork 規範）
+- 優化圖片載入效能（lazy loading）
+
+### T047: 實作 Batch API Endpoints [Future - US3]
+
+**File**: `src/services/spotify-api.ts`
+**Description**: 新增 getSeveralArtists 和 getSeveralTracks endpoints
+**Estimated Priority**: US3 或效能優化階段
+**Estimated Effort**: 1 task
+
+**Benefits**:
+
+- 一次請求最多 50 個資源
+- 透過 `providesTags` 自動快取每個資源
+- 子元件的 single fetch 直接使用快取
+- API 請求數量減少 90%+
+
+### T048: 優化搜尋結果頁使用 Batch API [Future - US3]
+
+**File**: `src/pages/search-page.tsx`
+**Description**: 在父層發起 batch request，子元件使用快取
+**Dependencies**: T047
+**Estimated Priority**: US3
+**Estimated Effort**: 1 task
+
+**Performance Impact**:
+
+- 搜尋 20 個結果：從 20 requests → 2 requests
+- 快取命中率：~100%
+- 首次載入時間：減少 50-70%
+
+---
+
 ## Phase 4: P2 - 首頁歌手推薦 [US2]
 
 **Goal**: 首頁顯示 8 位預定義的熱門歌手推薦列表，點擊可進入歌手資訊頁。

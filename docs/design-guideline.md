@@ -314,6 +314,10 @@ Do not modify, distort, recolor, rotate, or integrate the logo into other shapes
 
 Spotify Green is the anchor color.
 
+- Green #1ED760, oklch(0.7697 0.2124 148.67) -> primary
+- White #FFFFFF, oklch(1 0 0) -> foreground
+- Black #121212, oklch(0.1822 0 0) -> background
+
 ![colors](https://developer-assets.spotifycdn.com/images/guidelines/design/colors.svg)
 
 ![using-colors1](https://developer-assets.spotifycdn.com/images/guidelines/design/using-colors1.svg)
