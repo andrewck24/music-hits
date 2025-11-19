@@ -1,7 +1,10 @@
+import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { TrackDetail } from "@/components/track/track-detail";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useGetAudioFeaturesQuery, useGetTrackQuery } from "@/services";
+import { Suspense } from "react";
 import { Link, useParams } from "react-router-dom";
 
 /**
@@ -13,12 +16,20 @@ import { Link, useParams } from "react-router-dom";
  * - Load track data and audio features from RTK Query
  * - Display track details with TrackDetail component
  * - Show artist link
+ * - Dynamic page title
  * - Support browser back/forward navigation
  *
  * Route: /track/:trackId (flat structure, no artistId in URL)
  */
 
-export default function TrackPage() {
+export function TrackPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <TrackPageContent />
+    </Suspense>
+  );
+}
+function TrackPageContent() {
   const { trackId } = useParams<{ trackId: string }>();
 
   // Get track data from Spotify API
@@ -33,9 +44,12 @@ export default function TrackPage() {
     skip: !trackId,
   });
 
+  // Set document title
+  useDocumentTitle(track ? `${track.name} | Music Hits` : "Music Hits");
+
   if (!trackId) {
     return (
-      <div className="bg-background min-h-screen p-6">
+      <div className="bg-background p-6">
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">找不到歌曲ID</p>
         </Card>
@@ -44,7 +58,7 @@ export default function TrackPage() {
   }
 
   return (
-    <div className="bg-background min-h-screen p-6">
+    <div className="bg-background p-6">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8">

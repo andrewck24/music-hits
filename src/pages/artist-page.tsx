@@ -1,8 +1,12 @@
 import { ArtistProfile } from "@/components/artist/artist-profile";
+import { TrackItem } from "@/components/track/item";
+import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { useDocumentTitle } from "@/hooks/use-document-title";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { useGetArtistQuery } from "@/services";
+import { Suspense } from "react";
 import { Link, useParams, useRouteLoaderData } from "react-router-dom";
 
 /**
@@ -13,14 +17,23 @@ import { Link, useParams, useRouteLoaderData } from "react-router-dom";
  * Features:
  * - Load artist data from RTK Query
  * - Display artist profile with ArtistProfile component
- * - Show tracks from local database for this artist
+ * - Show tracks from local database for this artist using TrackItem component
+ * - Dynamic page title
  * - Link to track detail pages
  * - Support browser back/forward navigation
  *
  * Route: /artist/:artistId
  */
 
-export default function ArtistPage() {
+export function ArtistPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ArtistPageContent />
+    </Suspense>
+  );
+}
+
+function ArtistPageContent() {
   const { artistId } = useParams<{ artistId: string }>();
 
   // Get tracks from loader (loaded before page render)
@@ -35,6 +48,9 @@ export default function ArtistPage() {
     error,
   } = useGetArtistQuery(artistId || "", { skip: !artistId });
 
+  // Set document title
+  useDocumentTitle(artist ? `${artist.name} | Music Hits` : "Music Hits");
+
   // Filter local tracks by artist
   const artistTracks = tracksDatabase.tracks.filter(
     (track) => track.artistId === artistId,
@@ -42,7 +58,7 @@ export default function ArtistPage() {
 
   if (!artistId) {
     return (
-      <div className="bg-background min-h-screen p-6">
+      <div className="bg-background p-6">
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">找不到藝人ID</p>
         </Card>
@@ -51,7 +67,7 @@ export default function ArtistPage() {
   }
 
   return (
-    <div className="bg-background min-h-screen p-6">
+    <div className="bg-background p-6">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8">
@@ -99,28 +115,15 @@ export default function ArtistPage() {
           ) : (
             <div className="space-y-2">
               {artistTracks.map((track) => (
-                <Link
+                <TrackItem
                   key={`${track.trackId}-${track.artistId}`}
-                  to={`/track/${track.trackId}`}
-                  className="block"
-                >
-                  <Card className="hover:bg-secondary cursor-pointer p-4 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-foreground truncate font-semibold">
-                          {track.trackName}
-                        </h3>
-                        <p className="text-muted-foreground mt-1 text-sm">
-                          {track.releaseYear}
-                        </p>
-                      </div>
-                      <div className="text-primary ml-4 text-sm">
-                        人氣度:{" "}
-                        {(track.popularity.playCount || 0).toLocaleString()}
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
+                  trackId={track.trackId}
+                  trackName={track.trackName}
+                  artistName={track.artistName}
+                  artistId={track.artistId}
+                  releaseYear={track.releaseYear}
+                  showArtistLink={false}
+                />
               ))}
             </div>
           )}
