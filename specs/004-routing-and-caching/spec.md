@@ -139,13 +139,17 @@
 - **FR-014**: 搜尋功能必須在使用者輸入關鍵字後更新 URL，以便搜尋結果可以被分享和收藏
 - **FR-015**: 應用程式必須處理快速導航場景（使用者連續快速點擊多個連結），使用 AbortController 取消所有 pending 的 API requests，確保只載入最終目標頁面的內容
 - **FR-016**: 當載入 track 頁面時，系統必須採用漸進式載入策略：(1) 立即使用 track API 回應中的部分 artist 資料（name, id）顯示基本資訊並搭配 skeleton UI，(2) 從 artist ID 發送完整的 artist API 請求並快取，(3) 待完整 artist 資料回傳後更新 UI 元件
-- **FR-017**: Header 應固定在頁面上方。Header 必須包含全局搜尋框，在所有頁面（sm 尺寸以上）可見；sm 尺寸以下（手機版）於底部顯示搜尋欄
+- **FR-017**: Header 應固定在頁面上方。Header 必須包含全局搜尋框，在桌面版（sm 尺寸以上）可見；sm 尺寸以下（手機版）於 Header 顯示搜尋按鈕，點擊導航至搜尋頁面
 - **FR-018**: 搜尋框輸入變更時即時更新 URL 並導航到搜尋頁面（使用 `replace: true` 避免污染歷史）。在移動到搜尋頁以外的其他頁面時，必須清空 SearchBar 內容
 - **FR-019**: 搜尋必須同時搜尋藝人名稱和歌曲名稱，使用 Fuse.js 模糊匹配（threshold: 0.3）
 - **FR-020**: 搜尋結果頁必須提供分類篩選（所有/歌曲/藝人），切換分類不重新搜尋（一次搜尋，過濾顯示）
 - **FR-021**: 歌曲結果以列表形式顯示，藝人結果以網格卡片形式顯示，遵循 Spotify Design Guidelines
 - **FR-022**: ArtistCard 和 TrackItem 元件必須可重用，優先使用 shadcn/ui 元件，使用 `globals.css` 定義的 CSS 變數
 - **FR-023**: 頁面 title 必須動態反映當前內容：首頁「Music Hits」、搜尋頁「搜尋 | Music Hits」、藝人頁「{藝人名} | Music Hits」、歌曲頁「{歌曲名} | Music Hits」
+
+### Implementation Notes
+
+- **Bottom Search Bar Attempt**: 最初嘗試在手機版使用固定於底部的搜尋欄（類似 iOS Safari），但在實作中發現當虛擬鍵盤彈出時，瀏覽器的 visual viewport 行為在不同裝置（特別是 iOS）上不一致，主要原因是 **safari 目前不支援 `interactive-widget=resizes-content`**，導致搜尋欄被鍵盤遮擋或推擠頁面佈局造成 UX 問題。經過嘗試使用 `visualViewport` API 進行動態調整仍無法達到完美體驗，最終決定採用更穩定的設計：在手機版 Header 顯示搜尋按鈕，點擊後導航至專門的搜尋頁面，該頁面頂部包含完整的搜尋框。
 
 ### Key Entities
 
@@ -171,7 +175,7 @@
 - **SC-008**: API 請求次數減少至少 50%（與無快取版本相比），透過快取重複訪問的資料
 - **SC-009**: 使用者在歌手資訊頁和歌曲資訊頁之間切換時，頁面切換時間少於 0.5 秒（若資料已快取）
 - **SC-010**: 90% 的使用者能夠成功使用瀏覽器導航按鈕返回之前訪問的頁面，無需使用應用程式內的返回按鈕
-- **SC-011**: Header 搜尋框在 sm 尺寸以上可見，sm 尺寸以下顯示於底部，輸入即時導航到搜尋結果頁
+- **SC-011**: Header 搜尋框在 sm 尺寸以上可見；sm 尺寸以下顯示搜尋 icon，點擊後導航至搜尋頁面進行搜尋
 - **SC-012**: 搜尋結果同時包含藝人和歌曲，藝人去重顯示
 - **SC-013**: 分類切換不觸發新的搜尋請求，切換延遲 <100ms
 - **SC-014**: ArtistCard 和 TrackItem 元件在不同頁面可重用（SearchPage, ArtistPage, 未來的 HomePage）
