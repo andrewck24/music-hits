@@ -4,6 +4,7 @@ import { SearchBar } from "@/components/layout/search-bar";
 import { TrackItem } from "@/components/track/item";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ScrollableRow } from "@/components/ui/scrollable-row";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useSearch } from "@/hooks/use-search";
 import type { tracksLoader } from "@/loaders/tracks-loader";
@@ -59,10 +60,30 @@ function SearchPageContent() {
         ? { artists: [], tracks: results.tracks }
         : results;
 
+  // Helper to switch category
+  const handleViewAllArtists = () => setCategory("artists");
+  const handleViewAllTracks = () => setCategory("tracks");
+
+  // Determine if we should show "View All" buttons (only in "all" category)
+  const showViewAllArtists = category === "all" && results.artists.length > 5;
+  const showViewAllTracks = category === "all" && results.tracks.length > 5;
+
+  // Slice results for "all" category
+  const artistsToShow =
+    category === "all"
+      ? displayResults.artists.slice(0, 5)
+      : displayResults.artists;
+  const tracksToShow =
+    category === "all"
+      ? displayResults.tracks.slice(0, 5)
+      : displayResults.tracks;
+
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-4">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 pt-20 pb-4">
       {/* SearchBar (visible on mobile devices) */}
-      <SearchBar className="sm:hidden" />
+      <div className="fixed top-18 right-0 left-0 z-40 px-6 py-2 sm:hidden">
+        <SearchBar />
+      </div>
 
       {/* Category Filters */}
       {query.trim() &&
@@ -96,8 +117,7 @@ function SearchPageContent() {
             在上方搜尋框輸入藝人或歌曲名稱以開始搜尋
           </p>
         </Card>
-      ) : displayResults.artists.length === 0 &&
-        displayResults.tracks.length === 0 ? (
+      ) : results.artists.length === 0 && results.tracks.length === 0 ? (
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">
             未找到 &quot;{query}&quot; 相關結果
@@ -106,31 +126,42 @@ function SearchPageContent() {
       ) : (
         <div className="space-y-8">
           {/* Artists Section */}
-          {displayResults.artists.length > 0 && (
-            <div>
-              <h2 className="text-foreground mb-4 text-2xl font-semibold">
-                藝人
-              </h2>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {displayResults.artists.map((artist) => (
+          {artistsToShow.length > 0 && (
+            <>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-foreground text-2xl font-semibold">藝人</h2>
+                {showViewAllArtists && (
+                  <Button variant="ghost" onClick={handleViewAllArtists}>
+                    查看全部藝人
+                  </Button>
+                )}
+              </div>
+              <ScrollableRow>
+                {artistsToShow.map((artist) => (
                   <ArtistCard
                     key={artist.artistId}
                     artistId={artist.artistId}
                     artistName={artist.artistName}
+                    className="shrink-0 basis-[12rem]"
                   />
                 ))}
-              </div>
-            </div>
+              </ScrollableRow>
+            </>
           )}
 
           {/* Tracks Section */}
-          {displayResults.tracks.length > 0 && (
-            <div>
-              <h2 className="text-foreground mb-4 text-2xl font-semibold">
-                歌曲
-              </h2>
+          {tracksToShow.length > 0 && (
+            <>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-foreground text-2xl font-semibold">歌曲</h2>
+                {showViewAllTracks && (
+                  <Button variant="ghost" onClick={handleViewAllTracks}>
+                    查看全部歌曲
+                  </Button>
+                )}
+              </div>
               <div className="space-y-2">
-                {displayResults.tracks.map((track) => (
+                {tracksToShow.map((track) => (
                   <TrackItem
                     key={track.trackId}
                     trackId={track.trackId}
@@ -142,7 +173,7 @@ function SearchPageContent() {
                   />
                 ))}
               </div>
-            </div>
+            </>
           )}
         </div>
       )}
