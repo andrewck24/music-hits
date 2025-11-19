@@ -21,8 +21,8 @@ interface SearchBarProps {
 
 export function SearchBar({ className }: SearchBarProps) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState(searchParams.get("q") || "");
 
   // Sync input with URL param 'q' and clear if not on search page
@@ -52,7 +52,7 @@ export function SearchBar({ className }: SearchBarProps) {
       className={cn(
         "bg-muted flex h-12 max-w-2xl flex-row items-center rounded-full px-4 text-sm",
         "supports-[backdrop-filter]:bg-secondary/60 backdrop-blur",
-        "focus-within:ring-foreground focus-within:ring-2",
+        "focus-within:ring-ring focus-within:ring-2",
         "hover:bg-muted/80 transition-all",
         className,
       )}
@@ -63,12 +63,12 @@ export function SearchBar({ className }: SearchBarProps) {
         value={inputValue}
         onChange={handleChange}
         placeholder="搜尋歌曲或藝人..."
-        className="placeholder:text-muted-foreground flex-1 bg-transparent text-base text-white outline-none"
+        className="placeholder:text-muted-foreground text-foreground flex-1 bg-transparent text-base outline-none"
       />
       {inputValue && (
         <button
           onClick={handleClear}
-          className="text-muted-foreground ml-2 hover:text-white focus:outline-none"
+          className="text-muted-foreground hover:text-foreground ml-2 focus:outline-none"
           aria-label="Clear search"
         >
           <RiCloseLine className="h-6 w-6" />

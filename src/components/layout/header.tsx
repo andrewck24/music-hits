@@ -1,8 +1,8 @@
 import Spotify from "@/components/icons/spotify.svg?react";
 import { SearchBar } from "@/components/layout/search-bar";
 import { Button } from "@/components/ui/button";
-import { RiGithubFill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { RiGithubFill, RiSearchLine } from "react-icons/ri";
+import { Link, useLocation } from "react-router-dom";
 
 /**
  * Header Component
@@ -24,8 +24,10 @@ import { Link } from "react-router-dom";
  */
 
 export function Header() {
+  const location = useLocation();
+
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center justify-between gap-4 px-6 py-4">
+    <header className="fixed top-0 z-50 flex w-full items-center justify-between gap-4 px-6 py-4">
       {/* Logo */}
       <Link
         to="/"
@@ -42,6 +44,17 @@ export function Header() {
 
       {/* Navigation */}
       <nav className="flex items-center gap-4">
+        {location.pathname !== "/search" && (
+          <Button
+            asChild
+            className="text-foreground hover:text-muted-foreground size-12 rounded-full p-0 transition-colors sm:hidden [&>svg]:size-8"
+            variant="secondary"
+          >
+            <Link to="/search" aria-label="Search">
+              <RiSearchLine />
+            </Link>
+          </Button>
+        )}
         <Button
           asChild
           className="text-foreground hover:text-muted-foreground size-12 rounded-full p-0 transition-colors [&>svg]:size-8"
