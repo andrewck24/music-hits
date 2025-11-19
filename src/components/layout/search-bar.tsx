@@ -62,7 +62,7 @@ export function SearchBar({ className }: SearchBarProps) {
         type="text"
         value={inputValue}
         onChange={handleChange}
-        placeholder="What do you want to play?"
+        placeholder="搜尋歌曲或藝人..."
         className="placeholder:text-muted-foreground flex-1 bg-transparent text-base text-white outline-none"
       />
       {inputValue && (
