@@ -47,7 +47,7 @@ export function Header() {
         {location.pathname !== "/search" && (
           <Button
             asChild
-            className="text-foreground hover:text-muted-foreground size-12 rounded-full p-0 transition-colors [&>svg]:size-8"
+            className="text-foreground hover:text-muted-foreground size-12 rounded-full p-0 transition-colors sm:hidden [&>svg]:size-8"
             variant="secondary"
           >
             <Link to="/search" aria-label="Search">

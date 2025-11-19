@@ -65,8 +65,8 @@
   /* Input - input field background */
   --color-input: oklch(0.25 0 0); /* #282828 */
 
-  /* Ring - focus state outline (using Spotify Green) */
-  --color-ring: oklch(1 0 0); /* Spotify Green */
+  /* Ring - focus state outline (white for better visibility on dark bg) */
+  --color-ring: oklch(1 0 0); /* White */
 
   /* ============================================
    * Chart Colors - Spotify Color Palette
