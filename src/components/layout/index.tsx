@@ -20,7 +20,7 @@ export function Layout() {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-hidden pb-24 sm:pb-0">
+      <main className="flex-1 overflow-hidden pt-16 pb-24 sm:pb-0">
         <Outlet />
       </main>
 

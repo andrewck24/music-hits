@@ -25,7 +25,7 @@ import { Link } from "react-router-dom";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center justify-between gap-4 px-6 py-4">
+    <header className="fixed top-0 z-50 flex w-full items-center justify-between gap-4 px-6 py-4">
       {/* Logo */}
       <Link
         to="/"
