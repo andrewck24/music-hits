@@ -1,11 +1,11 @@
-import { useMemo } from "react";
 import type { LocalTrackData } from "@/types/data-schema";
-import { createSearchIndex } from "@/lib/search";
+import Fuse from "fuse.js";
+import { useMemo } from "react";
 
 /**
  * 搜尋結果中的唯一藝人
  */
-interface UniqueArtist {
+export interface UniqueArtist {
   artistName: string;
   artistId: string;
 }
@@ -19,12 +19,22 @@ interface SearchResults {
 }
 
 /**
+ * Fuse.js 搜尋引擎配置
+ */
+const FUSE_OPTIONS_BASE = {
+  threshold: 0.3, // 容許 30% 的偏差（模糊匹配）
+  includeScore: true,
+  minMatchCharLength: 1, // 最少匹配字元數
+};
+
+/**
  * useSearch Hook
  *
- * Purpose: 使用「一次搜尋，過濾顯示」實作搜尋邏輯
+ * Purpose: 分開搜尋藝人和歌曲，確保結果精確度
  *
  * Features:
- * - 同時搜尋藝人和歌曲（keys: ["artistName", "trackName"]）
+ * - 獨立搜尋藝人（key: "artistName"）
+ * - 獨立搜尋歌曲（key: "trackName"）
  * - 自動去重藝人（使用 Map 結構）
  * - 使用 useMemo 快取搜尋結果
  * - 空查詢回傳空結果
@@ -32,50 +42,62 @@ interface SearchResults {
  * @param tracks - 本地追蹤資料
  * @param query - 搜尋查詢字串
  * @returns 搜尋結果（唯一藝人 + 歌曲）
- *
- * Usage:
- *   const { artists, tracks } = useSearch(tracksDatabase.tracks, query);
  */
 export function useSearch(
   tracks: LocalTrackData[],
   query: string,
 ): SearchResults {
   // 建立 Fuse.js 搜尋索引（快取）
-  const fuseInstance = useMemo(() => createSearchIndex(tracks), [tracks]);
+  // 藝人搜尋索引：只搜尋 artistName
+  const artistFuse = useMemo(
+    () =>
+      new Fuse(tracks, {
+        ...FUSE_OPTIONS_BASE,
+        keys: ["artistName"],
+      }),
+    [tracks],
+  );
+
+  // 歌曲搜尋索引：只搜尋 trackName
+  const trackFuse = useMemo(
+    () =>
+      new Fuse(tracks, {
+        ...FUSE_OPTIONS_BASE,
+        keys: ["trackName"],
+      }),
+    [tracks],
+  );
 
   // 執行搜尋並提取結果（快取）
   const results = useMemo(() => {
-    if (!query.trim() || !fuseInstance) {
+    if (!query.trim()) {
       return { artists: [], tracks: [] };
     }
 
-    // 一次性搜尋（涵蓋 artistName 和 trackName）
-    const allResults = fuseInstance.search(query);
+    // 1. 搜尋藝人
+    const artistResults = artistFuse.search(query);
 
-    // 使用 Map 去重藝人（O(1) 查找）
+    // 使用 Map 去重藝人
     const uniqueArtists = new Map<string, UniqueArtist>();
-    const tracksList: LocalTrackData[] = [];
-
-    allResults.forEach((result) => {
+    artistResults.forEach((result) => {
       const key = result.item.artistId;
-
-      // 提取唯一藝人
       if (!uniqueArtists.has(key)) {
         uniqueArtists.set(key, {
           artistName: result.item.artistName,
           artistId: result.item.artistId,
         });
       }
-
-      // 收集所有歌曲
-      tracksList.push(result.item);
     });
+
+    // 2. 搜尋歌曲
+    const trackResults = trackFuse.search(query);
+    const tracksList = trackResults.map((result) => result.item);
 
     return {
       artists: Array.from(uniqueArtists.values()),
       tracks: tracksList,
     };
-  }, [query, fuseInstance]);
+  }, [query, artistFuse, trackFuse]);
 
   return results;
 }

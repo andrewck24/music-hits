@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { RiUser3Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -31,15 +32,17 @@ interface ArtistCardProps {
   artistId: string;
   artistName: string;
   imageUrl?: string;
+  className?: string;
 }
 
 export function ArtistCard({
   artistId,
   artistName,
   imageUrl,
+  className,
 }: ArtistCardProps) {
   return (
-    <Link to={`/artist/${artistId}`} className="block">
+    <Link to={`/artist/${artistId}`} className={cn("block", className)}>
       <Card className="bg-muted hover:bg-muted/80 cursor-pointer p-4 transition-colors">
         {/* Artist Image */}
         <div className="mb-3">

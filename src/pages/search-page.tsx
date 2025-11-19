@@ -1,8 +1,8 @@
-import { ArtistCard } from "@/components/artist/card";
 import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { SearchBar } from "@/components/layout/search-bar";
-import { TrackItem } from "@/components/track/item";
-import { Button } from "@/components/ui/button";
+import { ArtistSearchResults } from "@/components/search/artist-results";
+import { SearchCategoryTabs } from "@/components/search/category-tabs";
+import { TrackSearchResults } from "@/components/search/track-results";
 import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useSearch } from "@/hooks/use-search";
@@ -51,43 +51,29 @@ function SearchPageContent() {
   // Use search hook (single search, filter display)
   const results = useSearch(tracksDatabase.tracks, query);
 
-  // Filter results by category
-  const displayResults =
-    category === "artists"
-      ? { artists: results.artists, tracks: [] }
-      : category === "tracks"
-        ? { artists: [], tracks: results.tracks }
-        : results;
+  // Helper to switch category
+  const handleViewAllArtists = () => setCategory("artists");
+  const handleViewAllTracks = () => setCategory("tracks");
+
+  const showArtists = category === "all" || category === "artists";
+  const showTracks = category === "all" || category === "tracks";
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-4">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 pt-20 pb-4">
       {/* SearchBar (visible on mobile devices) */}
-      <SearchBar className="sm:hidden" />
+      <div className="fixed top-18 right-0 left-0 z-40 px-6 py-2 sm:hidden">
+        <SearchBar />
+      </div>
 
       {/* Category Filters */}
-      {query.trim() &&
-        (results.artists.length > 0 || results.tracks.length > 0) && (
-          <div className="flex gap-2">
-            <Button
-              variant={category === "all" ? "default" : "outline"}
-              onClick={() => setCategory("all")}
-            >
-              全部
-            </Button>
-            <Button
-              variant={category === "artists" ? "default" : "outline"}
-              onClick={() => setCategory("artists")}
-            >
-              藝人 ({results.artists.length})
-            </Button>
-            <Button
-              variant={category === "tracks" ? "default" : "outline"}
-              onClick={() => setCategory("tracks")}
-            >
-              歌曲 ({results.tracks.length})
-            </Button>
-          </div>
-        )}
+      {query.trim() && (
+        <SearchCategoryTabs
+          category={category}
+          setCategory={setCategory}
+          artistCount={results.artists.length}
+          trackCount={results.tracks.length}
+        />
+      )}
 
       {/* Search Results */}
       {!query.trim() ? (
@@ -96,8 +82,7 @@ function SearchPageContent() {
             在上方搜尋框輸入藝人或歌曲名稱以開始搜尋
           </p>
         </Card>
-      ) : displayResults.artists.length === 0 &&
-        displayResults.tracks.length === 0 ? (
+      ) : results.artists.length === 0 && results.tracks.length === 0 ? (
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">
             未找到 &quot;{query}&quot; 相關結果
@@ -106,43 +91,23 @@ function SearchPageContent() {
       ) : (
         <div className="space-y-8">
           {/* Artists Section */}
-          {displayResults.artists.length > 0 && (
-            <div>
-              <h2 className="text-foreground mb-4 text-2xl font-semibold">
-                藝人
-              </h2>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {displayResults.artists.map((artist) => (
-                  <ArtistCard
-                    key={artist.artistId}
-                    artistId={artist.artistId}
-                    artistName={artist.artistName}
-                  />
-                ))}
-              </div>
-            </div>
+          {showArtists && (
+            <ArtistSearchResults
+              artists={results.artists}
+              viewMode={category === "artists" ? "full" : "preview"}
+              onViewAll={handleViewAllArtists}
+              query={query}
+            />
           )}
 
           {/* Tracks Section */}
-          {displayResults.tracks.length > 0 && (
-            <div>
-              <h2 className="text-foreground mb-4 text-2xl font-semibold">
-                歌曲
-              </h2>
-              <div className="space-y-2">
-                {displayResults.tracks.map((track) => (
-                  <TrackItem
-                    key={track.trackId}
-                    trackId={track.trackId}
-                    trackName={track.trackName}
-                    artistName={track.artistName}
-                    artistId={track.artistId}
-                    releaseYear={track.releaseYear}
-                    showArtistLink={true}
-                  />
-                ))}
-              </div>
-            </div>
+          {showTracks && (
+            <TrackSearchResults
+              tracks={results.tracks}
+              viewMode={category === "tracks" ? "full" : "preview"}
+              onViewAll={handleViewAllTracks}
+              query={query}
+            />
           )}
         </div>
       )}

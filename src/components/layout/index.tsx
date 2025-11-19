@@ -14,11 +14,9 @@ import { Outlet } from "react-router-dom";
 
 export function Layout() {
   return (
-    <div className="flex h-full flex-col overflow-hidden">
+    <div className="flex min-h-screen flex-col">
       <Header />
-
-      {/* Main Content */}
-      <main className="flex-[1_1_auto] overflow-y-auto pt-16 pb-24 sm:pb-0">
+      <main className="pt-16">
         <Outlet />
       </main>
     </div>
