@@ -1,18 +1,19 @@
 import Spotify from "@/components/icons/spotify.svg?react";
+import { SearchBar } from "@/components/layout/search-bar";
 import { RiGithubFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import { SearchBar } from "./search-bar";
 
 /**
  * Header Component
  *
- * Purpose: 應用頂部欄（Logo + SearchBar + Navigation）
+ * Purpose: Application top bar (Logo + SearchBar + Navigation)
  *
  * Features:
  * - Application branding
- * - Global search bar (Spotify-style, hidden on small screens)
+ * - Global search bar (Spotify-style, visible on sm+)
  * - Navigation links
- * - Spotify 主題
+ * - Spotify theme
+ * - Sticky positioning
  *
  * Layout:
  *   [Logo] [SearchBar (flex-1, centered)] [GitHub]
@@ -23,7 +24,7 @@ import { SearchBar } from "./search-bar";
 
 export function Header() {
   return (
-    <header className="flex w-full items-center justify-between gap-4 px-6 py-4">
+    <header className="sticky top-0 z-50 flex w-full items-center justify-between gap-4 px-6 py-4">
       {/* Logo */}
       <Link
         to="/"
@@ -35,8 +36,8 @@ export function Header() {
         </h1>
       </Link>
 
-      {/* Search Bar (centered, hidden on small screens) */}
-      <SearchBar className="flex-1 max-lg:hidden" />
+      {/* Search Bar (centered, visible on sm+) */}
+      <SearchBar className="hidden flex-1 sm:block" />
 
       {/* Navigation */}
       <nav className="flex items-center gap-4">

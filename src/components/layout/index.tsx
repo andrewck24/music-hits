@@ -1,26 +1,33 @@
 import { Header } from "@/components/layout/header";
+import { SearchBar } from "@/components/layout/search-bar";
 import { Outlet } from "react-router-dom";
 
 /**
  * Layout Component
  *
- * Purpose: 主應用布局（Header + Main）
+ * Purpose: Main application layout (Header + Main + Mobile Bottom Search)
  *
  * Features:
  * - Responsive layout
  * - Mobile-first design
- * - Spotify 主題
+ * - Sticky Header
+ * - Bottom Search Bar on Mobile
  */
 
 export function Layout() {
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#121212] to-[#0a0a0a] text-white">
+    <div className="flex min-h-screen flex-col">
       <Header />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden pb-24 sm:pb-0">
         <Outlet />
       </main>
+
+      {/* Mobile Bottom Search Bar */}
+      <div className="fixed right-0 bottom-0 left-0 z-50 p-4 sm:hidden">
+        <SearchBar />
+      </div>
     </div>
   );
 }
