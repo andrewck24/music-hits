@@ -31,7 +31,7 @@ export function ArtistSearchResults({
   }
 
   const showViewAll = viewMode === "preview" && artists.length > 4;
-  const displayArtists = viewMode === "preview" ? artists.slice(0, 4) : artists;
+  const displayArtists = viewMode === "preview" ? artists.slice(0, 8) : artists;
 
   return (
     <div>
@@ -56,7 +56,7 @@ export function ArtistSearchResults({
           ))}
         </ScrollableRow>
       ) : (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {displayArtists.map((artist) => (
             <ArtistCard
               key={artist.artistId}
