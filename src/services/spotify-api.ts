@@ -5,6 +5,9 @@ import type {
 } from "@/types/spotify";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+/** Maximum number of IDs per batch request (Spotify API limit) */
+const BATCH_SIZE_LIMIT = 20;
+
 /**
  * RTK Query API Slice for Spotify
  *
@@ -53,6 +56,82 @@ export const spotifyApi = createApi({
       providesTags: (result, _error, trackId) =>
         result ? [{ type: "AudioFeatures", id: trackId }] : ["AudioFeatures"],
     }),
+
+    // Get Several Artists (Batch)
+    getSeveralArtists: builder.query<SpotifyArtist[], string[]>({
+      query: (ids) => {
+        if (ids.length === 0 || ids.length > BATCH_SIZE_LIMIT) {
+          throw new Error(
+            `Invalid ids length: ${ids.length}. Must be between 1 and ${BATCH_SIZE_LIMIT}.`,
+          );
+        }
+        return `/artists?ids=${ids.join(",")}`;
+      },
+      transformResponse: (response: { artists: (SpotifyArtist | null)[] }) => {
+        // Filter out null values (invalid/deleted IDs)
+        return response.artists.filter(
+          (artist): artist is SpotifyArtist => artist !== null,
+        );
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Artist" as const, id })),
+              "Artist",
+            ]
+          : ["Artist"],
+      async onQueryStarted(_ids, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Populate individual artist caches
+          data.forEach((artist) => {
+            dispatch(
+              spotifyApi.util.upsertQueryData("getArtist", artist.id, artist),
+            );
+          });
+        } catch {
+          // Error handled by RTK Query
+        }
+      },
+    }),
+
+    // Get Several Tracks (Batch)
+    getSeveralTracks: builder.query<SpotifyTrack[], string[]>({
+      query: (ids) => {
+        if (ids.length === 0 || ids.length > BATCH_SIZE_LIMIT) {
+          throw new Error(
+            `Invalid ids length: ${ids.length}. Must be between 1 and ${BATCH_SIZE_LIMIT}.`,
+          );
+        }
+        return `/tracks?ids=${ids.join(",")}`;
+      },
+      transformResponse: (response: { tracks: (SpotifyTrack | null)[] }) => {
+        // Filter out null values (invalid/deleted IDs)
+        return response.tracks.filter(
+          (track): track is SpotifyTrack => track !== null,
+        );
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Track" as const, id })),
+              "Track",
+            ]
+          : ["Track"],
+      async onQueryStarted(_ids, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Populate individual track caches
+          data.forEach((track) => {
+            dispatch(
+              spotifyApi.util.upsertQueryData("getTrack", track.id, track),
+            );
+          });
+        } catch {
+          // Error handled by RTK Query
+        }
+      },
+    }),
   }),
 });
 
@@ -69,7 +148,12 @@ export const spotifyApi = createApi({
  * - No persistent caching (localStorage, IndexedDB)
  * - No automatic cache invalidation (manual invalidation via tags if needed)
  */
-export const { useGetArtistQuery, useGetTrackQuery, useGetAudioFeaturesQuery } =
-  spotifyApi;
+export const {
+  useGetArtistQuery,
+  useGetTrackQuery,
+  useGetAudioFeaturesQuery,
+  useGetSeveralArtistsQuery,
+  useGetSeveralTracksQuery,
+} = spotifyApi;
 
 export default spotifyApi;

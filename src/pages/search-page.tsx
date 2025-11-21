@@ -8,6 +8,7 @@ import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useSearch } from "@/hooks/use-search";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { Suspense, useState } from "react";
+import { RiMusicLine, RiSearchLine } from "react-icons/ri";
 import { useRouteLoaderData, useSearchParams } from "react-router-dom";
 
 /**
@@ -59,7 +60,7 @@ function SearchPageContent() {
   const showTracks = category === "all" || category === "tracks";
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 pt-20 pb-4">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 pt-20 pb-4 sm:pt-4">
       {/* SearchBar (visible on mobile devices) */}
       <div className="fixed top-18 right-0 left-0 z-40 px-6 py-2 sm:hidden">
         <SearchBar />
@@ -77,16 +78,28 @@ function SearchPageContent() {
 
       {/* Search Results */}
       {!query.trim() ? (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">
-            在上方搜尋框輸入藝人或歌曲名稱以開始搜尋
-          </p>
+        <Card className="flex flex-col items-center gap-4 p-12 text-center">
+          <div className="bg-secondary flex h-16 w-16 items-center justify-center rounded-full">
+            <RiSearchLine className="text-muted-foreground h-8 w-8" />
+          </div>
+          <div>
+            <p className="text-foreground text-lg font-medium">開始搜尋</p>
+            <p className="text-muted-foreground mt-1">
+              在上方搜尋框輸入藝人或歌曲名稱
+            </p>
+          </div>
         </Card>
       ) : results.artists.length === 0 && results.tracks.length === 0 ? (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">
-            未找到 &quot;{query}&quot; 相關結果
-          </p>
+        <Card className="flex flex-col items-center gap-4 p-12 text-center">
+          <div className="bg-secondary flex h-16 w-16 items-center justify-center rounded-full">
+            <RiMusicLine className="text-muted-foreground h-8 w-8" />
+          </div>
+          <div>
+            <p className="text-foreground text-lg font-medium">找不到結果</p>
+            <p className="text-muted-foreground mt-1">
+              未找到 &quot;{query}&quot; 相關的藝人或歌曲
+            </p>
+          </div>
         </Card>
       ) : (
         <div className="space-y-8">

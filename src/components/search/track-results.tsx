@@ -1,7 +1,15 @@
+import { useCallback, useState } from "react";
 import { TrackItem } from "@/components/track/item";
+import { TrackSkeleton } from "@/components/track/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { chunk } from "@/lib/utils";
+import { useGetSeveralTracksQuery } from "@/services";
 import type { LocalTrackData } from "@/types/data-schema";
+
+const BATCH_SIZE = 20;
+const PREVIEW_COUNT = 5;
 
 interface TrackSearchResultsProps {
   tracks: LocalTrackData[];
@@ -16,6 +24,44 @@ export function TrackSearchResults({
   onViewAll,
   query,
 }: TrackSearchResultsProps) {
+  // Pagination state for infinite scroll (full mode only)
+  const [displayCount, setDisplayCount] = useState(BATCH_SIZE);
+
+  // Get track IDs for batch fetch
+  const displayTracks =
+    viewMode === "preview"
+      ? tracks.slice(0, PREVIEW_COUNT)
+      : tracks.slice(0, displayCount);
+  const trackIds = displayTracks.map((t) => t.trackId);
+
+  // Split into batches for API calls (max 20 per request)
+  const batches = chunk(trackIds, BATCH_SIZE);
+  const currentBatchIds = batches[batches.length - 1] ?? [];
+
+  // Batch fetch track data for current batch (skip if no tracks)
+  // Note: data is not used directly - batch fetch populates cache via upsertQueryData
+  // Child TrackItem components then fetch from cache via useGetTrackQuery
+  const { isLoading, isFetching, isError, error } = useGetSeveralTracksQuery(
+    currentBatchIds,
+    { skip: currentBatchIds.length === 0 },
+  );
+
+  // Silent degradation: log error but continue with local data
+  if (isError && error) {
+    // eslint-disable-next-line no-console
+    console.error("[TrackSearchResults] Batch fetch failed, using local data:", error);
+  }
+
+  // Infinite scroll
+  const hasMore = viewMode === "full" && displayCount < tracks.length;
+  const loadMore = useCallback(() => {
+    if (!isFetching && hasMore) {
+      setDisplayCount((prev) => Math.min(prev + BATCH_SIZE, tracks.length));
+    }
+  }, [isFetching, hasMore, tracks.length]);
+
+  const sentinelRef = useInfiniteScroll(loadMore);
+
   if (tracks.length === 0) {
     if (viewMode === "full") {
       return (
@@ -30,7 +76,26 @@ export function TrackSearchResults({
   }
 
   const showViewAll = viewMode === "preview" && tracks.length > 5;
-  const displayTracks = viewMode === "preview" ? tracks.slice(0, 5) : tracks;
+
+  // Render skeleton loading state
+  const renderSkeletons = (count: number) =>
+    Array.from({ length: count }).map((_, index) => (
+      <TrackSkeleton key={`skeleton-${index}`} />
+    ));
+
+  // Render track items - pass local data, TrackItem fetches from cache
+  const renderTrackItems = (trackList: LocalTrackData[]) =>
+    trackList.map((track) => (
+      <TrackItem
+        key={track.trackId}
+        trackId={track.trackId}
+        trackName={track.trackName}
+        artistName={track.artistName}
+        artistId={track.artistId}
+        releaseYear={track.releaseYear}
+        showArtistLink={true}
+      />
+    ));
 
   return (
     <div>
@@ -42,19 +107,31 @@ export function TrackSearchResults({
           </Button>
         )}
       </div>
-      <div className="space-y-2">
-        {displayTracks.map((track) => (
-          <TrackItem
-            key={track.trackId}
-            trackId={track.trackId}
-            trackName={track.trackName}
-            artistName={track.artistName}
-            artistId={track.artistId}
-            releaseYear={track.releaseYear}
-            showArtistLink={true}
-          />
-        ))}
-      </div>
+
+      {viewMode === "preview" ? (
+        <div className="space-y-2">
+          {isLoading
+            ? renderSkeletons(displayTracks.length)
+            : renderTrackItems(displayTracks)}
+        </div>
+      ) : (
+        <>
+          <div className="space-y-2">
+            {renderTrackItems(displayTracks)}
+            {isFetching && renderSkeletons(BATCH_SIZE)}
+          </div>
+
+          {/* Infinite scroll sentinel */}
+          {hasMore && <div ref={sentinelRef} className="h-4" />}
+
+          {/* All results shown message */}
+          {!hasMore && displayTracks.length > 0 && (
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              已顯示全部 {tracks.length} 首歌曲
+            </p>
+          )}
+        </>
+      )}
     </div>
   );
 }

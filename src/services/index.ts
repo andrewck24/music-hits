@@ -12,5 +12,7 @@ export {
   spotifyApi,
   useGetArtistQuery,
   useGetAudioFeaturesQuery,
+  useGetSeveralArtistsQuery,
+  useGetSeveralTracksQuery,
   useGetTrackQuery,
 } from "@/services/spotify-api";
