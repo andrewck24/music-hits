@@ -8,6 +8,7 @@ import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useSearch } from "@/hooks/use-search";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { Suspense, useState } from "react";
+import { RiMusicLine, RiSearchLine } from "react-icons/ri";
 import { useRouteLoaderData, useSearchParams } from "react-router-dom";
 
 /**
@@ -77,16 +78,28 @@ function SearchPageContent() {
 
       {/* Search Results */}
       {!query.trim() ? (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">
-            在上方搜尋框輸入藝人或歌曲名稱以開始搜尋
-          </p>
+        <Card className="flex flex-col items-center gap-4 p-12 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+            <RiSearchLine className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div>
+            <p className="text-lg font-medium text-foreground">開始搜尋</p>
+            <p className="mt-1 text-muted-foreground">
+              在上方搜尋框輸入藝人或歌曲名稱
+            </p>
+          </div>
         </Card>
       ) : results.artists.length === 0 && results.tracks.length === 0 ? (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">
-            未找到 &quot;{query}&quot; 相關結果
-          </p>
+        <Card className="flex flex-col items-center gap-4 p-12 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+            <RiMusicLine className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div>
+            <p className="text-lg font-medium text-foreground">找不到結果</p>
+            <p className="mt-1 text-muted-foreground">
+              未找到 &quot;{query}&quot; 相關的藝人或歌曲
+            </p>
+          </div>
         </Card>
       ) : (
         <div className="space-y-8">

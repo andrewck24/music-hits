@@ -124,11 +124,11 @@
 
 **目的**：UX 增強與錯誤處理改善
 
-- [ ] T020 [P] 在 src/pages/search-page.tsx 增強空狀態 UI，加入插圖和副標題
-- [ ] T021 [P] 在 src/components/search/artist-results.tsx 實作批次獲取失敗的靜默降級（placeholder 圖片）
-- [ ] T022 [P] 在 src/components/search/track-results.tsx 實作批次獲取失敗的靜默降級（placeholder 圖片）
-- [ ] T023 在 src/services/spotify-api.ts 新增批次 API 400 錯誤處理與日誌記錄
-- [ ] T024 執行 quickstart.md 驗證並確認所有驗收情境
+- [x] T020 [P] 在 src/pages/search-page.tsx 增強空狀態 UI，加入插圖和副標題
+- [x] T021 [P] 在 src/components/search/artist-results.tsx 實作批次獲取失敗的靜默降級（placeholder 圖片）
+- [x] T022 [P] 在 src/components/search/track-results.tsx 實作批次獲取失敗的靜默降級（placeholder 圖片）
+- [x] T023 在 src/services/spotify-api.ts 新增批次 API 400 錯誤處理與日誌記錄
+- [x] T024 執行 quickstart.md 驗證並確認所有驗收情境
 
 ---
 

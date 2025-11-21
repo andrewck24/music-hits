@@ -39,10 +39,15 @@ export function TrackSearchResults({
   const currentBatchIds = batches[batches.length - 1] ?? [];
 
   // Batch fetch track data for current batch (skip if no tracks)
-  const { data: batchedTracks, isLoading, isFetching } = useGetSeveralTracksQuery(
+  const { data: batchedTracks, isLoading, isFetching, isError, error } = useGetSeveralTracksQuery(
     currentBatchIds,
     { skip: currentBatchIds.length === 0 },
   );
+
+  // Silent degradation: log error but continue with local data
+  if (isError && error) {
+    console.error("[TrackSearchResults] Batch fetch failed, using local data:", error);
+  }
 
   // Create a map for quick lookup of batched track data
   const trackDataMap = new Map(

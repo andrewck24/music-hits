@@ -40,10 +40,15 @@ export function ArtistSearchResults({
   const currentBatchIds = batches[batches.length - 1] ?? [];
 
   // Batch fetch artist data for current batch (skip if no artists)
-  const { data: batchedArtists, isLoading, isFetching } = useGetSeveralArtistsQuery(
+  const { data: batchedArtists, isLoading, isFetching, isError, error } = useGetSeveralArtistsQuery(
     currentBatchIds,
     { skip: currentBatchIds.length === 0 },
   );
+
+  // Silent degradation: log error but continue with local data
+  if (isError && error) {
+    console.error("[ArtistSearchResults] Batch fetch failed, using local data:", error);
+  }
 
   // Create a map for quick lookup of batched artist data
   const artistDataMap = new Map(
