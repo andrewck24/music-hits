@@ -70,10 +70,10 @@
 
 ### 使用者故事 2 實作
 
-- [ ] T009 [P] [US2] 在 src/components/artist/skeleton.tsx 建立 ArtistSkeleton 元件（含 aria-busy、aria-label 無障礙屬性）
-- [ ] T010 [P] [US2] 在 src/components/track/skeleton.tsx 建立 TrackSkeleton 元件（含 aria-busy、aria-label 無障礙屬性）
-- [ ] T011 [US2] 在 src/components/search/artist-results.tsx 整合批次獲取至 ArtistSearchResults 元件
-- [ ] T012 [US2] 在 src/components/search/track-results.tsx 整合批次獲取至 TrackSearchResults 元件
+- [x] T009 [P] [US2] 在 src/components/artist/skeleton.tsx 建立 ArtistSkeleton 元件（含 aria-busy、aria-label 無障礙屬性）
+- [x] T010 [P] [US2] 在 src/components/track/skeleton.tsx 建立 TrackSkeleton 元件（含 aria-busy、aria-label 無障礙屬性）
+- [x] T011 [US2] 在 src/components/search/artist-results.tsx 整合批次獲取至 ArtistSearchResults 元件
+- [x] T012 [US2] 在 src/components/search/track-results.tsx 整合批次獲取至 TrackSearchResults 元件
 
 **檢查點**：搜尋頁面透過批次獲取顯示圖片（2 次請求取代 21+ 次）
 

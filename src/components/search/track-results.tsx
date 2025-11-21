@@ -1,6 +1,8 @@
 import { TrackItem } from "@/components/track/item";
+import { TrackSkeleton } from "@/components/track/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useGetSeveralTracksQuery } from "@/services";
 import type { LocalTrackData } from "@/types/data-schema";
 
 interface TrackSearchResultsProps {
@@ -16,6 +18,20 @@ export function TrackSearchResults({
   onViewAll,
   query,
 }: TrackSearchResultsProps) {
+  // Get track IDs for batch fetch
+  const displayTracks = viewMode === "preview" ? tracks.slice(0, 5) : tracks;
+  const trackIds = displayTracks.map((t) => t.trackId);
+
+  // Batch fetch track data (skip if no tracks)
+  const { data: batchedTracks, isLoading } = useGetSeveralTracksQuery(trackIds, {
+    skip: trackIds.length === 0,
+  });
+
+  // Create a map for quick lookup of batched track data
+  const trackDataMap = new Map(
+    batchedTracks?.map((track) => [track.id, track]) ?? [],
+  );
+
   if (tracks.length === 0) {
     if (viewMode === "full") {
       return (
@@ -30,7 +46,30 @@ export function TrackSearchResults({
   }
 
   const showViewAll = viewMode === "preview" && tracks.length > 5;
-  const displayTracks = viewMode === "preview" ? tracks.slice(0, 5) : tracks;
+
+  // Render skeleton loading state
+  const renderSkeletons = (count: number) =>
+    Array.from({ length: count }).map((_, index) => (
+      <TrackSkeleton key={`skeleton-${index}`} />
+    ));
+
+  // Render track items with batched data
+  const renderTrackItems = () =>
+    displayTracks.map((track) => {
+      const batchedData = trackDataMap.get(track.trackId);
+      return (
+        <TrackItem
+          key={track.trackId}
+          trackId={track.trackId}
+          trackName={batchedData?.name ?? track.trackName}
+          artistName={batchedData?.artists[0]?.name ?? track.artistName}
+          artistId={batchedData?.artists[0]?.id ?? track.artistId}
+          releaseYear={track.releaseYear}
+          imageUrl={batchedData?.album?.images[0]?.url}
+          showArtistLink={true}
+        />
+      );
+    });
 
   return (
     <div>
@@ -43,17 +82,7 @@ export function TrackSearchResults({
         )}
       </div>
       <div className="space-y-2">
-        {displayTracks.map((track) => (
-          <TrackItem
-            key={track.trackId}
-            trackId={track.trackId}
-            trackName={track.trackName}
-            artistName={track.artistName}
-            artistId={track.artistId}
-            releaseYear={track.releaseYear}
-            showArtistLink={true}
-          />
-        ))}
+        {isLoading ? renderSkeletons(displayTracks.length) : renderTrackItems()}
       </div>
     </div>
   );
