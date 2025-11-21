@@ -49,10 +49,10 @@
 
 ### 使用者故事 1 實作
 
-- [ ] T005 [US1] 在 src/services/spotify-api.ts 新增 getSeveralArtists 端點，含 onQueryStarted 快取填充
-- [ ] T006 [US1] 在 src/services/spotify-api.ts 新增 getSeveralTracks 端點，含 onQueryStarted 快取填充
-- [ ] T007 [US1] 在 src/services/index.ts 匯出新 hooks（useGetSeveralArtistsQuery、useGetSeveralTracksQuery）
-- [ ] T008 [US1] 在 src/services/spotify-api.ts 配置 Artist/Track 實體的永久 TTL 快取設定
+- [x] T005 [US1] 在 src/services/spotify-api.ts 新增 getSeveralArtists 端點，含 onQueryStarted 快取填充
+- [x] T006 [US1] 在 src/services/spotify-api.ts 新增 getSeveralTracks 端點，含 onQueryStarted 快取填充
+- [x] T007 [US1] 在 src/services/index.ts 匯出新 hooks（useGetSeveralArtistsQuery、useGetSeveralTracksQuery）
+- [x] T008 [US1] 在 src/services/spotify-api.ts 配置 Artist/Track 實體的永久 TTL 快取設定
 
 **檢查點**：批次獲取基礎完成——快取命中率 >90% 可達成
 
