@@ -40,20 +40,18 @@ export function ArtistSearchResults({
   const currentBatchIds = batches[batches.length - 1] ?? [];
 
   // Batch fetch artist data for current batch (skip if no artists)
-  const { data: batchedArtists, isLoading, isFetching, isError, error } = useGetSeveralArtistsQuery(
+  // Note: data is not used directly - batch fetch populates cache via upsertQueryData
+  // Child ArtistCard components then fetch from cache via useGetArtistQuery
+  const { isLoading, isFetching, isError, error } = useGetSeveralArtistsQuery(
     currentBatchIds,
     { skip: currentBatchIds.length === 0 },
   );
 
   // Silent degradation: log error but continue with local data
   if (isError && error) {
+    // eslint-disable-next-line no-console
     console.error("[ArtistSearchResults] Batch fetch failed, using local data:", error);
   }
-
-  // Create a map for quick lookup of batched artist data
-  const artistDataMap = new Map(
-    batchedArtists?.map((artist) => [artist.id, artist]) ?? [],
-  );
 
   // Infinite scroll
   const hasMore = viewMode === "full" && displayCount < artists.length;
@@ -86,20 +84,16 @@ export function ArtistSearchResults({
       <ArtistSkeleton key={`skeleton-${index}`} className={className} />
     ));
 
-  // Render artist cards with batched data
+  // Render artist cards - pass local data, ArtistCard fetches from cache
   const renderArtistCards = (artistList: UniqueArtist[], className?: string) =>
-    artistList.map((artist) => {
-      const batchedData = artistDataMap.get(artist.artistId);
-      return (
-        <ArtistCard
-          key={artist.artistId}
-          artistId={artist.artistId}
-          artistName={batchedData?.name ?? artist.artistName}
-          imageUrl={batchedData?.images[0]?.url}
-          className={className}
-        />
-      );
-    });
+    artistList.map((artist) => (
+      <ArtistCard
+        key={artist.artistId}
+        artistId={artist.artistId}
+        artistName={artist.artistName}
+        className={className}
+      />
+    ));
 
   return (
     <div>

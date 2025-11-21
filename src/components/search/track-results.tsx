@@ -39,20 +39,18 @@ export function TrackSearchResults({
   const currentBatchIds = batches[batches.length - 1] ?? [];
 
   // Batch fetch track data for current batch (skip if no tracks)
-  const { data: batchedTracks, isLoading, isFetching, isError, error } = useGetSeveralTracksQuery(
+  // Note: data is not used directly - batch fetch populates cache via upsertQueryData
+  // Child TrackItem components then fetch from cache via useGetTrackQuery
+  const { isLoading, isFetching, isError, error } = useGetSeveralTracksQuery(
     currentBatchIds,
     { skip: currentBatchIds.length === 0 },
   );
 
   // Silent degradation: log error but continue with local data
   if (isError && error) {
+    // eslint-disable-next-line no-console
     console.error("[TrackSearchResults] Batch fetch failed, using local data:", error);
   }
-
-  // Create a map for quick lookup of batched track data
-  const trackDataMap = new Map(
-    batchedTracks?.map((track) => [track.id, track]) ?? [],
-  );
 
   // Infinite scroll
   const hasMore = viewMode === "full" && displayCount < tracks.length;
@@ -85,23 +83,19 @@ export function TrackSearchResults({
       <TrackSkeleton key={`skeleton-${index}`} />
     ));
 
-  // Render track items with batched data
+  // Render track items - pass local data, TrackItem fetches from cache
   const renderTrackItems = (trackList: LocalTrackData[]) =>
-    trackList.map((track) => {
-      const batchedData = trackDataMap.get(track.trackId);
-      return (
-        <TrackItem
-          key={track.trackId}
-          trackId={track.trackId}
-          trackName={batchedData?.name ?? track.trackName}
-          artistName={batchedData?.artists[0]?.name ?? track.artistName}
-          artistId={batchedData?.artists[0]?.id ?? track.artistId}
-          releaseYear={track.releaseYear}
-          imageUrl={batchedData?.album?.images[0]?.url}
-          showArtistLink={true}
-        />
-      );
-    });
+    trackList.map((track) => (
+      <TrackItem
+        key={track.trackId}
+        trackId={track.trackId}
+        trackName={track.trackName}
+        artistName={track.artistName}
+        artistId={track.artistId}
+        releaseYear={track.releaseYear}
+        showArtistLink={true}
+      />
+    ));
 
   return (
     <div>

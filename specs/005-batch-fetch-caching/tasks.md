@@ -132,6 +132,27 @@
 
 ---
 
+## 第八階段：子元件 Hook 整合
+
+**目的**：讓子元件透過 RTK Query hook 從快取取得資料，符合 plan.md 設計意圖
+
+**設計原則**：
+
+- 父元件控制 `isLoading` 顯示 skeleton
+- 子元件使用 hook 從快取取得資料（無 skeleton 邏輯）
+- 漸進式增強：先顯示本地資料，API 返回後更新
+
+- [x] T025 [P] 修改 src/components/artist/card.tsx 使用 useGetArtistQuery hook（移除 imageUrl prop）
+- [x] T026 [P] 修改 src/components/track/item.tsx 使用 useGetTrackQuery hook（移除 imageUrl prop）
+- [x] T027 簡化 src/components/search/artist-results.tsx 移除 artistDataMap 邏輯
+- [x] T028 簡化 src/components/search/track-results.tsx 移除 trackDataMap 邏輯
+- [x] T029 更新規格文件（tasks.md）
+- [x] T030 執行驗證並提交
+
+**檢查點**：子元件透過 hook 從快取取得資料，父元件控制 skeleton 顯示
+
+---
+
 ## 相依性與執行順序
 
 ### 階段相依性
