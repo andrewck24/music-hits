@@ -1,13 +1,13 @@
-import { useCallback, useState } from "react";
 import { ArtistCard } from "@/components/artist/card";
 import { ArtistSkeleton } from "@/components/artist/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ScrollableRow } from "@/components/ui/scrollable-row";
+import { Carousel } from "@/components/ui/carousel";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import type { UniqueArtist } from "@/hooks/use-search";
 import { chunk } from "@/lib/utils";
 import { useGetSeveralArtistsQuery } from "@/services";
+import { useCallback, useState } from "react";
 
 const BATCH_SIZE = 20;
 const PREVIEW_COUNT = 8;
@@ -50,7 +50,10 @@ export function ArtistSearchResults({
   // Silent degradation: log error but continue with local data
   if (isError && error) {
     // eslint-disable-next-line no-console
-    console.error("[ArtistSearchResults] Batch fetch failed, using local data:", error);
+    console.error(
+      "[ArtistSearchResults] Batch fetch failed, using local data:",
+      error,
+    );
   }
 
   // Infinite scroll
@@ -107,14 +110,17 @@ export function ArtistSearchResults({
       </div>
 
       {viewMode === "preview" ? (
-        <ScrollableRow>
+        <Carousel>
           {isLoading
             ? renderSkeletons(
                 displayArtists.length,
                 "shrink-0 basis-[12rem] snap-start",
               )
-            : renderArtistCards(displayArtists, "shrink-0 basis-[12rem] snap-start")}
-        </ScrollableRow>
+            : renderArtistCards(
+                displayArtists,
+                "shrink-0 basis-[12rem] snap-start",
+              )}
+        </Carousel>
       ) : (
         <>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -127,7 +133,7 @@ export function ArtistSearchResults({
 
           {/* All results shown message */}
           {!hasMore && displayArtists.length > 0 && (
-            <p className="mt-6 text-center text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-6 text-center text-sm">
               已顯示全部 {artists.length} 位藝人
             </p>
           )}

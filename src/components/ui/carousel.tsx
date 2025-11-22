@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-interface ScrollableRowProps {
+interface CarouselProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export function ScrollableRow({ children, className }: ScrollableRowProps) {
+export function Carousel({ children, className }: CarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);

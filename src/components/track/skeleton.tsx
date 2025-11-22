@@ -16,11 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function TrackSkeleton() {
   return (
-    <Card
-      className="bg-muted p-3"
-      aria-busy="true"
-      aria-label="載入歌曲資訊中"
-    >
+    <Card className="bg-muted p-3" aria-busy="true" aria-label="載入歌曲資訊中">
       <div className="flex items-center gap-3">
         {/* Album Cover Skeleton - matches h-12 w-12 rounded */}
         <Skeleton className="h-12 w-12 shrink-0 rounded" />
@@ -58,6 +54,29 @@ export function TrackSkeletonList({ count }: TrackSkeletonListProps) {
       {Array.from({ length: count }).map((_, index) => (
         <TrackSkeleton key={index} />
       ))}
+    </div>
+  );
+}
+
+/**
+ * TrackCardSkeleton Component
+ *
+ * Skeleton loader for TrackCard component (vertical layout).
+ * Used in the Popular Tracks carousel.
+ */
+export function TrackCardSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={className}>
+      <Card className="bg-muted p-4">
+        {/* Artwork Skeleton - Square */}
+        <Skeleton className="mb-3 aspect-square w-full rounded-md" />
+
+        {/* Title Skeleton */}
+        <Skeleton className="mb-2 h-4 w-3/4" />
+
+        {/* Artist Name Skeleton */}
+        <Skeleton className="h-3 w-1/2" />
+      </Card>
     </div>
   );
 }
