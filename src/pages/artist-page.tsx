@@ -1,13 +1,14 @@
-import { ArtistProfile } from "@/components/artist/artist-profile";
+import { ArtistProfile } from "@/components/artist/profile";
 import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { TrackItem } from "@/components/track/item";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { useGetArtistQuery } from "@/services";
 import { Suspense } from "react";
-import { useParams, useRouteLoaderData } from "react-router-dom";
+import { RiUserUnfollowLine } from "react-icons/ri";
+import { Link, useParams, useRouteLoaderData } from "react-router-dom";
 
 /**
  * ArtistPage Component
@@ -15,12 +16,13 @@ import { useParams, useRouteLoaderData } from "react-router-dom";
  * Purpose: Display artist information and their tracks
  *
  * Features:
- * - Load artist data from RTK Query
+ * - Load artist data from RTK Query (via ArtistProfile component)
  * - Display artist profile with ArtistProfile component
  * - Show tracks from local database for this artist using TrackItem component
  * - Dynamic page title
  * - Link to track detail pages
  * - Support browser back/forward navigation
+ * - Error handling for invalid artist ID
  *
  * Route: /artist/:artistId
  */
@@ -41,26 +43,37 @@ function ArtistPageContent() {
     ReturnType<typeof tracksLoader>
   >;
 
-  // Get artist data from Spotify API
-  const {
-    data: artist,
-    isLoading,
-    error,
-  } = useGetArtistQuery(artistId || "", { skip: !artistId });
+  // Get artist data for document title
+  const { data: artist } = useGetArtistQuery(artistId || "", {
+    skip: !artistId,
+  });
 
   // Set document title
   useDocumentTitle(artist ? `${artist.name} | Music Hits` : "Music Hits");
 
   // Filter local tracks by artist
-  const artistTracks = tracksDatabase.tracks.filter(
-    (track) => track.artistId === artistId,
-  );
+  const artistTracks = artistId
+    ? tracksDatabase.tracks.filter((track) => track.artistId === artistId)
+    : [];
 
-  if (!artistId) {
+  // Handle invalid artist ID
+  if (!artistId || !artist) {
     return (
-      <div className="px-6">
+      <div className="m-auto max-w-7xl px-6 py-12">
         <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">找不到藝人ID</p>
+          <RiUserUnfollowLine className="text-muted-foreground mx-auto mb-4 size-16" />
+          <h2 className="text-foreground mb-2 text-2xl font-bold">
+            糟糕！找不到藝人...
+          </h2>
+          <p className="text-muted-foreground mb-6">請再嘗試重新搜尋藝人。</p>
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Button asChild>
+              <Link to="/">返回首頁</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/search">搜尋藝人</Link>
+            </Button>
+          </div>
         </Card>
       </div>
     );
@@ -70,22 +83,7 @@ function ArtistPageContent() {
     <div className="mx-auto max-w-7xl px-6 pb-20">
       {/* Artist Info Section */}
       <div className="mb-8">
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <Spinner />
-          </div>
-        ) : error ? (
-          <Card className="p-8 text-center">
-            <p className="text-destructive mb-4 text-lg">無法載入藝人資訊</p>
-            <p className="text-muted-foreground text-sm">
-              {error && typeof error === "object" && "message" in error
-                ? (error.message as string)
-                : String(error)}
-            </p>
-          </Card>
-        ) : (
-          <ArtistProfile artist={artist} />
-        )}
+        <ArtistProfile artistId={artistId} />
       </div>
 
       {/* Tracks Section */}
