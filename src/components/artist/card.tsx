@@ -52,7 +52,7 @@ export function ArtistCard({
   const imageUrl = artist?.images[0]?.url;
 
   return (
-    <Link to={`/artist/${artistId}`} className={cn("block", className)}>
+    <Link to={`/artist/${artistId}`} className={cn("block min-w-0", className)}>
       <Card className="bg-muted hover:bg-muted/80 cursor-pointer p-4 transition-colors">
         {/* Artist Image - placeholder if no image */}
         <div className="mb-3">
