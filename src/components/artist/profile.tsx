@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCompactNumber } from "@/lib/formatters";
+import { cn } from "@/lib/utils";
 import { useGetArtistQuery } from "@/services";
 
 /**
@@ -25,14 +26,20 @@ import { useGetArtistQuery } from "@/services";
 
 interface ArtistProfileProps {
   artistId: string;
+  className?: string;
 }
 
-export function ArtistProfile({ artistId }: ArtistProfileProps) {
+export function ArtistProfile({ artistId, className }: ArtistProfileProps) {
   const { data: artist, isLoading } = useGetArtistQuery(artistId);
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-end">
+      <div
+        className={cn(
+          "flex flex-col items-center gap-6 sm:flex-row sm:items-end",
+          className,
+        )}
+      >
         <Skeleton className="aspect-square w-full shrink-0 rounded-lg sm:w-48 lg:w-64" />
       </div>
     );
@@ -42,7 +49,12 @@ export function ArtistProfile({ artistId }: ArtistProfileProps) {
   const popularity = artist?.popularity || 0;
 
   return (
-    <Card className="flex flex-col items-center gap-6 rounded-3xl p-4 sm:flex-row sm:items-end md:p-6">
+    <Card
+      className={cn(
+        "flex flex-col items-center gap-6 rounded-3xl p-4 sm:flex-row sm:items-end md:p-6",
+        className,
+      )}
+    >
       {/* Artist Image */}
       {image && (
         <div className="w-full shrink-0 sm:w-48 lg:w-64">

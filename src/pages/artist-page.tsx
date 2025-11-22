@@ -82,20 +82,18 @@ function ArtistPageContent() {
   return (
     <div className="mx-auto max-w-7xl px-6 pb-20">
       {/* Artist Info Section */}
-      <div className="mb-8">
-        <ArtistProfile artistId={artistId} />
-      </div>
+      <ArtistProfile artistId={artistId} className="mb-8" />
 
       {/* Tracks Section */}
       <div>
         <h2 className="text-foreground mb-4 text-2xl font-bold">
-          該藝人的歌曲
+          {artist?.name} 的歌曲
         </h2>
 
         {artistTracks.length === 0 ? (
           <Card className="p-8 text-center">
             <p className="text-muted-foreground text-lg">
-              本地資料庫中未找到該藝人的歌曲
+              在我們的資料庫中未找到 {artist?.name} 的歌曲
             </p>
           </Card>
         ) : (
