@@ -19,17 +19,12 @@ import { z } from "zod";
  */
 export interface PopularityMetrics {
   // === Spotify 指標 ===
-  playCount?: number; // Spotify 播放次數（若有）
-  spotifyPopularity?: number; // 0-100，Spotify 演算法計算（可選）
-  spotifyStreams?: number; // 總播放次數（若有）
+  playCount: number; // Spotify 播放次數
 
   // === YouTube 指標 ===
   youtubeViews: number; // 觀看次數
   youtubeLikes: number; // 按讚數
   youtubeComments: number; // 留言數
-
-  // === 綜合指標 ===
-  combinedScore?: number; // 自訂綜合分數（可選）
 }
 
 /**
@@ -80,13 +75,10 @@ export interface LocalTracksDatabase {
  * 人氣指標驗證規則
  */
 export const popularityMetricsSchema = z.object({
-  playCount: z.number().int().nonnegative().optional(),
-  spotifyPopularity: z.number().int().min(0).max(100).optional(),
-  spotifyStreams: z.number().int().nonnegative().optional(),
+  playCount: z.number().int().nonnegative(),
   youtubeViews: z.number().int().nonnegative(),
   youtubeLikes: z.number().int().nonnegative(),
   youtubeComments: z.number().int().nonnegative(),
-  combinedScore: z.number().nonnegative().optional(),
 });
 
 /**
@@ -360,7 +352,7 @@ export function generateMockTracksDatabase(
     artistName: `Mock Artist ${(i % 3) + 1}`,
     releaseYear: 2020 + (i % 4),
     popularity: {
-      spotifyPopularity: Math.floor(Math.random() * 100),
+      playCount: Math.floor(Math.random() * 1000000000),
       youtubeViews: Math.floor(Math.random() * 10000000),
       youtubeLikes: Math.floor(Math.random() * 500000),
       youtubeComments: Math.floor(Math.random() * 50000),
