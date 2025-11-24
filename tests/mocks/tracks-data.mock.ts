@@ -11,7 +11,7 @@ export const mockLocalTrack: LocalTrackData = {
   artistName: "Gorillaz",
   releaseYear: 2005,
   popularity: {
-    spotifyPopularity: 89,
+    playCount: 1099787791,
     youtubeViews: 456789123,
     youtubeLikes: 3456789,
     youtubeComments: 234567,
@@ -28,7 +28,7 @@ export const mockLocalTracks: LocalTrackData[] = [
     artistName: "Gorillaz",
     releaseYear: 2001,
     popularity: {
-      spotifyPopularity: 85,
+      playCount: 648976189,
       youtubeViews: 398765432,
       youtubeLikes: 2987654,
       youtubeComments: 198765,
@@ -42,7 +42,7 @@ export const mockLocalTracks: LocalTrackData[] = [
     artistName: "Gorillaz",
     releaseYear: 2010,
     popularity: {
-      spotifyPopularity: 83,
+      playCount: 337684069,
       youtubeViews: 287654321,
       youtubeLikes: 2345678,
       youtubeComments: 156789,
