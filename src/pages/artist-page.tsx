@@ -44,7 +44,7 @@ function ArtistPageContent() {
   >;
 
   // Get artist data for document title
-  const { data: artist } = useGetArtistQuery(artistId || "", {
+  const { data: artist, isLoading } = useGetArtistQuery(artistId || "", {
     skip: !artistId,
   });
 
@@ -57,7 +57,7 @@ function ArtistPageContent() {
     : [];
 
   // Handle invalid artist ID
-  if (!artistId || !artist) {
+  if (!artistId || (!artist && !isLoading)) {
     return (
       <div className="m-auto max-w-7xl px-6 py-12">
         <Card className="p-8 text-center">
