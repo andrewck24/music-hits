@@ -46,71 +46,57 @@ export function PopularityChart({ trackId, className }: PopularityChartProps) {
   >;
   const localTrack = tracksDatabase.tracks.find((t) => t.trackId === trackId);
 
-  if (!localTrack) {
-    return (
-      <Card
-        className={cn(
-          "text-muted-foreground flex h-64 w-full items-center justify-center",
-          className,
-        )}
-      >
-        無法獲取人氣度數據
-      </Card>
-    );
-  }
+  if (!localTrack) return <PopularityChartError className={className} />;
 
   return (
-    <Card className={cn("w-full rounded-lg p-6", className)}>
-      <h3 className="text-foreground mb-6 font-semibold">人氣度分析</h3>
+    <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
+      <h3 className="text-foreground font-semibold">人氣度分析</h3>
+      {/* Spotify 播放次數 */}
+      <BarWithStats
+        label="Spotify 播放次數"
+        value={localTrack.popularity.playCount}
+        min={POPULARITY_STATS.playCount.min}
+        max={POPULARITY_STATS.playCount.max}
+        mean={POPULARITY_STATS.playCount.mean}
+        median={POPULARITY_STATS.playCount.median}
+        colorClass="bg-primary shadow-[0_0_10px_var(--color-primary)/0.25]"
+      />
 
-      <div className="space-y-8">
-        {/* Spotify 播放次數 */}
-        <BarWithStats
-          label="Spotify 播放次數"
-          value={localTrack.popularity.playCount}
-          min={POPULARITY_STATS.playCount.min}
-          max={POPULARITY_STATS.playCount.max}
-          mean={POPULARITY_STATS.playCount.mean}
-          median={POPULARITY_STATS.playCount.median}
-          colorClass="bg-primary shadow-[0_0_10px_var(--color-primary)/0.25]"
-        />
+      {/* YouTube 觀看次數 */}
+      <BarWithStats
+        label="YouTube 觀看次數"
+        value={localTrack.popularity.youtubeViews}
+        min={POPULARITY_STATS.youtubeViews.min}
+        max={POPULARITY_STATS.youtubeViews.max}
+        mean={POPULARITY_STATS.youtubeViews.mean}
+        median={POPULARITY_STATS.youtubeViews.median}
+        colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
+      />
 
-        {/* YouTube 觀看次數 */}
-        <BarWithStats
-          label="YouTube 觀看次數"
-          value={localTrack.popularity.youtubeViews}
-          min={POPULARITY_STATS.youtubeViews.min}
-          max={POPULARITY_STATS.youtubeViews.max}
-          mean={POPULARITY_STATS.youtubeViews.mean}
-          median={POPULARITY_STATS.youtubeViews.median}
-          colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
-        />
+      {/* YouTube 按讚數 */}
+      <BarWithStats
+        label="YouTube 按讚數"
+        value={localTrack.popularity.youtubeLikes}
+        min={POPULARITY_STATS.youtubeLikes.min}
+        max={POPULARITY_STATS.youtubeLikes.max}
+        mean={POPULARITY_STATS.youtubeLikes.mean}
+        median={POPULARITY_STATS.youtubeLikes.median}
+        colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
+      />
 
-        {/* YouTube 按讚數 */}
-        <BarWithStats
-          label="YouTube 按讚數"
-          value={localTrack.popularity.youtubeLikes}
-          min={POPULARITY_STATS.youtubeLikes.min}
-          max={POPULARITY_STATS.youtubeLikes.max}
-          mean={POPULARITY_STATS.youtubeLikes.mean}
-          median={POPULARITY_STATS.youtubeLikes.median}
-          colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
-        />
-
-        {/* YouTube 留言數 */}
-        <BarWithStats
-          label="YouTube 留言數"
-          value={localTrack.popularity.youtubeComments}
-          min={POPULARITY_STATS.youtubeComments.min}
-          max={POPULARITY_STATS.youtubeComments.max}
-          mean={POPULARITY_STATS.youtubeComments.mean}
-          median={POPULARITY_STATS.youtubeComments.median}
-          colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
-        />
-      </div>
+      {/* YouTube 留言數 */}
+      <BarWithStats
+        label="YouTube 留言數"
+        value={localTrack.popularity.youtubeComments}
+        min={POPULARITY_STATS.youtubeComments.min}
+        max={POPULARITY_STATS.youtubeComments.max}
+        mean={POPULARITY_STATS.youtubeComments.mean}
+        median={POPULARITY_STATS.youtubeComments.median}
+        colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
+      />
 
       {/* 圖例說明 */}
-      <div className="border-border text-muted-foreground mt-6 flex flex-wrap gap-4 border-t pt-4 text-xs">
+      <div className="border-border text-muted-foreground flex flex-wrap gap-4 border-t pt-4 text-xs">
         <div className="flex items-center gap-2">
           <div className="bg-foreground/60 h-3 w-3 rounded-full" />
           <span>中位數</span>
@@ -231,5 +217,20 @@ function BarWithStats({
         </TooltipContent>
       </Tooltip>
     </div>
+  );
+}
+
+interface PopularityChartErrorProps {
+  className?: string;
+}
+
+function PopularityChartError({ className }: PopularityChartErrorProps) {
+  return (
+    <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
+      <h3 className="text-foreground font-semibold">人氣度分析</h3>
+      <p className="text-muted-foreground flex h-full min-h-80 items-center justify-center">
+        無法獲取人氣度數據
+      </p>
+    </Card>
   );
 }

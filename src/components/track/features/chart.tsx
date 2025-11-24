@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useGetAudioFeaturesQuery } from "@/services";
 import { useMemo } from "react";
@@ -43,7 +44,11 @@ interface FeatureChartProps {
 }
 
 export function FeatureChart({ trackId, className }: FeatureChartProps) {
-  const { data: features, isLoading } = useGetAudioFeaturesQuery(trackId);
+  const {
+    data: features,
+    isLoading,
+    error,
+  } = useGetAudioFeaturesQuery(trackId);
 
   const chartData = useMemo(() => {
     if (!features) {
@@ -89,24 +94,14 @@ export function FeatureChart({ trackId, className }: FeatureChartProps) {
     ];
   }, [features]);
 
-  if (isLoading) {
-    return (
-      <Card className={cn("flex h-80 items-center justify-center", className)}>
-        載入中...
-      </Card>
-    );
-  }
+  if (isLoading) return <FeatureChartSkeleton className={className} />;
 
-  if (!features) {
-    return (
-      <Card className={cn("p-4 md:p-6", className)}>無法獲取音樂特徵數據</Card>
-    );
-  }
+  if (!features || error) return <FeatureChartError className={className} />;
 
   return (
-    <Card className={cn("p-4 md:p-6", className)}>
-      <h3 className="text-foreground mb-6 font-semibold">音樂特徵分析</h3>
-      <ResponsiveContainer width="100%" height="100%" className="min-h-80 pb-10">
+    <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
+      <h3 className="text-foreground font-semibold">音樂特徵分析</h3>
+      <ResponsiveContainer width="100%" height="100%" className="min-h-80">
         <RadarChart
           data={chartData}
           // margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
@@ -139,6 +134,34 @@ export function FeatureChart({ trackId, className }: FeatureChartProps) {
           />
         </RadarChart>
       </ResponsiveContainer>
+    </Card>
+  );
+}
+
+interface FeatureChartSkeletonProps {
+  className?: string;
+}
+
+function FeatureChartSkeleton({ className }: FeatureChartSkeletonProps) {
+  return (
+    <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
+      <h3 className="text-foreground font-semibold">音樂特徵分析</h3>
+      <Skeleton className="h-full min-h-80" />
+    </Card>
+  );
+}
+
+interface FeatureChartSkeletonProps {
+  className?: string;
+}
+
+function FeatureChartError({ className }: FeatureChartSkeletonProps) {
+  return (
+    <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
+      <h3 className="text-foreground font-semibold">音樂特徵分析</h3>
+      <p className="text-muted-foreground flex h-full min-h-80 items-center justify-center">
+        目前暫時無法取得音樂特徵
+      </p>
     </Card>
   );
 }

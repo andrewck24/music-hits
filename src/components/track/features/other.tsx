@@ -99,11 +99,12 @@ function Feature({
   featureName,
   featureValue,
   isLoading,
+  error,
   className,
 }: KeyProps) {
   if (isLoading) return <LoadingFallback className={className} />;
 
-  if (!featureValue)
+  if (!featureValue || error)
     return <ErrorFallback featureName={featureName} className={className} />;
 
   return (
@@ -124,7 +125,9 @@ function LoadingFallback({ className }: LoadingFallbackProps) {
   return (
     <Card className={cn("p-4 md:p-6", className)}>
       <Skeleton className="mb-6 h-6 w-20" />
-      <Skeleton className="mb-6 h-12 w-full md:h-18" />
+      <div className="flex justify-center">
+        <Skeleton className="h-12 w-4/5" />
+      </div>
     </Card>
   );
 }
@@ -138,7 +141,9 @@ function ErrorFallback({ featureName, className }: ErrorFallbackProps) {
   return (
     <Card className={cn("p-4 md:p-6", className)}>
       <h3 className="text-foreground mb-6 font-semibold">{featureName}</h3>
-      <p className="text-muted-foreground">無法獲取 {featureName} 數據。</p>
+      <p className="text-muted-foreground mb-6 flex h-12 items-center justify-center text-center md:h-18">
+        暫時沒有數據
+      </p>
     </Card>
   );
 }

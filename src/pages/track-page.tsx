@@ -2,11 +2,13 @@ import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { ArtistsList } from "@/components/track/artists";
 import { TrackFeatures } from "@/components/track/features";
 import { TrackInfo } from "@/components/track/info";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useGetTrackQuery } from "@/services";
 import { Suspense } from "react";
-import { useParams } from "react-router-dom";
+import { RiErrorWarningFill } from "react-icons/ri";
+import { Link, useParams } from "react-router-dom";
 
 /**
  * TrackPage Component
@@ -39,11 +41,23 @@ function TrackPageContent() {
   // Set document title
   useDocumentTitle(track ? `${track.name} | Music Hits` : "Music Hits");
 
-  if (!trackId) {
+  if (!trackId || !track) {
     return (
-      <div className="p-6">
+      <div className="m-auto max-w-7xl px-6 py-12">
         <Card className="p-8 text-center">
-          <p className="text-muted-foreground text-lg">找不到歌曲ID</p>
+          <RiErrorWarningFill className="text-muted-foreground mx-auto mb-4 size-16" />
+          <h2 className="text-foreground mb-2 text-2xl font-bold">
+            糟糕！找不到歌曲...
+          </h2>
+          <p className="text-muted-foreground mb-6">請再嘗試重新搜尋歌曲。</p>
+          <div className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Button asChild>
+              <Link to="/">返回首頁</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/search">搜尋歌曲</Link>
+            </Button>
+          </div>
         </Card>
       </div>
     );
