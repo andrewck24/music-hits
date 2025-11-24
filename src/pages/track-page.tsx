@@ -36,12 +36,14 @@ function TrackPageContent() {
   const { trackId } = useParams<{ trackId: string }>();
 
   // Get track data from Spotify API
-  const { data: track } = useGetTrackQuery(trackId || "", { skip: !trackId });
+  const { data: track, isLoading } = useGetTrackQuery(trackId || "", {
+    skip: !trackId,
+  });
 
   // Set document title
   useDocumentTitle(track ? `${track.name} | Music Hits` : "Music Hits");
 
-  if (!trackId || !track) {
+  if (!trackId || (!track && !isLoading)) {
     return (
       <div className="m-auto max-w-7xl px-6 py-12">
         <Card className="p-8 text-center">
