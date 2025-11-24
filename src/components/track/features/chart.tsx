@@ -1,4 +1,6 @@
-import type { SpotifyAudioFeatures } from "@/types/spotify";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { useGetAudioFeaturesQuery } from "@/services";
 import { useMemo } from "react";
 import {
   PolarAngleAxis,
@@ -28,17 +30,21 @@ import {
  * - 中文標籤
  *
  * Props:
- * - features: SpotifyAudioFeatures object
+ * - trackId: Spotify Track ID
+ * - className: Optional additional CSS classes
  *
  * Usage:
- *   <FeatureChart features={features} />
+ *   `<FeatureChart trackId="someTrackId" className="optional-class" />`
  */
 
 interface FeatureChartProps {
-  features: SpotifyAudioFeatures | null;
+  trackId: string;
+  className?: string;
 }
 
-export function FeatureChart({ features }: FeatureChartProps) {
+export function FeatureChart({ trackId, className }: FeatureChartProps) {
+  const { data: features, isLoading } = useGetAudioFeaturesQuery(trackId);
+
   const chartData = useMemo(() => {
     if (!features) {
       return [];
@@ -83,22 +89,28 @@ export function FeatureChart({ features }: FeatureChartProps) {
     ];
   }, [features]);
 
+  if (isLoading) {
+    return (
+      <Card className={cn("flex h-80 items-center justify-center", className)}>
+        載入中...
+      </Card>
+    );
+  }
+
   if (!features) {
     return (
-      <div className="w-full h-64 flex items-center justify-center text-[#B3B3B3]">
-        無法獲取音樂特徵數據
-      </div>
+      <Card className={cn("p-4 md:p-6", className)}>無法獲取音樂特徵數據</Card>
     );
   }
 
   return (
-    <div className="w-full bg-[#282828] rounded-lg p-6">
-      <h3 className="text-white font-semibold mb-4">音樂特徵雷達圖</h3>
-
-      <ResponsiveContainer width="100%" height={300}>
+    <Card className={cn("p-4 md:p-6", className)}>
+      <h3 className="text-foreground mb-6 font-semibold">音樂特徵分析</h3>
+      <ResponsiveContainer width="100%" height="100%" className="min-h-80 pb-10">
         <RadarChart
           data={chartData}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          // margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          aria-label="音樂特徵雷達圖"
         >
           <PolarGrid stroke="#404040" />
           <PolarAngleAxis
@@ -124,31 +136,9 @@ export function FeatureChart({ features }: FeatureChartProps) {
               borderRadius: "4px",
             }}
             labelStyle={{ color: "#B3B3B3" }}
-            formatter={(value) => {
-              if (typeof value === "number") {
-                return (value * 100).toFixed(1) + "%";
-              }
-              return value;
-            }}
           />
         </RadarChart>
       </ResponsiveContainer>
-
-      {/* 詳細數據 */}
-      <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#B3B3B3]">
-        <div>
-          <p>聲學程度：{(features.acousticness * 100).toFixed(1)}%</p>
-          <p>適合跳舞：{(features.danceability * 100).toFixed(1)}%</p>
-          <p>能量：{(features.energy * 100).toFixed(1)}%</p>
-          <p>器樂程度：{(features.instrumentalness * 100).toFixed(1)}%</p>
-        </div>
-        <div>
-          <p>現場感：{(features.liveness * 100).toFixed(1)}%</p>
-          <p>語音內容：{(features.speechiness * 100).toFixed(1)}%</p>
-          <p>正向度：{(features.valence * 100).toFixed(1)}%</p>
-          <p>速度：{Math.round(features.tempo)} BPM</p>
-        </div>
-      </div>
-    </div>
+    </Card>
   );
 }
