@@ -96,10 +96,14 @@ export const mockSpotifyTrack: SpotifyTrack = {
 };
 
 /**
- * Mock Audio Features from ReccoBeats API (9 core fields)
+ * Mock Audio Features from ReccoBeats API (13 fields)
  * Updated from Spotify API mock to match ReccoBeats response format
  */
 export const mockAudioFeatures: SpotifyAudioFeatures = {
+  // 識別資訊
+  id: "06HL4z0CvFAxyc27GXpf02",
+  href: "https://api.spotify.com/v1/audio-features/06HL4z0CvFAxyc27GXpf02",
+  // 音樂特徵
   acousticness: 0.0244,
   danceability: 0.818,
   energy: 0.702,
@@ -109,6 +113,9 @@ export const mockAudioFeatures: SpotifyAudioFeatures = {
   speechiness: 0.202,
   valence: 0.772,
   tempo: 138.559,
+  // 音樂理論屬性
+  key: 5,
+  mode: 1,
 };
 
 export const mockSpotifyToken = {
