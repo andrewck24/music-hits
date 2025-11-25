@@ -74,18 +74,40 @@
 
 ## Phase 4: User Story 2 - 語言切換器（Header 整合） (Priority: P2)
 
-**Goal**: 使用者可透過 Header 右上角的語言切換器在任何頁面輕鬆切換語言，保持在相同頁面內容（如 `/search` → `/zh-TW/search`）。桌面版直接顯示 language-switch 和 menu icon，手機版將 language-switch 收納到 popover
+**Goal**: 使用者可透過 Header 右上角的語言切換器在任何頁面輕鬆切換語言，保持在相同頁面內容（如 `/search` → `/zh-TW/search`）。桌面版直接顯示 language-switch 和 GitHub link（圓形按鈕），手機版將 language-switch, GitHub link 收納到 Menu popover 中
 
-**Independent Test**: 測試語言切換器的 UI 互動（dropdown 選單）和路由轉換邏輯，驗證點擊不同語言選項後 URL 和頁面內容的變化，無需依賴瀏覽器語言偵測功能
+**Independent Test**: 測試語言切換器的 UI 互動（popover 選單）和路由轉換邏輯，驗證點擊不同語言選項後 URL 和頁面內容的變化，無需依賴瀏覽器語言偵測功能
 
 ### Implementation for User Story 2
 
-- [ ] T024 [P] [US2] Install shadcn/ui popover component if not exists: npx shadcn@latest add popover
-- [ ] T025 [P] [US2] Create LanguageSwitch component in src/components/layout/language-switch.tsx (dropdown/select using shadcn/ui, use useChangeLanguage hook, display current language)
-- [ ] T026 [P] [US2] Create Menu popover component in src/components/layout/menu.tsx (shadcn/ui popover, menu icon trigger, full-width dropdown from header, contains GitHub link, supports close button/ESC/outside click)
-- [ ] T027 [US2] Update Header component in src/components/layout/header.tsx (desktop: show language-switch + menu icon on right; mobile: hide language-switch, show only search + menu icon, move language-switch into menu popover)
-- [ ] T028 [US2] Add responsive behavior to Menu component in src/components/layout/menu.tsx (mobile: include language-switch inside popover; desktop: only GitHub link in popover)
-- [ ] T029 [US2] Style language-switch and menu components using Tailwind CSS and @/globals.css variables (ensure consistency with existing design system)
+- [x] T024 [P] [US2] Install shadcn/ui popover component: `npx shadcn@latest add popover`
+- [x] T025 [P] [US2] Create LanguageSwitch and LanguageList components in src/components/layout/language-switch.tsx
+  - LanguageSwitch: popover trigger (globe icon button) + language options popover
+  - LanguageList: reusable language options list (used by both LanguageSwitch and Menu)
+  - Use useChangeLanguage hook for route-based navigation
+  - Display current language with checkmark icon
+  - Complete JSDoc documentation for both exported components
+- [x] T026 [P] [US2] Create Menu popover component in src/components/layout/menu.tsx
+  - Hamburger/close icon toggle button
+  - Full-width dropdown from header (align: end)
+  - Reuses LanguageList component for language options
+  - Includes GitHub repository link
+  - Supports close via icon toggle, ESC key, or outside click
+  - Complete JSDoc documentation
+- [x] T027 [US2] Update Header component in src/components/layout/header.tsx
+  - Desktop (sm+): [Logo] [SearchBar] [LanguageSwitch] [GitHubLink]
+  - Mobile (<sm): [Logo] [SearchButton (conditional)] [Menu]
+  - SearchButton only shows when not on /search page
+  - All icon buttons (Search/Language/GitHub/Menu) use consistent circular styling
+- [x] T028 [US2] Implement responsive behavior for language switching
+  - Desktop: LanguageSwitch displayed in header, Menu not visible
+  - Mobile: LanguageSwitch hidden in header, LanguageList embedded in Menu popover
+  - Maintains consistent UX across breakpoints
+- [x] T029 [US2] Style all components using Tailwind CSS and design system variables
+  - Consistent circular button styling: size-12, rounded-full, variant="secondary"
+  - Popover styling with proper alignment and spacing
+  - Hover states and transitions for all interactive elements
+  - Maintains visual consistency with existing Spotify-themed design
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - users can switch languages via UI and URLs update correctly
 
