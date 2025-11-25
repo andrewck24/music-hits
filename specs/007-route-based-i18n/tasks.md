@@ -135,14 +135,14 @@
 
 **Purpose**: SEO optimization, testing, and documentation
 
-- [ ] T035 [P] Add hreflang links in index.html head section (static links for en, zh-TW, jp, and x-default pointing to respective homepage URLs)
-- [ ] T036 [P] Verify TypeScript strict mode compliance in src/types/i18next.d.ts (ensure returnNull: false in CustomTypeOptions)
-- [ ] T037 [P] Add error handling for i18n failed loading events in src/lib/i18n.ts (fallback to English on load failure)
-- [ ] T038 Test unsupported browser language fallback behavior (manually set browser language to unsupported language like fr/de/es, verify site defaults to English without banner)
-- [ ] T039 Update CLAUDE.md with i18next configuration details (add to Active Technologies section)
-- [ ] T040 Run linting and type checking: npm run lint && npm run type-check
-- [ ] T041 Verify translation files load correctly in development mode (check Network panel for /locales/\*/common.json requests)
-- [ ] T042 Test language switching preserves query parameters and hash (manual test: /search?q=test switching languages)
+- [x] T035 [P] Add hreflang links in index.html head section (static links for en, zh-TW, jp, and x-default pointing to respective homepage URLs)
+- [x] T036 [P] Verify TypeScript strict mode compliance in src/types/i18next.d.ts (ensure returnNull: false in CustomTypeOptions)
+- [x] T037 [P] Add error handling for i18n failed loading events in src/lib/i18n.ts (fallback to English on load failure)
+- [x] T038 Test unsupported browser language fallback behavior (manually set browser language to unsupported language like fr/de/es, verify site defaults to English without banner)
+- [x] T039 Update CLAUDE.md with i18next configuration details (add to Active Technologies section)
+- [x] T040 Run linting and type checking: npm run lint && npm run type-check
+- [x] T041 Verify translation files load correctly in development mode (check Network panel for /locales/\*/common.json requests)
+- [x] T042 Test language switching preserves query parameters and hash (manual test: /search?q=test switching languages)
 - [ ] T042a Update all Link components to include language prefix in href/to paths (create useLocalizedPath hook to generate language-aware paths)
 
 ---

@@ -83,4 +83,13 @@ i18n
     },
   });
 
+i18n.on("failedLoading", (lng, ns, msg) => {
+  // eslint-disable-next-line no-console
+  console.error(`Failed to load translation: ${lng}/${ns}`, msg);
+
+  if (lng !== "en") {
+    i18n.changeLanguage("en");
+  }
+});
+
 export default i18n;
