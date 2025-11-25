@@ -1,9 +1,10 @@
 {
+  "pageTitle": "{{name}} | ミュージックヒッツ",
   "title": "トラック詳細",
   "artist": "アーティスト",
   "album": "アルバム",
   "duration": "再生時間",
-  "releaseDate": "リリース日",
+  "releaseDate": "リリース年",
   "audioFeatures": "オーディオ特性",
   "features": {
     "danceability": "ダンス性",
@@ -12,5 +13,44 @@
     "tempo": "テンポ",
     "loudness": "ラウドネス"
   },
-  "noData": "データなし"
+  "noData": "データなし",
+  "info": {
+    "albumLabel": "アルバム",
+    "releaseYearLabel": "リリース年",
+    "popularity": "人気度",
+    "openInSpotify": "Spotifyで開く",
+    "loadError": "トラック情報を読み込めません",
+    "loadErrorMessage": "後でもう一度試すか、ネットワーク接続を確認してください。"
+  },
+  "featureChart": {
+    "title": "オーディオ特性分析",
+    "labels": {
+      "acousticness": "アコースティック",
+      "danceability": "ダンス",
+      "energy": "エネルギー",
+      "instrumentalness": "インストゥルメンタル",
+      "liveness": "ライブ",
+      "speechiness": "スピーチ",
+      "valence": "ポジティブ"
+    },
+    "featureValue": "特性値",
+    "loadError": "現在オーディオ特性を取得できません"
+  },
+  "otherFeatures": {
+    "key": "キー",
+    "mode": "モード",
+    "tempo": "テンポ",
+    "durationLabel": "再生時間",
+    "noData": "データなし"
+  },
+  "artists": {
+    "title": "アーティスト情報",
+    "viewDetails": "クリックしてアーティスト詳細を表示"
+  },
+  "notFound": {
+    "title": "おっと！トラックが見つかりません...",
+    "message": "トラックを再度検索してください。",
+    "backToHome": "ホームに戻る",
+    "searchTrack": "トラックを検索"
+  }
 }

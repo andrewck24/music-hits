@@ -1,9 +1,10 @@
 {
+  "pageTitle": "{{name}} | Music Hits",
   "title": "Track Details",
   "artist": "Artist",
   "album": "Album",
   "duration": "Duration",
-  "releaseDate": "Release Date",
+  "releaseDate": "Release Year",
   "audioFeatures": "Audio Features",
   "features": {
     "danceability": "Danceability",
@@ -12,5 +13,44 @@
     "tempo": "Tempo",
     "loudness": "Loudness"
   },
-  "noData": "No data available"
+  "noData": "No data available",
+  "info": {
+    "albumLabel": "Album",
+    "releaseYearLabel": "Release Year",
+    "popularity": "Popularity",
+    "openInSpotify": "Open in Spotify",
+    "loadError": "Unable to load track information",
+    "loadErrorMessage": "Please try again later or check your network connection."
+  },
+  "featureChart": {
+    "title": "Audio Features Analysis",
+    "labels": {
+      "acousticness": "Acoustic",
+      "danceability": "Dance",
+      "energy": "Energy",
+      "instrumentalness": "Instrumental",
+      "liveness": "Live",
+      "speechiness": "Speech",
+      "valence": "Positive"
+    },
+    "featureValue": "Feature Value",
+    "loadError": "Currently unable to retrieve audio features"
+  },
+  "otherFeatures": {
+    "key": "Key",
+    "mode": "Mode",
+    "tempo": "Tempo",
+    "durationLabel": "Duration",
+    "noData": "No data available"
+  },
+  "artists": {
+    "title": "Artist Information",
+    "viewDetails": "Click to view artist details"
+  },
+  "notFound": {
+    "title": "Oops! Track not found...",
+    "message": "Please try searching for the track again.",
+    "backToHome": "Back to Home",
+    "searchTrack": "Search Tracks"
+  }
 }
