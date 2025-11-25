@@ -85,5 +85,34 @@ export interface HomeTranslations {
   };
 }
 
+export interface SearchTranslations {
+  pageTitle: string;
+  emptyState: {
+    title: string;
+    message: string;
+  };
+  noResults: {
+    title: string;
+    message: string;
+  };
+  categories: {
+    all: string;
+    artists: string;
+    tracks: string;
+  };
+  artistResults: {
+    title: string;
+    viewAll: string;
+    noResults: string;
+    showingAll: string;
+  };
+  trackResults: {
+    title: string;
+    viewAll: string;
+    noResults: string;
+    showingAll: string;
+  };
+}
+
 export type SupportedLanguages = "en" | "zh-TW" | "jp";
-export type Namespaces = "common" | "artist" | "track" | "home";
+export type Namespaces = "common" | "artist" | "track" | "home" | "search";

@@ -1,0 +1,28 @@
+{
+  "pageTitle": "搜尋 | 熱門音樂",
+  "emptyState": {
+    "title": "開始搜尋",
+    "message": "在上方搜尋框輸入藝人或歌曲名稱"
+  },
+  "noResults": {
+    "title": "找不到結果",
+    "message": "未找到 \"{{query}}\" 相關的藝人或歌曲"
+  },
+  "categories": {
+    "all": "全部",
+    "artists": "藝人 ({{count}})",
+    "tracks": "歌曲 ({{count}})"
+  },
+  "artistResults": {
+    "title": "藝人",
+    "viewAll": "查看全部藝人",
+    "noResults": "未找到 \"{{query}}\" 相關藝人",
+    "showingAll": "已顯示全部 {{count}} 位藝人"
+  },
+  "trackResults": {
+    "title": "歌曲",
+    "viewAll": "查看全部歌曲",
+    "noResults": "未找到 \"{{query}}\" 相關歌曲",
+    "showingAll": "已顯示全部 {{count}} 首歌曲"
+  }
+}

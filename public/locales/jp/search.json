@@ -1,0 +1,28 @@
+{
+  "pageTitle": "検索 | ミュージックヒッツ",
+  "emptyState": {
+    "title": "検索を開始",
+    "message": "上の検索ボックスにアーティストまたは曲名を入力してください"
+  },
+  "noResults": {
+    "title": "結果が見つかりません",
+    "message": "「{{query}}」に関連するアーティストまたはトラックが見つかりませんでした"
+  },
+  "categories": {
+    "all": "すべて",
+    "artists": "アーティスト ({{count}})",
+    "tracks": "トラック ({{count}})"
+  },
+  "artistResults": {
+    "title": "アーティスト",
+    "viewAll": "すべてのアーティストを表示",
+    "noResults": "「{{query}}」に関連するアーティストが見つかりませんでした",
+    "showingAll": "{{count}} 人のアーティストをすべて表示中"
+  },
+  "trackResults": {
+    "title": "トラック",
+    "viewAll": "すべてのトラックを表示",
+    "noResults": "「{{query}}」に関連するトラックが見つかりませんでした",
+    "showingAll": "{{count}} 曲のトラックをすべて表示中"
+  }
+}

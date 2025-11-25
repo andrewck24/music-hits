@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TrackItem } from "@/components/track/item";
 import { TrackSkeleton } from "@/components/track/skeleton";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ export function TrackSearchResults({
   onViewAll,
   query,
 }: TrackSearchResultsProps) {
+  const { t } = useTranslation("search");
   // Pagination state for infinite scroll (full mode only)
   const [displayCount, setDisplayCount] = useState(BATCH_SIZE);
 
@@ -67,7 +69,7 @@ export function TrackSearchResults({
       return (
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">
-            未找到 &quot;{query}&quot; 相關歌曲
+            {t("trackResults.noResults", { query })}
           </p>
         </Card>
       );
@@ -100,10 +102,12 @@ export function TrackSearchResults({
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-foreground text-2xl font-semibold">歌曲</h2>
+        <h2 className="text-foreground text-2xl font-semibold">
+          {t("trackResults.title")}
+        </h2>
         {showViewAll && onViewAll && (
           <Button variant="ghost" onClick={onViewAll}>
-            查看全部歌曲
+            {t("trackResults.viewAll")}
           </Button>
         )}
       </div>
@@ -127,7 +131,7 @@ export function TrackSearchResults({
           {/* All results shown message */}
           {!hasMore && displayTracks.length > 0 && (
             <p className="mt-6 text-center text-sm text-muted-foreground">
-              已顯示全部 {tracks.length} 首歌曲
+              {t("trackResults.showingAll", { count: tracks.length })}
             </p>
           )}
         </>
