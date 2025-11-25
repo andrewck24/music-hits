@@ -1,5 +1,6 @@
 import { LanguageSync } from "@/components/layout/language-sync";
 import { Header } from "@/components/layout/header";
+import { I18nBanner } from "@/components/layout/i18n-banner";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 /**
@@ -13,6 +14,7 @@ import { Outlet, ScrollRestoration } from "react-router-dom";
  * - Fixed Header
  * - Scroll Restoration
  * - Language synchronization from URL
+ * - Language suggestion banner
  */
 
 export function Layout() {
@@ -20,6 +22,7 @@ export function Layout() {
     <div className="flex min-h-screen flex-col">
       <ScrollRestoration />
       <LanguageSync />
+      <I18nBanner />
       <Header />
       <main className="pt-header-height">
         <Outlet />

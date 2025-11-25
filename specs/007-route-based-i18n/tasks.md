@@ -121,11 +121,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T030 [P] [US3] Create useBannerState hook in src/hooks/use-banner-state.ts (manage isDismissed state with localStorage i18n_banner_dismissed, provide dismiss and reset functions, handle Safari private mode)
-- [ ] T031 [P] [US3] Create useDetectedBrowserLanguage hook in src/hooks/use-language-detection.ts (use i18n.services.languageDetector.detect(), return SupportedLanguages or null if unsupported)
-- [ ] T032 [US3] Create I18nBanner component in src/components/layout/i18n-banner.tsx (display banner when detected language differs from current URL language, use useDetectedBrowserLanguage and useBannerState, provide switch/dismiss buttons, use useChangeLanguage for switching)
-- [ ] T033 [US3] Integrate I18nBanner in src/routes.tsx or src/App.tsx (add I18nBanner component at top of layout, ensure it only shows when appropriate)
-- [ ] T034 [US3] Style I18nBanner component using Tailwind CSS and @/globals.css variables (position at top of page, non-intrusive design, clear close button)
+- [x] T030 [P] [US3] Create useBannerState hook in src/hooks/use-banner-state.ts (manage isDismissed state with localStorage i18n_banner_dismissed, provide dismiss and reset functions, handle Safari private mode)
+- [x] T031 [P] [US3] Create useDetectedBrowserLanguage hook in src/hooks/use-language-detection.ts (use i18n.services.languageDetector.detect(), return SupportedLanguages or null if unsupported)
+- [x] T032 [US3] Create I18nBanner component in src/components/layout/i18n-banner.tsx (display banner when detected language differs from current URL language, use useDetectedBrowserLanguage and useBannerState, provide switch/dismiss buttons, use useChangeLanguage for switching)
+- [x] T033 [US3] Integrate I18nBanner in src/routes.tsx or src/App.tsx (add I18nBanner component at top of layout, ensure it only shows when appropriate)
+- [x] T034 [US3] Style I18nBanner component using Tailwind CSS and @/globals.css variables (position at top of page, non-intrusive design, clear close button)
 
 **Checkpoint**: All user stories should now be independently functional - language detection banner appears for first-time users with supported browser languages
 
