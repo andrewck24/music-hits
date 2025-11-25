@@ -1,0 +1,20 @@
+{
+  "header": {
+    "title": "ミュージックヒッツ",
+    "search": "検索"
+  },
+  "languageSwitch": {
+    "label": "言語",
+    "current": "現在の言語：{{language}}"
+  },
+  "banner": {
+    "title": "言語の提案",
+    "message": "ブラウザの言語が {{language}} に設定されています。切り替えますか？",
+    "switchButton": "{{language}} に切り替える",
+    "dismissButton": "日本語を維持"
+  },
+  "menu": {
+    "github": "GitHubで見る",
+    "close": "閉じる"
+  }
+}

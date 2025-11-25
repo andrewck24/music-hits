@@ -1,0 +1,9 @@
+{
+  "title": "アーティストプロフィール",
+  "followers": "フォロワー：{{count}}",
+  "genres": "ジャンル",
+  "topTracks": "人気トラック",
+  "relatedArtists": "関連アーティスト",
+  "biography": "プロフィール",
+  "noData": "データなし"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Track Details",
+  "artist": "Artist",
+  "album": "Album",
+  "duration": "Duration",
+  "releaseDate": "Release Date",
+  "audioFeatures": "Audio Features",
+  "features": {
+    "danceability": "Danceability",
+    "energy": "Energy",
+    "valence": "Valence",
+    "tempo": "Tempo",
+    "loudness": "Loudness"
+  },
+  "noData": "No data available"
+}

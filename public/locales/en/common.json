@@ -1,0 +1,20 @@
+{
+  "header": {
+    "title": "Music Hits",
+    "search": "Search"
+  },
+  "languageSwitch": {
+    "label": "Language",
+    "current": "Current language: {{language}}"
+  },
+  "banner": {
+    "title": "Language Suggestion",
+    "message": "Your browser language is set to {{language}}. Would you like to switch?",
+    "switchButton": "Switch to {{language}}",
+    "dismissButton": "Keep English"
+  },
+  "menu": {
+    "github": "View on GitHub",
+    "close": "Close"
+  }
+}

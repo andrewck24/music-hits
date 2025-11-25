@@ -1,0 +1,9 @@
+{
+  "title": "藝人資料",
+  "followers": "追蹤者：{{count}}",
+  "genres": "音樂類型",
+  "topTracks": "熱門歌曲",
+  "relatedArtists": "相關藝人",
+  "biography": "簡介",
+  "noData": "無可用資料"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "歌曲詳情",
+  "artist": "藝人",
+  "album": "專輯",
+  "duration": "時長",
+  "releaseDate": "發行日期",
+  "audioFeatures": "音訊特徵",
+  "features": {
+    "danceability": "可舞性",
+    "energy": "能量",
+    "valence": "情緒",
+    "tempo": "速度",
+    "loudness": "響度"
+  },
+  "noData": "無可用資料"
+}

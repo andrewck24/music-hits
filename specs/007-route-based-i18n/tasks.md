@@ -35,19 +35,19 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 [P] Create translation type definitions in src/types/translations.ts (CommonTranslations, ArtistTranslations, TrackTranslations interfaces)
-- [ ] T006 [P] Create i18next module augmentation in src/types/i18next.d.ts (declare CustomTypeOptions)
-- [ ] T007 Create i18n core configuration in src/lib/i18n.ts (export defaultNS, resources, configure i18next with Backend, LanguageDetector, initReactI18next)
-- [ ] T008 Initialize i18next in src/main.tsx (import @/lib/i18n before App)
-- [ ] T009 [P] Create English common translations in public/locales/en/common.json
-- [ ] T010 [P] Create Traditional Chinese common translations in public/locales/zh-TW/common.json
-- [ ] T011 [P] Create Japanese common translations in public/locales/jp/common.json
-- [ ] T012 [P] Create English artist translations in public/locales/en/artist.json
-- [ ] T013 [P] Create Traditional Chinese artist translations in public/locales/zh-TW/artist.json
-- [ ] T014 [P] Create Japanese artist translations in public/locales/jp/artist.json
-- [ ] T015 [P] Create English track translations in public/locales/en/track.json
-- [ ] T016 [P] Create Traditional Chinese track translations in public/locales/zh-TW/track.json
-- [ ] T017 [P] Create Japanese track translations in public/locales/jp/track.json
+- [x] T005 [P] Create translation type definitions in src/types/translations.ts (CommonTranslations, ArtistTranslations, TrackTranslations interfaces)
+- [x] T006 [P] Create i18next module augmentation in src/types/i18next.d.ts (declare CustomTypeOptions)
+- [x] T007 Create i18n core configuration in src/lib/i18n.ts (export defaultNS, resources, configure i18next with Backend, LanguageDetector, initReactI18next)
+- [x] T008 Initialize i18next in src/main.tsx (import @/lib/i18n before App)
+- [x] T009 [P] Create English common translations in public/locales/en/common.json
+- [x] T010 [P] Create Traditional Chinese common translations in public/locales/zh-TW/common.json
+- [x] T011 [P] Create Japanese common translations in public/locales/jp/common.json
+- [x] T012 [P] Create English artist translations in public/locales/en/artist.json
+- [x] T013 [P] Create Traditional Chinese artist translations in public/locales/zh-TW/artist.json
+- [x] T014 [P] Create Japanese artist translations in public/locales/jp/artist.json
+- [x] T015 [P] Create English track translations in public/locales/en/track.json
+- [x] T016 [P] Create Traditional Chinese track translations in public/locales/zh-TW/track.json
+- [x] T017 [P] Create Japanese track translations in public/locales/jp/track.json
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

@@ -1,0 +1,9 @@
+{
+  "title": "Artist Profile",
+  "followers": "Followers: {{count}}",
+  "genres": "Genres",
+  "topTracks": "Top Tracks",
+  "relatedArtists": "Related Artists",
+  "biography": "Biography",
+  "noData": "No data available"
+}

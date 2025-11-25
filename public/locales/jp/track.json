@@ -1,0 +1,16 @@
+{
+  "title": "トラック詳細",
+  "artist": "アーティスト",
+  "album": "アルバム",
+  "duration": "再生時間",
+  "releaseDate": "リリース日",
+  "audioFeatures": "オーディオ特性",
+  "features": {
+    "danceability": "ダンス性",
+    "energy": "エネルギー",
+    "valence": "ポジティブさ",
+    "tempo": "テンポ",
+    "loudness": "ラウドネス"
+  },
+  "noData": "データなし"
+}
