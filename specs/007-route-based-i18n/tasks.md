@@ -61,12 +61,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Create useCurrentLanguage hook in src/hooks/use-current-language.ts (parse language from URL pathname, return SupportedLanguages)
-- [ ] T019 [US1] Create useChangeLanguage hook in src/hooks/use-change-language.ts (navigate to new language path while preserving query params and hash)
-- [ ] T020 [US1] Update routes configuration in src/routes.tsx (add language prefix routes for zh-TW and jp, preserve en as default without prefix)
-- [ ] T021 [US1] Add redirect from /en/ to / in src/routes.tsx (handle edge case where users visit /en/ paths)
-- [ ] T022 [US1] Create LanguageSync component in src/components/language-sync.tsx (sync i18n.language with URL-based language using useCurrentLanguage and useEffect)
-- [ ] T023 [US1] Integrate LanguageSync in src/routes.tsx (add LanguageSync component to ensure i18n state matches URL)
+- [x] T018 [US1] Create useCurrentLanguage hook in src/hooks/use-current-language.ts (parse language from URL pathname, return SupportedLanguages)
+- [x] T019 [US1] Create useChangeLanguage hook in src/hooks/use-change-language.ts (navigate to new language path while preserving query params and hash)
+- [x] T020 [US1] Update routes configuration in src/routes.tsx (add language prefix routes for zh-TW and jp, preserve en as default without prefix)
+- [x] T021 [US1] Add redirect from /en/ to / in src/routes.tsx (handle edge case where users visit /en/ paths)
+- [x] T022 [US1] Create LanguageSync component in src/components/language-sync.tsx (sync i18n.language with URL-based language using useCurrentLanguage and useEffect)
+- [x] T023 [US1] Integrate LanguageSync in src/routes.tsx (add LanguageSync component to ensure i18n state matches URL)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - users can visit `/`, `/zh-TW/`, `/jp/` and see content in the corresponding language. Redirects from `/en/*` to `/*` should work correctly
 
@@ -121,6 +121,7 @@
 - [ ] T040 Run linting and type checking: npm run lint && npm run type-check
 - [ ] T041 Verify translation files load correctly in development mode (check Network panel for /locales/\*/common.json requests)
 - [ ] T042 Test language switching preserves query parameters and hash (manual test: /search?q=test switching languages)
+- [ ] T042a Update all Link components to include language prefix in href/to paths (create useLocalizedPath hook to generate language-aware paths)
 
 ---
 
