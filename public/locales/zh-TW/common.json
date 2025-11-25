@@ -16,5 +16,27 @@
   "menu": {
     "github": "在 GitHub 上查看",
     "close": "關閉"
+  },
+  "actions": {
+    "search": "搜尋",
+    "back": "返回",
+    "home": "首頁",
+    "backToHome": "返回首頁",
+    "close": "關閉",
+    "viewMore": "查看更多",
+    "loadMore": "載入更多",
+    "tryAgain": "重試"
+  },
+  "states": {
+    "loading": "載入中...",
+    "error": "錯誤",
+    "noData": "無資料",
+    "notFound": "找不到"
+  },
+  "errors": {
+    "notFound": "糟糕！找不到...",
+    "loadError": "載入資料失敗",
+    "tryAgainMessage": "請再嘗試重新搜尋。",
+    "genericError": "發生錯誤"
   }
 }

@@ -16,5 +16,27 @@
   "menu": {
     "github": "GitHubで見る",
     "close": "閉じる"
+  },
+  "actions": {
+    "search": "検索",
+    "back": "戻る",
+    "home": "ホーム",
+    "backToHome": "ホームに戻る",
+    "close": "閉じる",
+    "viewMore": "もっと見る",
+    "loadMore": "さらに読み込む",
+    "tryAgain": "再試行"
+  },
+  "states": {
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "noData": "データがありません",
+    "notFound": "見つかりません"
+  },
+  "errors": {
+    "notFound": "見つかりませんでした...",
+    "loadError": "データの読み込みに失敗しました",
+    "tryAgainMessage": "もう一度検索してみてください。",
+    "genericError": "エラーが発生しました"
   }
 }
