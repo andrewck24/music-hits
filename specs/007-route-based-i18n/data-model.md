@@ -121,16 +121,22 @@ export const resources = {
     common: {} as CommonTranslations,
     artist: {} as ArtistTranslations,
     track: {} as TrackTranslations,
+    home: {} as HomeTranslations,
+    search: {} as SearchTranslations,
   },
   "zh-TW": {
     common: {} as CommonTranslations,
     artist: {} as ArtistTranslations,
     track: {} as TrackTranslations,
+    home: {} as HomeTranslations,
+    search: {} as SearchTranslations,
   },
   jp: {
     common: {} as CommonTranslations,
     artist: {} as ArtistTranslations,
     track: {} as TrackTranslations,
+    home: {} as HomeTranslations,
+    search: {} as SearchTranslations,
   },
 } as const;
 
@@ -142,7 +148,7 @@ i18n
     fallbackLng: "en",
     debug: process.env.NODE_ENV === "development",
     defaultNS,
-    ns: ["common", "artist", "track"],
+    ns: ["common", "artist", "track", "home", "search"],
     returnNull: false, // 避免返回 null
     interpolation: {
       escapeValue: false, // React 已處理 XSS
@@ -211,8 +217,26 @@ export interface TrackTranslations {
   noData: string;
 }
 
+export interface HomeTranslations {
+  hero: {
+    title: string;
+    subtitle: string;
+    ctaButton: string;
+  };
+  popularArtists: {
+    title: string;
+  };
+  popularTracks: {
+    title: string;
+  };
+}
+
+export interface SearchTranslations {
+  // 搜尋頁面專用翻譯（待實作）
+}
+
 export type SupportedLanguages = "en" | "zh-TW" | "jp";
-export type Namespaces = "common" | "artist" | "track";
+export type Namespaces = "common" | "artist" | "track" | "home" | "search";
 ```
 
 **重要說明**:
@@ -251,15 +275,21 @@ public/locales/
 ├── en/
 │   ├── common.json
 │   ├── artist.json
-│   └── track.json
+│   ├── track.json
+│   ├── home.json
+│   └── search.json
 ├── zh-TW/
 │   ├── common.json
 │   ├── artist.json
-│   └── track.json
+│   ├── track.json
+│   ├── home.json
+│   └── search.json
 └── jp/
     ├── common.json
     ├── artist.json
-    └── track.json
+    ├── track.json
+    ├── home.json
+    └── search.json
 ```
 
 **JSON Schema**:
@@ -409,13 +439,15 @@ interface CommonTranslations {
 | Namespace | 用途                                                  | 使用頁面             |
 | --------- | ----------------------------------------------------- | -------------------- |
 | `common`  | 共用 UI 元素（header, menu, banner, language-switch） | 所有頁面             |
+| `home`    | 首頁專用翻譯（hero, popular artists/tracks）          | `/:lang?/`           |
+| `search`  | 搜尋頁面專用翻譯                                      | `/:lang?/search`     |
 | `artist`  | 藝人頁面專用翻譯                                      | `/:lang?/artist/:id` |
 | `track`   | 歌曲頁面專用翻譯                                      | `/:lang?/track/:id`  |
 
 **載入策略**:
 
 - `common` namespace 在應用啟動時預載
-- `artist` 和 `track` namespace 在對應頁面訪問時動態載入
+- `home`, `search`, `artist`, `track` namespace 在對應頁面訪問時動態載入
 
 **驗證規則**:
 
@@ -577,12 +609,12 @@ const BASE_ROUTES: RouteConfig[] = [
   {
     path: '/',
     element: <HomePage />,
-    namespaces: ['common']
+    namespaces: ['common', 'home']
   },
   {
     path: '/search',
     element: <SearchPage />,
-    namespaces: ['common']
+    namespaces: ['common', 'search']
   },
   {
     path: '/artist/:id',
@@ -800,7 +832,7 @@ function useChangeLanguage() {
 ```typescript
 // src/types/i18n.ts
 export type SupportedLanguages = "en" | "zh-TW" | "jp";
-export type Namespaces = "common" | "artist" | "track";
+export type Namespaces = "common" | "artist" | "track" | "home" | "search";
 
 export interface LanguageConfig {
   code: SupportedLanguages;

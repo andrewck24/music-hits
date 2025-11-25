@@ -8,7 +8,7 @@
 - 預設為 en，且 en 不要顯示在路由中
 - 支援 zh-TW, jp
 - 可以偵測瀏覽器語言，提醒用戶切換至支援的語言或預設的英文
-- 根據頁面使用不同的 namespace: common (home, search), artist, track"
+- 根據頁面使用不同的 namespace: common (layout components), home, search, artist, track"
 
 ## Clarifications
 
