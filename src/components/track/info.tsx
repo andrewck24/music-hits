@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useGetTrackQuery } from "@/services";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 interface TrackInfoProps {
@@ -30,6 +31,7 @@ interface TrackInfoProps {
  */
 
 export function TrackInfo({ trackId, className }: TrackInfoProps) {
+  const { t } = useTranslation("track");
   const { data: track, isLoading, error } = useGetTrackQuery(trackId);
 
   // Loading 狀態
@@ -66,14 +68,17 @@ export function TrackInfo({ trackId, className }: TrackInfoProps) {
         {/* Album Info */}
         <div className="text-muted-foreground space-y-2 text-sm">
           <div>
-            <span className="font-semibold">專輯</span>: {track.album?.name}
+            <span className="font-semibold">{t("info.albumLabel")}</span>:{" "}
+            {track.album?.name}
           </div>
           <div>
-            <span className="font-semibold">發行年份</span>:{" "}
-            {track.album?.release_date?.split("-")[0]}
+            <span className="font-semibold">{t("info.releaseYearLabel")}</span>
+            : {track.album?.release_date?.split("-")[0]}
           </div>
           <div className="w-full md:max-w-xs">
-            <div className="text-muted-foreground mb-2 text-xs">人氣度</div>
+            <div className="text-muted-foreground mb-2 text-xs">
+              {t("info.popularity")}
+            </div>
             <div className="bg-secondary h-2 w-full overflow-hidden rounded-full">
               <div
                 className="bg-primary h-full transition-all"
@@ -95,7 +100,7 @@ export function TrackInfo({ trackId, className }: TrackInfoProps) {
               rel="noopener noreferrer"
               className="md:w-36"
             >
-              在 Spotify 上開啟
+              {t("info.openInSpotify")}
             </Link>
           </Button>
         )}
@@ -141,11 +146,13 @@ interface TrackInfoErrorProps {
  * TrackInfoError
  */
 function TrackInfoError({ className }: TrackInfoErrorProps) {
+  const { t } = useTranslation("track");
+
   return (
     <Card className={cn("flex flex-col gap-6 p-6 md:flex-row", className)}>
-      <p className="text-destructive mb-4 text-lg">無法載入歌曲資訊</p>
+      <p className="text-destructive mb-4 text-lg">{t("info.loadError")}</p>
       <p className="text-muted-foreground text-sm">
-        請稍後再試或檢查您的網路連線。
+        {t("info.loadErrorMessage")}
       </p>
     </Card>
   );

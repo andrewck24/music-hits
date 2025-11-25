@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { useGetTrackQuery } from "@/services";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -25,13 +26,16 @@ interface ArtistsListProps {
  *   `<ArtistsList trackId="someTrackId" className="optional-class" />`
  */
 export function ArtistsList({ trackId, className }: ArtistsListProps) {
+  const { t } = useTranslation("track");
   const { data: track, isLoading, error } = useGetTrackQuery(trackId);
 
   if (isLoading || error || !track) return null;
 
   return (
     <section className={cn("border-border border-t pt-8", className)}>
-      <h2 className="text-foreground mb-4 text-2xl font-bold">藝人資訊</h2>
+      <h2 className="text-foreground mb-4 text-2xl font-bold">
+        {t("artists.title")}
+      </h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {track.artists.map((artist) => (
           <Link key={artist.id} to={`/artist/${artist.id}`} className="group">
@@ -40,7 +44,7 @@ export function ArtistsList({ trackId, className }: ArtistsListProps) {
                 {artist.name}
               </h3>
               <p className="text-muted-foreground mt-2 text-sm">
-                點擊查看藝人詳細資訊
+                {t("artists.viewDetails")}
               </p>
             </Card>
           </Link>

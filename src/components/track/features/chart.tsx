@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useGetAudioFeaturesQuery } from "@/services";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   PolarAngleAxis,
   PolarGrid,
@@ -44,6 +45,7 @@ interface FeatureChartProps {
 }
 
 export function FeatureChart({ trackId, className }: FeatureChartProps) {
+  const { t } = useTranslation("track");
   const {
     data: features,
     isLoading,
@@ -57,42 +59,42 @@ export function FeatureChart({ trackId, className }: FeatureChartProps) {
 
     return [
       {
-        name: "聲學",
+        name: t("featureChart.labels.acousticness"),
         value: features.acousticness,
         fullMark: 1,
       },
       {
-        name: "舞蹈",
+        name: t("featureChart.labels.danceability"),
         value: features.danceability,
         fullMark: 1,
       },
       {
-        name: "能量",
+        name: t("featureChart.labels.energy"),
         value: features.energy,
         fullMark: 1,
       },
       {
-        name: "器樂",
+        name: t("featureChart.labels.instrumentalness"),
         value: features.instrumentalness,
         fullMark: 1,
       },
       {
-        name: "現場",
+        name: t("featureChart.labels.liveness"),
         value: features.liveness,
         fullMark: 1,
       },
       {
-        name: "語音",
+        name: t("featureChart.labels.speechiness"),
         value: features.speechiness,
         fullMark: 1,
       },
       {
-        name: "正向",
+        name: t("featureChart.labels.valence"),
         value: features.valence,
         fullMark: 1,
       },
     ];
-  }, [features]);
+  }, [features, t]);
 
   if (isLoading) return <FeatureChartSkeleton className={className} />;
 
@@ -100,12 +102,14 @@ export function FeatureChart({ trackId, className }: FeatureChartProps) {
 
   return (
     <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
-      <h3 className="text-foreground font-semibold">音樂特徵分析</h3>
+      <h3 className="text-foreground font-semibold">
+        {t("featureChart.title")}
+      </h3>
       <ResponsiveContainer width="100%" height="100%" className="min-h-80">
         <RadarChart
           data={chartData}
           // margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-          aria-label="音樂特徵雷達圖"
+          aria-label={t("featureChart.title")}
         >
           <PolarGrid stroke="#404040" />
           <PolarAngleAxis
@@ -118,7 +122,7 @@ export function FeatureChart({ trackId, className }: FeatureChartProps) {
             tick={{ fill: "#B3B3B3", fontSize: 10 }}
           />
           <Radar
-            name="特徵值"
+            name={t("featureChart.featureValue")}
             dataKey="value"
             stroke="#1DB954"
             fill="#1DB954"
@@ -143,9 +147,13 @@ interface FeatureChartSkeletonProps {
 }
 
 function FeatureChartSkeleton({ className }: FeatureChartSkeletonProps) {
+  const { t } = useTranslation("track");
+
   return (
     <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
-      <h3 className="text-foreground font-semibold">音樂特徵分析</h3>
+      <h3 className="text-foreground font-semibold">
+        {t("featureChart.title")}
+      </h3>
       <Skeleton className="h-full min-h-80" />
     </Card>
   );
@@ -156,11 +164,15 @@ interface FeatureChartSkeletonProps {
 }
 
 function FeatureChartError({ className }: FeatureChartSkeletonProps) {
+  const { t } = useTranslation("track");
+
   return (
     <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
-      <h3 className="text-foreground font-semibold">音樂特徵分析</h3>
+      <h3 className="text-foreground font-semibold">
+        {t("featureChart.title")}
+      </h3>
       <p className="text-muted-foreground flex h-full min-h-80 items-center justify-center">
-        目前暫時無法取得音樂特徵
+        {t("featureChart.loadError")}
       </p>
     </Card>
   );

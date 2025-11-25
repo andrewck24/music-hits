@@ -70,20 +70,46 @@ export interface ArtistTranslations {
 }
 
 export interface TrackTranslations {
-  title: string;
-  artist: string;
-  album: string;
-  duration: string;
-  releaseDate: string;
-  audioFeatures: string;
-  features: {
-    danceability: string;
-    energy: string;
-    valence: string;
-    tempo: string;
-    loudness: string;
+  pageTitle: string;
+  info: {
+    albumLabel: string;
+    releaseYearLabel: string;
+    popularity: string;
+    openInSpotify: string;
+    loadError: string;
+    loadErrorMessage: string;
   };
-  noData: string;
+  featureChart: {
+    title: string;
+    labels: {
+      acousticness: string;
+      danceability: string;
+      energy: string;
+      instrumentalness: string;
+      liveness: string;
+      speechiness: string;
+      valence: string;
+    };
+    featureValue: string;
+    loadError: string;
+  };
+  otherFeatures: {
+    key: string;
+    mode: string;
+    tempo: string;
+    durationLabel: string;
+    noData: string;
+  };
+  artists: {
+    title: string;
+    viewDetails: string;
+  };
+  notFound: {
+    title: string;
+    message: string;
+    backToHome: string;
+    searchTrack: string;
+  };
 }
 
 export interface HomeTranslations {
