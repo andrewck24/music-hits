@@ -1,5 +1,7 @@
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { RiCloseLine, RiSearchLine } from "react-icons/ri";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -20,14 +22,21 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ className }: SearchBarProps) {
+  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState(searchParams.get("q") || "");
+  const searchPath = useLocalizedPath("/search");
 
   // Sync input with URL param 'q' and clear if not on search page
   useEffect(() => {
-    if (location.pathname === "/search") {
+    const isSearchPage =
+      location.pathname === "/search" ||
+      location.pathname === "/zh-TW/search" ||
+      location.pathname === "/jp/search";
+
+    if (isSearchPage) {
       setInputValue(searchParams.get("q") || "");
     } else {
       setInputValue("");
@@ -39,12 +48,12 @@ export function SearchBar({ className }: SearchBarProps) {
     setInputValue(value);
 
     // Immediate navigation, use replace to avoid history pollution
-    navigate(`/search?q=${encodeURIComponent(value)}`, { replace: true });
+    navigate(`${searchPath}?q=${encodeURIComponent(value)}`, { replace: true });
   };
 
   const handleClear = () => {
     setInputValue("");
-    navigate("/search?q=", { replace: true });
+    navigate(`${searchPath}?q=`, { replace: true });
   };
 
   return (
@@ -62,14 +71,14 @@ export function SearchBar({ className }: SearchBarProps) {
         type="text"
         value={inputValue}
         onChange={handleChange}
-        placeholder="搜尋歌曲或藝人..."
+        placeholder={t("header.searchPlaceholder")}
         className="placeholder:text-muted-foreground text-foreground flex-1 bg-transparent text-base outline-none"
       />
       {inputValue && (
         <button
           onClick={handleClear}
           className="text-muted-foreground hover:text-foreground ml-2 focus:outline-none"
-          aria-label="Clear search"
+          aria-label={t("header.clearSearch")}
         >
           <RiCloseLine className="h-6 w-6" />
         </button>

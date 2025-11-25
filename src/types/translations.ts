@@ -2,6 +2,8 @@ export interface CommonTranslations {
   header: {
     title: string;
     search: string;
+    searchPlaceholder: string;
+    clearSearch: string;
   };
   languageSwitch: {
     label: string;
@@ -14,8 +16,31 @@ export interface CommonTranslations {
     dismissButton: string;
   };
   menu: {
+    label: string;
     github: string;
     close: string;
+  };
+  actions: {
+    search: string;
+    back: string;
+    home: string;
+    backToHome: string;
+    close: string;
+    viewMore: string;
+    loadMore: string;
+    tryAgain: string;
+  };
+  states: {
+    loading: string;
+    error: string;
+    noData: string;
+    notFound: string;
+  };
+  errors: {
+    notFound: string;
+    loadError: string;
+    tryAgainMessage: string;
+    genericError: string;
   };
 }
 

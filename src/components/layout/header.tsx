@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { cn } from "@/lib/utils";
 import { RiGithubFill, RiSearchLine } from "react-icons/ri";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 
 /**
@@ -31,6 +32,7 @@ import { Link, useLocation } from "react-router-dom";
  *   <Header />
  */
 export function Header() {
+  const { t } = useTranslation("common");
   const location = useLocation();
   const homePath = useLocalizedPath("/");
   const showSearchButton = location.pathname !== "/search";
@@ -44,7 +46,7 @@ export function Header() {
       >
         <Spotify className="size-10" />
         <h1 className="text-foreground text-xl font-bold max-lg:hidden">
-          Music Hits
+          {t("header.title")}
         </h1>
       </Link>
 
@@ -66,6 +68,7 @@ export function Header() {
 }
 
 function SearchButton({ className }: { className?: string }) {
+  const { t } = useTranslation("common");
   const searchPath = useLocalizedPath("/search");
 
   return (
@@ -76,9 +79,9 @@ function SearchButton({ className }: { className?: string }) {
         className,
       )}
       variant="secondary"
-      aria-label="Search"
+      aria-label={t("header.search")}
     >
-      <Link to={searchPath} aria-label="Search">
+      <Link to={searchPath} aria-label={t("header.search")}>
         <RiSearchLine />
       </Link>
     </Button>
@@ -86,6 +89,8 @@ function SearchButton({ className }: { className?: string }) {
 }
 
 function GitHubLink({ className }: { className?: string }) {
+  const { t } = useTranslation("common");
+
   return (
     <Button
       asChild
@@ -94,7 +99,7 @@ function GitHubLink({ className }: { className?: string }) {
         "text-foreground hover:text-muted-foreground size-12 rounded-full p-0 transition-colors [&>svg]:size-8",
         className,
       )}
-      aria-label="View on GitHub"
+      aria-label={t("menu.github")}
     >
       <Link
         to="https://github.com/andrewck24/music-hits"

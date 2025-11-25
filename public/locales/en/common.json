@@ -1,7 +1,9 @@
 {
   "header": {
     "title": "Music Hits",
-    "search": "Search"
+    "search": "Search",
+    "searchPlaceholder": "Search for songs or artists...",
+    "clearSearch": "Clear search"
   },
   "languageSwitch": {
     "label": "Language",
@@ -14,6 +16,7 @@
     "dismissButton": "Keep English"
   },
   "menu": {
+    "label": "Menu",
     "github": "View on GitHub",
     "close": "Close"
   },

@@ -1,7 +1,9 @@
 {
   "header": {
     "title": "熱門音樂",
-    "search": "搜尋"
+    "search": "搜尋",
+    "searchPlaceholder": "搜尋歌曲或藝人...",
+    "clearSearch": "清除搜尋"
   },
   "languageSwitch": {
     "label": "語言",
@@ -14,6 +16,7 @@
     "dismissButton": "保持繁體中文"
   },
   "menu": {
+    "label": "選單",
     "github": "在 GitHub 上查看",
     "close": "關閉"
   },

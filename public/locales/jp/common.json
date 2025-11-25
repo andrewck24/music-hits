@@ -1,7 +1,9 @@
 {
   "header": {
     "title": "ミュージックヒッツ",
-    "search": "検索"
+    "search": "検索",
+    "searchPlaceholder": "曲やアーティストを検索...",
+    "clearSearch": "検索をクリア"
   },
   "languageSwitch": {
     "label": "言語",
@@ -14,6 +16,7 @@
     "dismissButton": "日本語を維持"
   },
   "menu": {
+    "label": "メニュー",
     "github": "GitHubで見る",
     "close": "閉じる"
   },

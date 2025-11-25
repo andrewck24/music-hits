@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { RiCloseLine, RiGithubFill, RiMenuLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -43,6 +44,7 @@ interface MenuProps {
  * @param {string} [props.className] - Optional CSS class names for responsive behavior
  */
 export function Menu({ className }: MenuProps) {
+  const { t } = useTranslation("common");
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -54,7 +56,7 @@ export function Menu({ className }: MenuProps) {
             className,
           )}
           variant="secondary"
-          aria-label="Menu"
+          aria-label={t("menu.label")}
         >
           {isOpen ? <RiCloseLine /> : <RiMenuLine />}
         </Button>
@@ -78,7 +80,7 @@ export function Menu({ className }: MenuProps) {
             className="hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors"
           >
             <RiGithubFill className="size-5" />
-            <span>View on GitHub</span>
+            <span>{t("menu.github")}</span>
           </Link>
         </div>
       </PopoverContent>
