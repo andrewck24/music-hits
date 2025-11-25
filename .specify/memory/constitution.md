@@ -5,7 +5,7 @@ Rationale: Documentation structure refactoring and agent script updates
 
 Modified principles: None
 
-Added sections: 
+Added sections:
 - Git Commit & PR Message
 
 Removed sections: None
@@ -31,7 +31,7 @@ Tooling updates:
 
 本專案必須遵循 TypeScript 與 React 生態系的最佳實踐：
 
-- 使用 TypeScript 進行型別安全開發（當前為 JavaScript，需遷移）
+- 使用 TypeScript 進行型別安全開發（已遷移完成，使用 TypeScript 5.9.3）
 - 遵循 ESLint 規則，保持程式碼品質
 - 採用函數式元件與 Hooks 模式
 - 使用現代化工具鏈（Vite、React 19）
