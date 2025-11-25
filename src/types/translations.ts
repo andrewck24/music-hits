@@ -71,5 +71,19 @@ export interface TrackTranslations {
   noData: string;
 }
 
+export interface HomeTranslations {
+  hero: {
+    title: string;
+    subtitle: string;
+    ctaButton: string;
+  };
+  popularArtists: {
+    title: string;
+  };
+  popularTracks: {
+    title: string;
+  };
+}
+
 export type SupportedLanguages = "en" | "zh-TW" | "jp";
-export type Namespaces = "common" | "artist" | "track";
+export type Namespaces = "common" | "artist" | "track" | "home";

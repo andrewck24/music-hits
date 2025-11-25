@@ -1,6 +1,7 @@
 import type {
   ArtistTranslations,
   CommonTranslations,
+  HomeTranslations,
   SupportedLanguages,
   TrackTranslations,
 } from "@/types/translations";
@@ -40,16 +41,19 @@ export const resources = {
     common: {} as CommonTranslations,
     artist: {} as ArtistTranslations,
     track: {} as TrackTranslations,
+    home: {} as HomeTranslations,
   },
   "zh-TW": {
     common: {} as CommonTranslations,
     artist: {} as ArtistTranslations,
     track: {} as TrackTranslations,
+    home: {} as HomeTranslations,
   },
   jp: {
     common: {} as CommonTranslations,
     artist: {} as ArtistTranslations,
     track: {} as TrackTranslations,
+    home: {} as HomeTranslations,
   },
 } as const;
 
@@ -69,7 +73,7 @@ i18n
     },
     debug: import.meta.env.DEV,
     defaultNS,
-    ns: ["common", "artist", "track"],
+    ns: ["common", "artist", "track", "home"],
     returnNull: false,
     interpolation: {
       escapeValue: false,

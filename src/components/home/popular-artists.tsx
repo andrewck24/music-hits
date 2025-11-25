@@ -4,12 +4,14 @@ import { Carousel } from "@/components/ui/carousel";
 import { RECOMMENDED_ARTIST_IDS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useGetSeveralArtistsQuery } from "@/services";
+import { useTranslation } from "react-i18next";
 
 interface PopularArtistsProps {
   className?: string;
 }
 
 export function PopularArtists({ className }: PopularArtistsProps) {
+  const { t } = useTranslation("home");
   // Batch fetch artist data
   // Note: data is not used directly - batch fetch populates cache via upsertQueryData
   // Child ArtistCard components then fetch from cache via useGetArtistQuery
@@ -30,7 +32,7 @@ export function PopularArtists({ className }: PopularArtistsProps) {
     <section className={cn("", className)}>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-foreground text-2xl font-bold tracking-tight">
-          Popular Artists
+          {t("popularArtists.title")}
         </h2>
       </div>
 

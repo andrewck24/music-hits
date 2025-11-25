@@ -1,0 +1,13 @@
+{
+  "hero": {
+    "title": "熱門音樂",
+    "subtitle": "探索 Spotify 上最受歡迎的藝人和歌曲。今天就發現您的下一首最愛！",
+    "ctaButton": "前往搜尋"
+  },
+  "popularArtists": {
+    "title": "熱門藝人"
+  },
+  "popularTracks": {
+    "title": "熱門歌曲"
+  }
+}
