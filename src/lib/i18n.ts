@@ -58,7 +58,15 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: "en",
+    fallbackLng: {
+      // All Chinese variants fallback to Traditional Chinese (zh-TW)
+      zh: ["zh-TW", "en"],
+      "zh-CN": ["zh-TW", "en"],
+      "zh-Hans": ["zh-TW", "en"],
+      "zh-Hant": ["zh-TW", "en"],
+      // Default fallback to English
+      default: ["en"],
+    },
     debug: import.meta.env.DEV,
     defaultNS,
     ns: ["common", "artist", "track"],
