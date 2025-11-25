@@ -1,9 +1,24 @@
 {
+  "pageTitle": "{{name}} | Music Hits",
   "title": "Artist Profile",
   "followers": "Followers: {{count}}",
   "genres": "Genres",
   "topTracks": "Top Tracks",
   "relatedArtists": "Related Artists",
   "biography": "Biography",
-  "noData": "No data available"
+  "noData": "No data available",
+  "profile": {
+    "followersCount": "{{formattedCount}} followers",
+    "popularity": "Popularity"
+  },
+  "tracks": {
+    "sectionTitle": "Tracks by {{name}}",
+    "noTracks": "No tracks found for {{name}} in our database"
+  },
+  "notFound": {
+    "title": "Oops! Artist not found...",
+    "message": "Please try searching for the artist again.",
+    "backToHome": "Back to Home",
+    "searchArtist": "Search Artists"
+  }
 }

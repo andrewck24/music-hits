@@ -45,6 +45,7 @@ export interface CommonTranslations {
 }
 
 export interface ArtistTranslations {
+  pageTitle: string;
   title: string;
   followers: string;
   genres: string;
@@ -52,6 +53,20 @@ export interface ArtistTranslations {
   relatedArtists: string;
   biography: string;
   noData: string;
+  profile: {
+    followersCount: string;
+    popularity: string;
+  };
+  tracks: {
+    sectionTitle: string;
+    noTracks: string;
+  };
+  notFound: {
+    title: string;
+    message: string;
+    backToHome: string;
+    searchArtist: string;
+  };
 }
 
 export interface TrackTranslations {

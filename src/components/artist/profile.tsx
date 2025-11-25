@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatCompactNumber } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { useGetArtistQuery } from "@/services";
+import { useTranslation } from "react-i18next";
 
 /**
  * ArtistProfile Component
@@ -30,6 +31,7 @@ interface ArtistProfileProps {
 }
 
 export function ArtistProfile({ artistId, className }: ArtistProfileProps) {
+  const { t } = useTranslation("artist");
   const { data: artist, isLoading } = useGetArtistQuery(artistId);
 
   if (isLoading) {
@@ -75,7 +77,9 @@ export function ArtistProfile({ artistId, className }: ArtistProfileProps) {
 
         {/* Followers */}
         <div className="text-muted-foreground mb-4 text-sm">
-          {formatCompactNumber(artist?.followers?.total)} 位追蹤者
+          {t("profile.followersCount", {
+            formattedCount: formatCompactNumber(artist?.followers?.total),
+          })}
         </div>
 
         {/* Genres */}
@@ -96,7 +100,9 @@ export function ArtistProfile({ artistId, className }: ArtistProfileProps) {
 
         {/* Popularity Bar */}
         <div className="w-full max-w-xs">
-          <div className="text-muted-foreground mb-2 text-xs">人氣度</div>
+          <div className="text-muted-foreground mb-2 text-xs">
+            {t("profile.popularity")}
+          </div>
           <div className="bg-secondary h-2 w-full overflow-hidden rounded-full">
             <div
               className="bg-primary h-full transition-all"
