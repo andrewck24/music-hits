@@ -22,10 +22,10 @@
 
 **Purpose**: Install dependencies and create basic directory structure
 
-- [ ] T001 Install i18next dependencies: i18next@^23.11.5, react-i18next@^14.0.0, i18next-http-backend@^2.5.0, i18next-browser-languagedetector@^7.2.0
-- [ ] T002 [P] Create types directory structure: src/types/
-- [ ] T003 [P] Create translation files directory structure: public/locales/en/, public/locales/zh-TW/, public/locales/jp/
-- [ ] T004 [P] Create hooks directory if not exists: src/hooks/
+- [x] T001 Install i18next dependencies: i18next@^23.11.5, react-i18next@^14.0.0, i18next-http-backend@^2.5.0, i18next-browser-languagedetector@^7.2.0
+- [x] T002 [P] Create types directory structure: src/types/
+- [x] T003 [P] Create translation files directory structure: public/locales/en/, public/locales/zh-TW/, public/locales/jp/
+- [x] T004 [P] Create hooks directory if not exists: src/hooks/
 
 ---
 
