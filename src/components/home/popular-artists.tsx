@@ -41,7 +41,7 @@ export function PopularArtists({ className }: PopularArtistsProps) {
               (_, index) => (
                 <ArtistSkeleton
                   key={`skeleton-${index}`}
-                  className="shrink-0 basis-[10rem] snap-start md:basis-[12rem]"
+                  className="shrink-0 basis-40 snap-start md:basis-48"
                 />
               ),
             )
@@ -51,7 +51,7 @@ export function PopularArtists({ className }: PopularArtistsProps) {
                 key={artistId}
                 artistId={artistId}
                 artistName="" // Name will be fetched
-                className="shrink-0 basis-[10rem] snap-start md:basis-[12rem]"
+                className="shrink-0 basis-40 snap-start md:basis-48"
               />
             ))}
       </Carousel>

@@ -41,7 +41,7 @@ export function PopularTracks({ className }: PopularTracksProps) {
               (_, index) => (
                 <TrackCardSkeleton
                   key={`skeleton-${index}`}
-                  className="shrink-0 basis-[10rem] snap-start md:basis-[12rem]"
+                  className="shrink-0 basis-40 snap-start md:basis-48"
                 />
               ),
             )
@@ -50,7 +50,7 @@ export function PopularTracks({ className }: PopularTracksProps) {
               <TrackCard
                 key={trackId}
                 trackId={trackId}
-                className="shrink-0 basis-[10rem] snap-start md:basis-[12rem]"
+                className="shrink-0 basis-40 snap-start md:basis-48"
               />
             ))}
       </Carousel>
