@@ -5,6 +5,7 @@ import { TrackInfo } from "@/components/track/info";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { useGetTrackQuery } from "@/services";
 import { Suspense } from "react";
 import { RiErrorWarningFill } from "react-icons/ri";
@@ -34,6 +35,8 @@ export function TrackPage() {
 }
 function TrackPageContent() {
   const { trackId } = useParams<{ trackId: string }>();
+  const homePath = useLocalizedPath("/");
+  const searchPath = useLocalizedPath("/search");
 
   // Get track data from Spotify API
   const { data: track, isLoading } = useGetTrackQuery(trackId || "", {
@@ -54,10 +57,10 @@ function TrackPageContent() {
           <p className="text-muted-foreground mb-6">請再嘗試重新搜尋歌曲。</p>
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild>
-              <Link to="/">返回首頁</Link>
+              <Link to={homePath}>返回首頁</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/search">搜尋歌曲</Link>
+              <Link to={searchPath}>搜尋歌曲</Link>
             </Button>
           </div>
         </Card>

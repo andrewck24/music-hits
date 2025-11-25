@@ -3,6 +3,7 @@ import { LanguageSwitch } from "@/components/layout/language-switch";
 import { Menu } from "@/components/layout/menu";
 import { SearchBar } from "@/components/layout/search-bar";
 import { Button } from "@/components/ui/button";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { cn } from "@/lib/utils";
 import { RiGithubFill, RiSearchLine } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
@@ -31,13 +32,14 @@ import { Link, useLocation } from "react-router-dom";
  */
 export function Header() {
   const location = useLocation();
+  const homePath = useLocalizedPath("/");
   const showSearchButton = location.pathname !== "/search";
 
   return (
     <header className="from-background h-header-height fixed top-0 z-50 flex w-full items-center justify-between gap-4 bg-linear-to-b to-transparent px-6 py-4">
       {/* Logo */}
       <Link
-        to="/"
+        to={homePath}
         className="flex items-center gap-2 transition-opacity hover:opacity-80"
       >
         <Spotify className="size-10" />
@@ -64,6 +66,8 @@ export function Header() {
 }
 
 function SearchButton({ className }: { className?: string }) {
+  const searchPath = useLocalizedPath("/search");
+
   return (
     <Button
       asChild
@@ -74,7 +78,7 @@ function SearchButton({ className }: { className?: string }) {
       variant="secondary"
       aria-label="Search"
     >
-      <Link to="/search" aria-label="Search">
+      <Link to={searchPath} aria-label="Search">
         <RiSearchLine />
       </Link>
     </Button>

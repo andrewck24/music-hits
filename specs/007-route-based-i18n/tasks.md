@@ -143,7 +143,7 @@
 - [x] T040 Run linting and type checking: npm run lint && npm run type-check
 - [x] T041 Verify translation files load correctly in development mode (check Network panel for /locales/\*/common.json requests)
 - [x] T042 Test language switching preserves query parameters and hash (manual test: /search?q=test switching languages)
-- [ ] T042a Update all Link components to include language prefix in href/to paths (create useLocalizedPath hook to generate language-aware paths)
+- [x] T042a Update all Link components to include language prefix in href/to paths (create useLocalizedPath hook to generate language-aware paths)
 
 ---
 

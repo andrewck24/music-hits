@@ -4,6 +4,7 @@ import { TrackItem } from "@/components/track/item";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { useGetArtistQuery } from "@/services";
 import { Suspense } from "react";
@@ -37,6 +38,8 @@ export function ArtistPage() {
 
 function ArtistPageContent() {
   const { artistId } = useParams<{ artistId: string }>();
+  const homePath = useLocalizedPath("/");
+  const searchPath = useLocalizedPath("/search");
 
   // Get tracks from loader (loaded before page render)
   const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
@@ -68,10 +71,10 @@ function ArtistPageContent() {
           <p className="text-muted-foreground mb-6">請再嘗試重新搜尋藝人。</p>
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild>
-              <Link to="/">返回首頁</Link>
+              <Link to={homePath}>返回首頁</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/search">搜尋藝人</Link>
+              <Link to={searchPath}>搜尋藝人</Link>
             </Button>
           </div>
         </Card>
