@@ -1,9 +1,9 @@
 {
-  "pageTitle": "{{name}} | ミュージックヒッツ",
+  "pageTitle": "{{name}} | Music Hits",
   "title": "アーティストプロフィール",
   "followers": "フォロワー：{{count}}",
   "genres": "ジャンル",
-  "topTracks": "人気トラック",
+  "topTracks": "人気曲",
   "relatedArtists": "関連アーティスト",
   "biography": "プロフィール",
   "noData": "データなし",
@@ -12,8 +12,8 @@
     "popularity": "人気度"
   },
   "tracks": {
-    "sectionTitle": "{{name}} のトラック",
-    "noTracks": "データベースに {{name}} のトラックが見つかりませんでした"
+    "sectionTitle": "{{name}} の曲",
+    "noTracks": "データベースに {{name}} の曲が見つかりませんでした"
   },
   "notFound": {
     "title": "おっと！アーティストが見つかりません...",

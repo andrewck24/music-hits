@@ -1,6 +1,6 @@
 {
-  "pageTitle": "{{name}} | ミュージックヒッツ",
-  "title": "トラック詳細",
+  "pageTitle": "{{name}} | Music Hits",
+  "title": "曲の詳細",
   "artist": "アーティスト",
   "album": "アルバム",
   "duration": "再生時間",
@@ -19,7 +19,7 @@
     "releaseYearLabel": "リリース年",
     "popularity": "人気度",
     "openInSpotify": "Spotifyで開く",
-    "loadError": "トラック情報を読み込めません",
+    "loadError": "曲の情報を読み込めません",
     "loadErrorMessage": "後でもう一度試すか、ネットワーク接続を確認してください。"
   },
   "featureChart": {
@@ -48,9 +48,9 @@
     "viewDetails": "クリックしてアーティスト詳細を表示"
   },
   "notFound": {
-    "title": "おっと！トラックが見つかりません...",
-    "message": "トラックを再度検索してください。",
+    "title": "おっと！曲が見つかりません...",
+    "message": "曲を再検索してください。",
     "backToHome": "ホームに戻る",
-    "searchTrack": "トラックを検索"
+    "searchTrack": "曲を検索"
   }
 }

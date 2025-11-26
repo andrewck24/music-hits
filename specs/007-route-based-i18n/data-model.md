@@ -354,7 +354,7 @@ interface CommonTranslations {
 ```json
 {
   "header": {
-    "title": "熱門音樂",
+    "title": "Music Hits",
     "search": "搜尋"
   },
   "languageSwitch": {
@@ -379,7 +379,7 @@ interface CommonTranslations {
 ```json
 {
   "header": {
-    "title": "ミュージックヒッツ",
+    "title": "Music Hits",
     "search": "検索"
   },
   "languageSwitch": {
