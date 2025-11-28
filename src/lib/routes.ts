@@ -5,25 +5,25 @@ import type { RouteObject } from "react-router-dom";
 /**
  * Router Configuration for Music Hits
  *
- * Language Support:
- * - English (default): / (no prefix)
+ * Language Support (Updated):
+ * - English: /en/* (with prefix)
  * - Traditional Chinese: /zh-TW/*
  * - Japanese: /jp/*
- * - Redirect: /en/* → /* (preserve full path)
+ * - Root redirect: / → /en/ (or browser language)
  *
  * Route Structure:
- * - `/` - Home page
- * - `/search` - Search results (query: ?q=keyword)
- * - `/artist/:artistId` - Artist profile
- * - `/track/:trackId` - Track details
- * - All routes repeated for each language prefix
+ * - `/en/` - English home page
+ * - `/en/search` - English search results
+ * - `/en/artist/:artistId` - English artist profile
+ * - `/en/track/:trackId` - English track details
+ * - All routes repeated for zh-TW and jp prefixes
  *
  * Data Loading:
  * - tracks.json loaded at root via tracksLoader
  * - Accessible in all routes via useRouteLoaderData("root")
  *
  * Language Sync:
- * - Language determined by URL only (not localStorage/cookies)
+ * - Language determined by URL prefix (en/zh-TW/jp)
  * - LanguageSync component in Layout syncs i18n.language with URL
  */
 
@@ -69,8 +69,22 @@ export const routes: RouteObject[] = [
     loader: tracksLoader,
     Component: Layout,
     children: [
-      // English routes (default, no prefix)
-      ...createPageRoutes(),
+      // Root redirect (/ → /en/ or browser language)
+      {
+        index: true,
+        lazy: async () => {
+          const { RootRedirect } = await import(
+            "@/components/layout/root-redirect"
+          );
+          return { Component: RootRedirect };
+        },
+      },
+
+      // English routes (with /en prefix)
+      {
+        path: "en",
+        children: createPageRoutes(),
+      },
 
       // Traditional Chinese routes
       {
@@ -82,23 +96,6 @@ export const routes: RouteObject[] = [
       {
         path: "jp",
         children: createPageRoutes(),
-      },
-
-      // Redirect /en/* to /* (handle edge case)
-      {
-        path: "en/*",
-        lazy: async () => {
-          const { Navigate } = await import("react-router-dom");
-          // Extract the path after /en/ and redirect to the same path without /en prefix
-          const path = window.location.pathname.replace(/^\/en/, "") || "/";
-          return {
-            Component: () =>
-              Navigate({
-                to: path + window.location.search + window.location.hash,
-                replace: true,
-              }),
-          };
-        },
       },
     ],
   },

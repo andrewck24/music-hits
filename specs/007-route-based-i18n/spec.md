@@ -94,6 +94,77 @@
 - **深度連結保留**：使用者分享的 URL 連結應保持有效，即使語言不同（例如朋友分享 `/search?q=test`，接收者瀏覽器為日文，Banner 提示切換但 URL 保持不變直到使用者選擇）
 - **語言偵測優先順序**：若 URL 已包含語言前綴（如 `/zh-TW/`），則以 URL 為準，不顯示語言切換 Banner（避免衝突）
 
+---
+
+## Design Evolution
+
+### 2025-11-28: 統一語言前綴架構重構
+
+**變更動機**：簡化路由邏輯，提升系統一致性與 SEO 效果
+
+**設計變更**：
+
+- **原設計**：英文無前綴 (`/`, `/search`)，其他語言有前綴 (`/zh-TW/*`, `/jp/*`)
+- **新設計**：所有語言統一使用前綴 (`/en/*`, `/zh-TW/*`, `/jp/*`)
+- **根路徑處理**：`/` 改為智慧重導向，根據瀏覽器語言自動導向對應首頁
+
+**核心實作**：
+
+1. **智慧重導向元件** ([src/components/layout/root-redirect.tsx](../../src/components/layout/root-redirect.tsx))
+   - 偵測瀏覽器語言（支援 zh/zh-TW/zh-Hant → `/zh-TW/`、ja/jp → `/jp/`）
+   - 其他語言預設導向 `/en/`
+   - 使用 `replace: true` 避免污染瀏覽器歷史記錄
+
+2. **路由結構調整** ([src/lib/routes.ts](../../src/lib/routes.ts))
+   - 新增根路徑 index route (lazy load RootRedirect)
+   - 新增 `/en` 前綴路由
+   - 移除舊的無前綴英文路由和 `/en/*` 重導向邏輯
+
+3. **語言偵測邏輯更新** ([src/hooks/use-current-language.ts](../../src/hooks/use-current-language.ts))
+   - `getLangFromUrl`: 正規表達式從 `/^\/(zh-TW|jp)(?:\/|$)/` 改為 `/^\/(en|zh-TW|jp)(?:\/|$)/`
+   - 新增 `getLangFromBrowser`: 瀏覽器語言偵測函數
+
+4. **路徑生成邏輯統一** ([src/hooks/use-localized-path.ts](../../src/hooks/use-localized-path.ts))
+   - 移除 `if (lang === "en")` 特殊處理
+   - `useLocalizedPath` 和 `getLocalizedPath` 統一使用 `/${lang}${path}` 格式
+
+5. **語言切換邏輯簡化** ([src/hooks/use-change-language.ts](../../src/hooks/use-change-language.ts))
+   - 移除 `if (currentLang !== "en")` 和 `if (newLang !== "en")` 判斷
+   - 所有語言統一處理前綴的移除與添加
+
+6. **語言同步機制** ([src/hooks/use-language-sync.ts](../../src/hooks/use-language-sync.ts))
+   - 新增獨立的語言同步 hook
+   - 監聽路由變化並同步 i18n 語言
+   - 支援瀏覽器前進/後退導航
+
+7. **元件路徑修正**：
+   - Header: 搜尋頁判斷從 `pathname !== "/search"` 改為使用 `useLocalizedPath("/search")`
+   - 所有硬編碼路徑改為使用 `useLocalizedPath`：
+     - artist/card.tsx
+     - track/card.tsx
+     - track/item.tsx
+     - track/artists.tsx
+
+**破壞性變更**：
+
+- ⚠️ 舊的英文路徑（`/`, `/search` 等）會失效
+- ⚠️ 不提供向後相容（設計決策：優先考慮程式碼簡潔性）
+
+**SEO 優化**：
+
+- ✅ 瀏覽器語言偵測降低跳出率
+- ✅ 符合 Google SEO 最佳實踐（內容與用戶期望匹配）
+- ✅ 統一前綴提升 URL 結構一致性
+
+**測試驗證**：
+
+- ✅ TypeScript 類型檢查通過
+- ✅ ESLint 檢查通過
+- ✅ 生產環境建置成功
+- ✅ 開發伺服器正常啟動
+
+---
+
 ## Requirements _(mandatory)_
 
 ### Functional Requirements

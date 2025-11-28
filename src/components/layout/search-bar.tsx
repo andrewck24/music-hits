@@ -32,7 +32,7 @@ export function SearchBar({ className }: SearchBarProps) {
   // Sync input with URL param 'q' and clear if not on search page
   useEffect(() => {
     const isSearchPage =
-      location.pathname === "/search" ||
+      location.pathname === "/en/search" ||
       location.pathname === "/zh-TW/search" ||
       location.pathname === "/jp/search";
 
@@ -60,7 +60,7 @@ export function SearchBar({ className }: SearchBarProps) {
     <div
       className={cn(
         "bg-muted flex h-12 max-w-2xl flex-row items-center rounded-full px-4 text-sm",
-        "supports-[backdrop-filter]:bg-secondary/60 backdrop-blur",
+        "supports-backdrop-filter:bg-secondary/60 backdrop-blur",
         "focus-within:ring-ring focus-within:ring-2",
         "hover:bg-muted/80 transition-all",
         className,

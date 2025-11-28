@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/card";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
+import { cn } from "@/lib/utils";
 import { useGetTrackQuery } from "@/services";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
 
 interface ArtistsListProps {
   trackId: string;
@@ -31,6 +32,22 @@ export function ArtistsList({ trackId, className }: ArtistsListProps) {
 
   if (isLoading || error || !track) return null;
 
+  const ArtistCard = ({ artist }: { artist: (typeof track.artists)[0] }) => {
+    const artistPath = useLocalizedPath(`/artist/${artist.id}`);
+    return (
+      <Link key={artist.id} to={artistPath} className="group">
+        <Card className="hover:bg-secondary h-full cursor-pointer p-6 transition-colors">
+          <h3 className="text-foreground group-hover:text-primary text-lg font-semibold transition-colors">
+            {artist.name}
+          </h3>
+          <p className="text-muted-foreground mt-2 text-sm">
+            {t("artists.viewDetails")}
+          </p>
+        </Card>
+      </Link>
+    );
+  };
+
   return (
     <section className={cn("border-border border-t pt-8", className)}>
       <h2 className="text-foreground mb-4 text-2xl font-bold">
@@ -38,16 +55,7 @@ export function ArtistsList({ trackId, className }: ArtistsListProps) {
       </h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {track.artists.map((artist) => (
-          <Link key={artist.id} to={`/artist/${artist.id}`} className="group">
-            <Card className="hover:bg-secondary h-full cursor-pointer p-6 transition-colors">
-              <h3 className="text-foreground group-hover:text-primary text-lg font-semibold transition-colors">
-                {artist.name}
-              </h3>
-              <p className="text-muted-foreground mt-2 text-sm">
-                {t("artists.viewDetails")}
-              </p>
-            </Card>
-          </Link>
+          <ArtistCard key={artist.id} artist={artist} />
         ))}
       </div>
     </section>

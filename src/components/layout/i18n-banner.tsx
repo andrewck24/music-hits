@@ -53,11 +53,11 @@ export function I18nBanner() {
   };
 
   return (
-    <div className="fixed top-header-height z-40 w-full bg-primary shadow-md">
+    <div className="top-header-height bg-primary fixed z-40 w-full shadow-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex flex-1 items-center gap-3">
           <div className="flex-1">
-            <p className="text-sm font-medium text-primary-foreground sm:text-base">
+            <p className="text-primary-foreground text-sm font-medium sm:text-base">
               {t("banner.message", { language: detectedLangName })}
             </p>
           </div>
@@ -66,14 +66,14 @@ export function I18nBanner() {
         <div className="flex items-center gap-2">
           <button
             onClick={handleSwitch}
-            className="rounded-md bg-background px-3 py-1.5 text-sm font-semibold text-foreground shadow-sm transition-colors hover:bg-card focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-primary"
+            className="bg-background text-foreground hover:bg-card focus:ring-foreground focus:ring-offset-primary rounded-md px-3 py-1.5 text-sm font-semibold shadow-sm transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
           >
             {t("banner.switchButton", { language: detectedLangName })}
           </button>
 
           <button
             onClick={dismiss}
-            className="rounded-md p-1.5 text-primary-foreground transition-colors hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-primary"
+            className="text-primary-foreground hover:bg-primary/80 focus:ring-foreground focus:ring-offset-primary rounded-md p-1.5 transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
             aria-label={t("banner.dismissButton")}
           >
             <X className="size-5" />

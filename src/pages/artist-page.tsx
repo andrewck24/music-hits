@@ -1,5 +1,4 @@
 import { ArtistProfile } from "@/components/artist/profile";
-import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { TrackItem } from "@/components/track/item";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,7 +6,6 @@ import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useLocalizedPath } from "@/hooks/use-localized-path";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { useGetArtistQuery } from "@/services";
-import { Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { Link, useParams, useRouteLoaderData } from "react-router-dom";
@@ -30,14 +28,6 @@ import { Link, useParams, useRouteLoaderData } from "react-router-dom";
  */
 
 export function ArtistPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <ArtistPageContent />
-    </Suspense>
-  );
-}
-
-function ArtistPageContent() {
   const { t } = useTranslation("artist");
   const { artistId } = useParams<{ artistId: string }>();
   const homePath = useLocalizedPath("/");

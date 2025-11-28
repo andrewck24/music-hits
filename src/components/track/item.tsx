@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { useGetTrackQuery } from "@/services";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { RiMusic2Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -65,12 +66,14 @@ export function TrackItem({
   const displayArtistName = track?.artists[0]?.name ?? artistName;
   const displayArtistId = track?.artists[0]?.id ?? artistId;
   const imageUrl = track?.album?.images[0]?.url;
+  const trackPath = useLocalizedPath(`/track/${trackId}`);
+  const artistPath = useLocalizedPath(`/artist/${displayArtistId}`);
 
   return (
     <Card className="bg-muted hover:bg-muted/80 p-3 transition-colors">
       <div className="flex items-center gap-3">
         {/* Album Cover - placeholder if no image */}
-        <Link to={`/track/${trackId}`} className="flex-shrink-0">
+        <Link to={trackPath} className="shrink-0">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -91,14 +94,14 @@ export function TrackItem({
 
         {/* Track Info - always visible (local or API data) */}
         <div className="min-w-0 flex-1">
-          <Link to={`/track/${trackId}`}>
+          <Link to={trackPath}>
             <h4 className="truncate font-semibold text-white hover:underline">
               {displayTrackName}
             </h4>
           </Link>
 
           {showArtistLink ? (
-            <Link to={`/artist/${displayArtistId}`}>
+            <Link to={artistPath}>
               <p className="hover:text-primary text-muted-foreground truncate text-sm hover:underline">
                 {displayArtistName}
               </p>
@@ -112,7 +115,7 @@ export function TrackItem({
 
         {/* Release Year - from local data */}
         {releaseYear && (
-          <div className="text-muted-foreground flex-shrink-0 text-sm">
+          <div className="text-muted-foreground shrink-0 text-sm">
             {releaseYear}
           </div>
         )}

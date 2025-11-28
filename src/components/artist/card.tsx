@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useGetArtistQuery } from "@/services";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { RiUser3Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -50,9 +51,10 @@ export function ArtistCard({
   // Progressive enhancement: use API data if available, fallback to local data
   const displayName = artist?.name ?? artistName;
   const imageUrl = artist?.images[0]?.url;
+  const artistPath = useLocalizedPath(`/artist/${artistId}`);
 
   return (
-    <Link to={`/artist/${artistId}`} className={cn("block min-w-0", className)}>
+    <Link to={artistPath} className={cn("block min-w-0", className)}>
       <Card className="bg-muted hover:bg-muted/80 cursor-pointer p-4 transition-colors">
         {/* Artist Image - placeholder if no image */}
         <div className="mb-3">

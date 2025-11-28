@@ -1,4 +1,3 @@
-import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { ArtistsList } from "@/components/track/artists";
 import { TrackFeatures } from "@/components/track/features";
 import { TrackInfo } from "@/components/track/info";
@@ -7,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { useGetTrackQuery } from "@/services";
-import { Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { Link, useParams } from "react-router-dom";
@@ -28,13 +26,6 @@ import { Link, useParams } from "react-router-dom";
  */
 
 export function TrackPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <TrackPageContent />
-    </Suspense>
-  );
-}
-function TrackPageContent() {
   const { t } = useTranslation("track");
   const { trackId } = useParams<{ trackId: string }>();
   const homePath = useLocalizedPath("/");

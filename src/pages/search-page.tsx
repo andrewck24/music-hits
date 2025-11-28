@@ -1,4 +1,3 @@
-import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { SearchBar } from "@/components/layout/search-bar";
 import { ArtistSearchResults } from "@/components/search/artist-results";
 import { SearchCategoryTabs } from "@/components/search/category-tabs";
@@ -8,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useSearch } from "@/hooks/use-search";
 import type { tracksLoader } from "@/loaders/tracks-loader";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RiCloseLargeFill, RiMusicLine, RiSearchLine } from "react-icons/ri";
 import {
@@ -35,14 +34,6 @@ import {
 type Category = "all" | "artists" | "tracks";
 
 export function SearchPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <SearchPageContent />
-    </Suspense>
-  );
-}
-
-function SearchPageContent() {
   const { t } = useTranslation("search");
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q") || "";

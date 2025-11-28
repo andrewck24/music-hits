@@ -66,15 +66,10 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: {
-      // All Chinese variants fallback to Traditional Chinese (zh-TW)
-      zh: ["zh-TW", "en"],
-      "zh-CN": ["zh-TW", "en"],
-      "zh-Hans": ["zh-TW", "en"],
-      "zh-Hant": ["zh-TW", "en"],
-      // Default fallback to English
-      default: ["en"],
-    },
+    fallbackLng: "en", // Simple fallback to English only
+    supportedLngs: ["en", "zh-TW", "jp"], // Only load these languages
+    nonExplicitSupportedLngs: false, // Don't try to load variants like 'zh'
+    load: "currentOnly", // Only load the current language, not variants
     debug: import.meta.env.DEV,
     defaultNS,
     ns: ["common", "artist", "track", "home", "search"],
@@ -86,18 +81,15 @@ i18n
       loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
     detection: {
-      order: ["navigator"],
+      order: ["path"],
+      lookupFromPathIndex: 0,
       caches: [],
     },
+    react: {
+      useSuspense: true,
+      bindI18n: "languageChanged loaded", // Re-render on language change AND resource load
+      bindI18nStore: "added removed", // Re-render when resources are added/removed
+    },
   });
-
-i18n.on("failedLoading", (lng, ns, msg) => {
-  // eslint-disable-next-line no-console
-  console.error(`Failed to load translation: ${lng}/${ns}`, msg);
-
-  if (lng !== "en") {
-    i18n.changeLanguage("en");
-  }
-});
 
 export default i18n;

@@ -39,10 +39,7 @@ export function useLocalizedPath(path: string): string {
     path = "/" + path;
   }
 
-  if (currentLang === "en") {
-    return path;
-  }
-
+  // All languages use prefix (including English)
   return `/${currentLang}${path}`;
 }
 
@@ -64,15 +61,12 @@ export function useLocalizedPath(path: string): string {
  */
 export function getLocalizedPath(
   path: string,
-  lang: SupportedLanguages
+  lang: SupportedLanguages,
 ): string {
   if (!path.startsWith("/")) {
     path = "/" + path;
   }
 
-  if (lang === "en") {
-    return path;
-  }
-
+  // All languages use prefix (including English)
   return `/${lang}${path}`;
 }

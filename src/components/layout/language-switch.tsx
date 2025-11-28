@@ -94,7 +94,7 @@ interface LanguageListProps {
  * - Globe icon for each language option
  * - Checkmark for currently selected language
  * - Closes parent popover after language selection
- * - Uses route-based navigation via useChangeLanguage hook
+ * - Uses route-based navigation
  *
  * @param {LanguageListProps} props - Component props
  * @param {function} props.setOpen - Function to control parent popover open state
@@ -102,7 +102,10 @@ interface LanguageListProps {
 export function LanguageList({ setOpen }: LanguageListProps) {
   const currentLang = useCurrentLanguage();
   const changeLanguage = useChangeLanguage();
+
   const handleChangeLanguage = (langCode: SupportedLanguages) => {
+    // 導航到新的語言路徑
+    // i18n 語言切換由 useLanguageSync hook 統一處理
     changeLanguage(langCode);
     setOpen(false);
   };

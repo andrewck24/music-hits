@@ -35,7 +35,8 @@ export function Header() {
   const { t } = useTranslation("common");
   const location = useLocation();
   const homePath = useLocalizedPath("/");
-  const showSearchButton = location.pathname !== "/search";
+  const searchPath = useLocalizedPath("/search");
+  const showSearchButton = location.pathname !== searchPath;
 
   return (
     <header className="from-background h-header-height fixed top-0 z-50 flex w-full items-center justify-between gap-4 bg-linear-to-b to-transparent px-6 py-4">
