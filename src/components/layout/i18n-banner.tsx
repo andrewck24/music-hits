@@ -1,8 +1,9 @@
 import { useBannerState } from "@/hooks/use-banner-state";
 import { useChangeLanguage } from "@/hooks/use-change-language";
+import { useLanguage } from "@/hooks/use-language";
 import { useDetectedBrowserLanguage } from "@/hooks/use-language-detection";
 import { LANGUAGES } from "@/lib/i18n";
-import { useLanguage } from "@/hooks/use-language";
+import type { SupportedLanguages } from "@/types/translations";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -58,7 +59,10 @@ export function I18nBanner() {
         <div className="flex flex-1 items-center gap-3">
           <div className="flex-1">
             <p className="text-primary-foreground text-sm font-medium sm:text-base">
-              {t("banner.message", { language: detectedLangName })}
+              {t("banner.message", {
+                language: detectedLangName,
+                lng: detectedLang as SupportedLanguages,
+              })}
             </p>
           </div>
         </div>
@@ -68,7 +72,10 @@ export function I18nBanner() {
             onClick={handleSwitch}
             className="bg-background text-foreground hover:bg-card focus:ring-foreground focus:ring-offset-primary rounded-md px-3 py-1.5 text-sm font-semibold shadow-sm transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
           >
-            {t("banner.switchButton", { language: detectedLangName })}
+            {t("banner.switchButton", {
+              language: detectedLangName,
+              lng: detectedLang as SupportedLanguages,
+            })}
           </button>
 
           <button
