@@ -47,6 +47,26 @@
     "title": "Artist Information",
     "viewDetails": "Click to view artist details"
   },
+  "popularity": {
+    "title": "Popularity Analysis",
+    "labels": {
+      "playCount": "Spotify Play Count",
+      "youtubeViews": "YouTube Views",
+      "youtubeLikes": "YouTube Likes",
+      "youtubeComments": "YouTube Comments"
+    },
+    "legend": {
+      "median": "Median",
+      "mean": "Mean",
+      "note": "* Logarithmic scale, max is database (2023) maximum"
+    },
+    "stats": {
+      "median": "Median:",
+      "mean": "Mean:",
+      "range": "Range:"
+    },
+    "loadError": "Unable to retrieve popularity data"
+  },
   "notFound": {
     "title": "Oops! Track not found...",
     "message": "Please try searching for the track again.",

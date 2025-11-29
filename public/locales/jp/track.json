@@ -47,6 +47,26 @@
     "title": "アーティスト情報",
     "viewDetails": "クリックしてアーティスト詳細を表示"
   },
+  "popularity": {
+    "title": "人気度分析",
+    "labels": {
+      "playCount": "Spotify 再生回数",
+      "youtubeViews": "YouTube 視聴回数",
+      "youtubeLikes": "YouTube いいね数",
+      "youtubeComments": "YouTube コメント数"
+    },
+    "legend": {
+      "median": "中央値",
+      "mean": "平均値",
+      "note": "* 対数スケール表示、上限はデータベース (2023) の最大値"
+    },
+    "stats": {
+      "median": "中央値：",
+      "mean": "平均値：",
+      "range": "範囲："
+    },
+    "loadError": "人気度データを取得できません"
+  },
   "notFound": {
     "title": "おっと！曲が見つかりません...",
     "message": "曲を再検索してください。",

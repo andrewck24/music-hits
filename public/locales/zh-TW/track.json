@@ -47,6 +47,26 @@
     "title": "藝人資訊",
     "viewDetails": "點擊查看藝人詳細資訊"
   },
+  "popularity": {
+    "title": "人氣度分析",
+    "labels": {
+      "playCount": "Spotify 播放次數",
+      "youtubeViews": "YouTube 觀看次數",
+      "youtubeLikes": "YouTube 按讚數",
+      "youtubeComments": "YouTube 留言數"
+    },
+    "legend": {
+      "median": "中位數",
+      "mean": "平均值",
+      "note": "* 使用對數刻度展示，上限為本資料庫 (2023) 最大值"
+    },
+    "stats": {
+      "median": "中位數：",
+      "mean": "平均值：",
+      "range": "範圍："
+    },
+    "loadError": "無法獲取人氣度數據"
+  },
   "notFound": {
     "title": "糟糕！找不到歌曲...",
     "message": "請再嘗試重新搜尋歌曲。",

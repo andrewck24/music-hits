@@ -104,6 +104,26 @@ export interface TrackTranslations {
     title: string;
     viewDetails: string;
   };
+  popularity: {
+    title: string;
+    labels: {
+      playCount: string;
+      youtubeViews: string;
+      youtubeLikes: string;
+      youtubeComments: string;
+    };
+    legend: {
+      median: string;
+      mean: string;
+      note: string;
+    };
+    stats: {
+      median: string;
+      mean: string;
+      range: string;
+    };
+    loadError: string;
+  };
   notFound: {
     title: string;
     message: string;

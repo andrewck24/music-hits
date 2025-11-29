@@ -8,6 +8,7 @@ import { POPULARITY_STATS } from "@/lib/constants";
 import { formatCompactNumber, formatNumber } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { tracksLoader } from "@/loaders/tracks-loader";
+import { useTranslation } from "react-i18next";
 import { useRouteLoaderData } from "react-router-dom";
 
 interface PopularityChartProps {
@@ -15,32 +16,40 @@ interface PopularityChartProps {
   className?: string;
 }
 
+interface PopularityStats {
+  min: number;
+  max: number;
+  mean: number;
+  median: number;
+}
+
 /**
  * PopularityChart Component
  *
- * Purpose: 顯示歌曲的人氣度統計圖表
+ * Purpose: Display track popularity statistics chart
  *
  * Features:
- * - Spotify 播放次數 (Primary Green)
- * - YouTube 觀看次數 (Destructive Red)
- * - YouTube 按讚數 (Destructive Red)
- * - YouTube 留言數 (Destructive Red)
- * - 顯示中位數和平均值標記線
- * - 使用對數刻度以更好地展示大範圍數據
- * - Hover 顯示詳細統計數據
+ * - Spotify Play Count (Primary Green)
+ * - YouTube Views (Destructive Red)
+ * - YouTube Likes (Destructive Red)
+ * - YouTube Comments (Destructive Red)
+ * - Display median and mean indicator lines
+ * - Uses logarithmic scale for better visualization of wide-range data
+ * - Hover to show detailed statistics
  *
  * Props:
  * - trackId: Spotify track ID
  * - className: Optional additional CSS classes
  *
  * Data Sources:
- * - localTrack: LocalTrackData object (包含人氣度數據)
- * - STATS: 從 analyze-popularity.ts 計算得出的統計數據
+ * - localTrack: LocalTrackData object (contains popularity data)
+ * - STATS: Statistical data calculated from analyze-popularity.ts
  *
  * Usage:
  *   `<PopularityChart trackId={trackId} />`
  */
 export function PopularityChart({ trackId, className }: PopularityChartProps) {
+  const { t } = useTranslation("track");
   const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
     ReturnType<typeof tracksLoader>
   >;
@@ -50,63 +59,44 @@ export function PopularityChart({ trackId, className }: PopularityChartProps) {
 
   return (
     <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
-      <h3 className="text-foreground font-semibold">人氣度分析</h3>
-      {/* Spotify 播放次數 */}
+      <h3 className="text-foreground font-semibold">{t("popularity.title")}</h3>
       <BarWithStats
-        label="Spotify 播放次數"
+        label={t("popularity.labels.playCount")}
         value={localTrack.popularity.playCount}
-        min={POPULARITY_STATS.playCount.min}
-        max={POPULARITY_STATS.playCount.max}
-        mean={POPULARITY_STATS.playCount.mean}
-        median={POPULARITY_STATS.playCount.median}
-        colorClass="bg-primary shadow-[0_0_10px_var(--color-primary)/0.25]"
+        stats={POPULARITY_STATS.playCount}
+        className="bg-primary shadow-[0_0_10px_var(--color-primary)/0.25]"
       />
-
-      {/* YouTube 觀看次數 */}
       <BarWithStats
-        label="YouTube 觀看次數"
+        label={t("popularity.labels.youtubeViews")}
         value={localTrack.popularity.youtubeViews}
-        min={POPULARITY_STATS.youtubeViews.min}
-        max={POPULARITY_STATS.youtubeViews.max}
-        mean={POPULARITY_STATS.youtubeViews.mean}
-        median={POPULARITY_STATS.youtubeViews.median}
-        colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
+        stats={POPULARITY_STATS.youtubeViews}
+        className="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
       />
-
-      {/* YouTube 按讚數 */}
       <BarWithStats
-        label="YouTube 按讚數"
+        label={t("popularity.labels.youtubeLikes")}
         value={localTrack.popularity.youtubeLikes}
-        min={POPULARITY_STATS.youtubeLikes.min}
-        max={POPULARITY_STATS.youtubeLikes.max}
-        mean={POPULARITY_STATS.youtubeLikes.mean}
-        median={POPULARITY_STATS.youtubeLikes.median}
-        colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
+        stats={POPULARITY_STATS.youtubeLikes}
+        className="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
       />
-
-      {/* YouTube 留言數 */}
       <BarWithStats
-        label="YouTube 留言數"
+        label={t("popularity.labels.youtubeComments")}
         value={localTrack.popularity.youtubeComments}
-        min={POPULARITY_STATS.youtubeComments.min}
-        max={POPULARITY_STATS.youtubeComments.max}
-        mean={POPULARITY_STATS.youtubeComments.mean}
-        median={POPULARITY_STATS.youtubeComments.median}
-        colorClass="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
+        stats={POPULARITY_STATS.youtubeComments}
+        className="bg-destructive shadow-[0_0_10px_var(--color-destructive)/0.25]"
       />
 
-      {/* 圖例說明 */}
+      {/* Legend */}
       <div className="border-border text-muted-foreground flex flex-wrap gap-4 border-t pt-4 text-xs">
         <div className="flex items-center gap-2">
           <div className="bg-foreground/60 h-3 w-3 rounded-full" />
-          <span>中位數</span>
+          <span>{t("popularity.legend.median")}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="bg-chart-3/60 h-3 w-3 rounded-full" />
-          <span>平均值</span>
+          <span>{t("popularity.legend.mean")}</span>
         </div>
         <div className="text-muted-foreground/60 flex-1 text-right">
-          * 使用對數刻度展示，上限為本資料庫 (2023) 最大值
+          {t("popularity.legend.note")}
         </div>
       </div>
     </Card>
@@ -116,25 +106,22 @@ export function PopularityChart({ trackId, className }: PopularityChartProps) {
 interface BarWithStatsProps {
   label: string;
   value: number;
-  min: number;
-  max: number;
-  mean: number;
-  median: number;
-  colorClass: string;
+  stats: PopularityStats;
+  className?: string;
   unit?: string;
 }
 
 function BarWithStats({
   label,
   value,
-  min,
-  max,
-  mean,
-  median,
-  colorClass,
+  stats,
+  className,
   unit = "",
 }: BarWithStatsProps) {
-  // 計算百分比位置（使用對數刻度以更好地展示大範圍數據）
+  const { t } = useTranslation("track");
+  const { min, max, mean, median } = stats;
+
+  // Calculate percentage position (using logarithmic scale for better visualization of wide-range data)
   const calculateLogPosition = (val: number) => {
     if (val <= min) return 0;
     if (val >= max) return 100;
@@ -150,7 +137,7 @@ function BarWithStats({
 
   return (
     <div className="space-y-2">
-      {/* 標籤與數值 */}
+      {/* Label and Value */}
       <div className="flex items-baseline justify-between">
         <span className="text-foreground text-sm font-medium">{label}</span>
         <span className="text-muted-foreground text-sm">
@@ -159,19 +146,22 @@ function BarWithStats({
         </span>
       </div>
 
-      {/* 條狀圖容器 - 包含 Tooltip */}
+      {/* Bar Chart Container with Tooltip */}
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="bg-secondary relative h-8 w-full cursor-pointer rounded-full">
-            {/* 條狀圖 */}
+            {/* Bar */}
             <div
-              className={`absolute top-0 left-0 h-full rounded-full transition-all duration-500 ${colorClass}`}
+              className={cn(
+                "absolute top-0 left-0 h-full rounded-full transition-all duration-500",
+                className,
+              )}
               style={{
                 width: `${valuePosition}%`,
               }}
             />
 
-            {/* 中位數標記線 */}
+            {/* Median Marker Line */}
             <div
               className="bg-foreground/60 absolute top-0 h-full w-0.5"
               style={{ left: `${medianPosition}%` }}
@@ -181,7 +171,7 @@ function BarWithStats({
               </div>
             </div>
 
-            {/* 平均值標記線 */}
+            {/* Mean Marker Line */}
             <div
               className="bg-chart-3/60 absolute top-0 h-full w-0.5"
               style={{ left: `${meanPosition}%` }}
@@ -199,17 +189,23 @@ function BarWithStats({
               {formatNumber(value)}
               {unit}
             </span>
-            <span className="text-muted-foreground">中位數：</span>
+            <span className="text-muted-foreground">
+              {t("popularity.stats.median")}
+            </span>
             <span className="text-right">
               {formatNumber(median)}
               {unit}
             </span>
-            <span className="text-muted-foreground">平均值：</span>
+            <span className="text-muted-foreground">
+              {t("popularity.stats.mean")}
+            </span>
             <span className="text-right">
               {formatNumber(mean)}
               {unit}
             </span>
-            <span className="text-muted-foreground">範圍：</span>
+            <span className="text-muted-foreground">
+              {t("popularity.stats.range")}
+            </span>
             <span className="text-right">
               {formatNumber(min)} - {formatNumber(max)}
             </span>
@@ -225,11 +221,13 @@ interface PopularityChartErrorProps {
 }
 
 function PopularityChartError({ className }: PopularityChartErrorProps) {
+  const { t } = useTranslation("track");
+
   return (
     <Card className={cn("flex h-full flex-col gap-4 p-4 md:p-6", className)}>
-      <h3 className="text-foreground font-semibold">人氣度分析</h3>
+      <h3 className="text-foreground font-semibold">{t("popularity.title")}</h3>
       <p className="text-muted-foreground flex h-full min-h-80 items-center justify-center">
-        無法獲取人氣度數據
+        {t("popularity.loadError")}
       </p>
     </Card>
   );
