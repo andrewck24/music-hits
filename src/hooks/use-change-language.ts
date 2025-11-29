@@ -1,11 +1,11 @@
+import { useLanguage } from "@/hooks/use-language";
 import type { SupportedLanguages } from "@/types/translations";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useCurrentLanguage } from "./use-current-language";
 
 export function useChangeLanguage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentLang = useCurrentLanguage();
+  const { language: currentLang } = useLanguage();
 
   const changeLanguage = (newLang: SupportedLanguages) => {
     if (newLang === currentLang) return;

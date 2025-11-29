@@ -6,25 +6,25 @@ import type { RouteObject } from "react-router-dom";
  * Router Configuration for Music Hits
  *
  * Language Support (Updated):
- * - English: /en/* (with prefix)
- * - Traditional Chinese: /zh-TW/*
- * - Japanese: /jp/*
- * - Root redirect: / → /en/ (or browser language)
+ * - Uses dynamic :lang parameter for all languages
+ * - Supported: en, zh-TW, jp
+ * - Invalid/missing language → auto-redirect to browser language or English
  *
  * Route Structure:
- * - `/en/` - English home page
- * - `/en/search` - English search results
- * - `/en/artist/:artistId` - English artist profile
- * - `/en/track/:trackId` - English track details
- * - All routes repeated for zh-TW and jp prefixes
+ * - `/:lang/` - Language-prefixed home page
+ * - `/:lang/search` - Language-prefixed search results
+ * - `/:lang/artist/:artistId` - Language-prefixed artist profile
+ * - `/:lang/track/:trackId` - Language-prefixed track details
+ * - `/` or `/:invalidLang/*` → auto-redirect with language detection
  *
  * Data Loading:
  * - tracks.json loaded at root via tracksLoader
  * - Accessible in all routes via useRouteLoaderData("root")
  *
- * Language Sync:
- * - Language determined by URL prefix (en/zh-TW/jp)
- * - LanguageSync component in Layout syncs i18n.language with URL
+ * Language Validation:
+ * - Language validated in Layout component
+ * - Invalid languages trigger redirect to same page with valid language
+ * - LanguageSync component syncs i18n.language with URL :lang parameter
  */
 
 // Helper to create page routes (used as children routes, so paths are relative)
@@ -69,7 +69,7 @@ export const routes: RouteObject[] = [
     loader: tracksLoader,
     Component: Layout,
     children: [
-      // Root redirect (/ → /en/ or browser language)
+      // Root redirect (/ → browser language or /en/)
       {
         index: true,
         lazy: async () => {
@@ -80,21 +80,9 @@ export const routes: RouteObject[] = [
         },
       },
 
-      // English routes (with /en prefix)
+      // Dynamic language routes (handles all languages with :lang parameter)
       {
-        path: "en",
-        children: createPageRoutes(),
-      },
-
-      // Traditional Chinese routes
-      {
-        path: "zh-TW",
-        children: createPageRoutes(),
-      },
-
-      // Japanese routes
-      {
-        path: "jp",
+        path: ":lang",
         children: createPageRoutes(),
       },
     ],

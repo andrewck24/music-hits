@@ -1,20 +1,20 @@
+import { useLanguage } from "@/hooks/use-language";
 import type { SupportedLanguages } from "@/types/translations";
-import { useCurrentLanguage } from "./use-current-language";
 
 /**
  * Hook to generate language-aware paths for navigation.
  *
- * Automatically prepends the current language prefix to paths (except for English).
+ * Automatically prepends the current language prefix to paths.
  * This ensures all internal navigation maintains the current language context.
  *
  * @param path - The base path without language prefix (e.g., "/search", "/artist/123")
- * @returns The localized path with language prefix if needed
+ * @returns The localized path with language prefix
  *
  * @example
  * ```tsx
  * function MyComponent() {
  *   const localizedPath = useLocalizedPath("/search");
- *   // When current language is 'en': returns "/search"
+ *   // When current language is 'en': returns "/en/search"
  *   // When current language is 'zh-TW': returns "/zh-TW/search"
  *   // When current language is 'jp': returns "/jp/search"
  *
@@ -33,14 +33,14 @@ import { useCurrentLanguage } from "./use-current-language";
  * ```
  */
 export function useLocalizedPath(path: string): string {
-  const currentLang = useCurrentLanguage();
+  const { language } = useLanguage();
 
   if (!path.startsWith("/")) {
     path = "/" + path;
   }
 
   // All languages use prefix (including English)
-  return `/${currentLang}${path}`;
+  return `/${language}${path}`;
 }
 
 /**

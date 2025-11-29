@@ -1,8 +1,8 @@
 import { useBannerState } from "@/hooks/use-banner-state";
 import { useChangeLanguage } from "@/hooks/use-change-language";
-import { useCurrentLanguage } from "@/hooks/use-current-language";
 import { useDetectedBrowserLanguage } from "@/hooks/use-language-detection";
 import { LANGUAGES } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/use-language";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -35,7 +35,7 @@ import { useTranslation } from "react-i18next";
  */
 export function I18nBanner() {
   const { t } = useTranslation("common");
-  const currentLang = useCurrentLanguage();
+  const { language: currentLang } = useLanguage();
   const detectedLang = useDetectedBrowserLanguage();
   const { isDismissed, dismiss } = useBannerState();
   const changeLanguage = useChangeLanguage();

@@ -5,9 +5,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useChangeLanguage } from "@/hooks/use-change-language";
-import { useCurrentLanguage } from "@/hooks/use-current-language";
 import { LANGUAGES } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/use-language";
 import { SupportedLanguages } from "@/types/translations";
 import { useState } from "react";
 import { RiCheckLine, RiGlobalLine } from "react-icons/ri";
@@ -41,7 +41,7 @@ interface LanguageSwitchProps {
  */
 export function LanguageSwitch({ className }: LanguageSwitchProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const currentLang = useCurrentLanguage();
+  const { language: currentLang } = useLanguage();
   const currentLanguageConfig = LANGUAGES[currentLang];
 
   return (
@@ -100,7 +100,7 @@ interface LanguageListProps {
  * @param {function} props.setOpen - Function to control parent popover open state
  */
 export function LanguageList({ setOpen }: LanguageListProps) {
-  const currentLang = useCurrentLanguage();
+  const { language: currentLang } = useLanguage();
   const changeLanguage = useChangeLanguage();
 
   const handleChangeLanguage = (langCode: SupportedLanguages) => {

@@ -81,9 +81,8 @@ i18n
       loadPath: "/locales/{{lng}}/{{ns}}.json",
     },
     detection: {
-      order: ["path"],
-      lookupFromPathIndex: 0,
-      caches: [],
+      order: ["navigator"], // Only detect from browser settings for Banner usage
+      caches: [], // Don't cache to localStorage/cookie
     },
     react: {
       useSuspense: true,

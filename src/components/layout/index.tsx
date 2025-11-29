@@ -1,36 +1,36 @@
 import { Header } from "@/components/layout/header";
 import { I18nBanner } from "@/components/layout/i18n-banner";
-import { useLanguageSync } from "@/hooks/use-language-sync";
+import { LanguageProvider } from "@/providers/language-provider";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 /**
  * Layout Component
  *
- * Purpose: Main application layout (Header + Main)
+ * Purpose: Main application layout with language management
  *
  * Features:
- * - Responsive layout
- * - Mobile-first design
- * - Fixed Header
- * - Scroll Restoration
- * - Language synchronization:
- *   - rootLoader: 首次載入時預載翻譯（避免閃爍）
- *   - useLanguageSync: 監聽路由變化並同步語言（處理瀏覽器前進/後退）
- *   - 使用 react-i18next 的 ready state 控制渲染（官方推薦做法）
- * - Language suggestion banner
+ * - Responsive layout (mobile-first design)
+ * - Fixed Header with scroll restoration
+ * - Language management via LanguageProvider:
+ *   - Validates :lang parameter from route
+ *   - Redirects to valid language if invalid (e.g., /fr/search → /en/search)
+ *   - Uses browser language detection for optimal UX
+ *   - Syncs URL language to i18next using official API
+ *   - Provides language context to all child components
+ * - Language suggestion banner (browser language detection)
  */
 
 export function Layout() {
-  useLanguageSync();
-
   return (
-    <div className="flex min-h-screen flex-col">
-      <ScrollRestoration />
-      <I18nBanner />
-      <Header />
-      <main className="pt-header-height">
-        <Outlet />
-      </main>
-    </div>
+    <LanguageProvider>
+      <div className="flex min-h-screen flex-col">
+        <ScrollRestoration />
+        <I18nBanner />
+        <Header />
+        <main className="pt-header-height">
+          <Outlet />
+        </main>
+      </div>
+    </LanguageProvider>
   );
 }

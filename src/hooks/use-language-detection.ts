@@ -1,5 +1,6 @@
-import { useTranslation } from "react-i18next";
+import { isValidLanguage } from "@/lib/i18n-utils";
 import type { SupportedLanguages } from "@/types/translations";
+import { useTranslation } from "react-i18next";
 
 /**
  * Detects the user's browser language using i18next-browser-languagedetector.
@@ -13,10 +14,10 @@ import type { SupportedLanguages } from "@/types/translations";
  * @example
  * ```tsx
  * function I18nBanner() {
- *   const currentLang = useCurrentLanguage(); // from URL
+ *   const { language } = useLanguage(); // from URL via Context
  *   const detectedLang = useDetectedBrowserLanguage(); // from browser
  *
- *   const shouldShowBanner = detectedLang && detectedLang !== currentLang;
+ *   const shouldShowBanner = detectedLang && detectedLang !== language;
  *
  *   if (!shouldShowBanner) return null;
  *
@@ -43,8 +44,4 @@ export function useDetectedBrowserLanguage(): SupportedLanguages | null {
   }
 
   return null;
-}
-
-function isValidLanguage(lang: string): lang is SupportedLanguages {
-  return ["en", "zh-TW", "jp"].includes(lang);
 }
