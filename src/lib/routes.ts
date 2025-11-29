@@ -5,63 +5,85 @@ import type { RouteObject } from "react-router-dom";
 /**
  * Router Configuration for Music Hits
  *
- * This module defines all routes for the application using react-router v7.
- * Routes are organized to support deep linking and browser history navigation.
+ * Language Support (Updated):
+ * - Uses dynamic :lang parameter for all languages
+ * - Supported: en, zh-TW, jp
+ * - Invalid/missing language → auto-redirect to browser language or English
  *
  * Route Structure:
- * - Root loader: Loads tracks.json before any page renders (shared across all routes)
- * - `/` - Home page with artist recommendations
- * - `/search` - Search results page (with query parameter: ?q=keyword)
- * - `/artist/:artistId` - Artist information page
- * - `/track/:trackId` - Track information page (flat structure, no artistId in URL)
+ * - `/:lang/` - Language-prefixed home page
+ * - `/:lang/search` - Language-prefixed search results
+ * - `/:lang/artist/:artistId` - Language-prefixed artist profile
+ * - `/:lang/track/:trackId` - Language-prefixed track details
+ * - `/` or `/:invalidLang/*` → auto-redirect with language detection
  *
  * Data Loading:
- * - tracks.json is loaded at root level via tracksLoader
- * - All child routes can access loader data via useRouteLoaderData("root")
- * - sessionStorage caching ensures single load per session
+ * - tracks.json loaded at root via tracksLoader
+ * - Accessible in all routes via useRouteLoaderData("root")
  *
- * Notes:
- * - Track URL uses flat structure (/track/:trackId) because Spotify track API
- *   responses already contain complete artist information
- * - All routes are lazy-loaded for optimal code splitting
- * - Each page component can define its own Suspense fallback for customization
+ * Language Validation:
+ * - Language validated in Layout component
+ * - Invalid languages trigger redirect to same page with valid language
+ * - LanguageSync component syncs i18n.language with URL :lang parameter
  */
+
+// Helper to create page routes (used as children routes, so paths are relative)
+function createPageRoutes() {
+  return [
+    {
+      index: true,
+      lazy: async () => {
+        const { HomePage } = await import("@/pages/home-page");
+        return { Component: HomePage };
+      },
+    },
+    {
+      path: "search",
+      lazy: async () => {
+        const { SearchPage } = await import("@/pages/search-page");
+        return { Component: SearchPage };
+      },
+    },
+    {
+      path: "artist/:artistId",
+      lazy: async () => {
+        const { ArtistPage } = await import("@/pages/artist-page");
+        return { Component: ArtistPage };
+      },
+    },
+    {
+      path: "track/:trackId",
+      lazy: async () => {
+        const { TrackPage } = await import("@/pages/track-page");
+        return { Component: TrackPage };
+      },
+    },
+  ];
+}
 
 // Route definitions
 export const routes: RouteObject[] = [
   {
     id: "root",
     path: "/",
-    loader: tracksLoader, // Load tracks.json at root level
+    loader: tracksLoader,
     Component: Layout,
     children: [
+      // Root redirect (/ → browser language or /en/)
       {
         index: true,
         lazy: async () => {
-          const { HomePage } = await import("@/pages/home-page");
-          return { Component: HomePage };
+          const { RootRedirect } = await import(
+            "@/components/layout/root-redirect"
+          );
+          return { Component: RootRedirect };
         },
       },
+
+      // Dynamic language routes (handles all languages with :lang parameter)
       {
-        path: "search",
-        lazy: async () => {
-          const { SearchPage } = await import("@/pages/search-page");
-          return { Component: SearchPage };
-        },
-      },
-      {
-        path: "artist/:artistId",
-        lazy: async () => {
-          const { ArtistPage } = await import("@/pages/artist-page");
-          return { Component: ArtistPage };
-        },
-      },
-      {
-        path: "track/:trackId",
-        lazy: async () => {
-          const { TrackPage } = await import("@/pages/track-page");
-          return { Component: TrackPage };
-        },
+        path: ":lang",
+        children: createPageRoutes(),
       },
     ],
   },

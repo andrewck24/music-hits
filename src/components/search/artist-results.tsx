@@ -8,6 +8,7 @@ import type { UniqueArtist } from "@/hooks/use-search";
 import { chunk } from "@/lib/utils";
 import { useGetSeveralArtistsQuery } from "@/services";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const BATCH_SIZE = 20;
 const PREVIEW_COUNT = 8;
@@ -25,6 +26,7 @@ export function ArtistSearchResults({
   onViewAll,
   query,
 }: ArtistSearchResultsProps) {
+  const { t } = useTranslation("search");
   // Pagination state for infinite scroll (full mode only)
   const [displayCount, setDisplayCount] = useState(BATCH_SIZE);
 
@@ -71,7 +73,7 @@ export function ArtistSearchResults({
       return (
         <Card className="p-8 text-center">
           <p className="text-muted-foreground text-lg">
-            未找到 &quot;{query}&quot; 相關藝人
+            {t("artistResults.noResults", { query })}
           </p>
         </Card>
       );
@@ -101,10 +103,12 @@ export function ArtistSearchResults({
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-foreground text-2xl font-semibold">藝人</h2>
+        <h2 className="text-foreground text-2xl font-semibold">
+          {t("artistResults.title")}
+        </h2>
         {showViewAll && onViewAll && (
           <Button variant="ghost" onClick={onViewAll}>
-            查看全部藝人
+            {t("artistResults.viewAll")}
           </Button>
         )}
       </div>
@@ -134,7 +138,7 @@ export function ArtistSearchResults({
           {/* All results shown message */}
           {!hasMore && displayArtists.length > 0 && (
             <p className="text-muted-foreground mt-6 text-center text-sm">
-              已顯示全部 {artists.length} 位藝人
+              {t("artistResults.showingAll", { count: artists.length })}
             </p>
           )}
         </>

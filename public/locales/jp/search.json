@@ -1,0 +1,28 @@
+{
+  "pageTitle": "検索 | Music Hits",
+  "emptyState": {
+    "title": "検索を開始",
+    "message": "上の検索ボックスにアーティストまたは曲名を入力してください"
+  },
+  "noResults": {
+    "title": "結果が見つかりません",
+    "message": "「{{query}}」に関連するアーティストまたは曲が見つかりませんでした"
+  },
+  "categories": {
+    "all": "すべて",
+    "artists": "アーティスト ({{count}})",
+    "tracks": "曲 ({{count}})"
+  },
+  "artistResults": {
+    "title": "アーティスト",
+    "viewAll": "すべてのアーティストを表示",
+    "noResults": "「{{query}}」に関連するアーティストが見つかりませんでした",
+    "showingAll": "{{count}} 人のアーティストをすべて表示中"
+  },
+  "trackResults": {
+    "title": "曲",
+    "viewAll": "すべての曲を表示",
+    "noResults": "「{{query}}」に関連する曲が見つかりませんでした",
+    "showingAll": "{{count}} 曲の曲をすべて表示中"
+  }
+}

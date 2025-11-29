@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useGetTrackQuery } from "@/services";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import { RiMusic2Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -12,6 +13,7 @@ interface TrackCardProps {
 export function TrackCard({ trackId, className }: TrackCardProps) {
   // Fetch track data from cache (populated by parent's batch fetch)
   const { data: track } = useGetTrackQuery(trackId);
+  const trackPath = useLocalizedPath(`/track/${trackId}`);
 
   // Fallback if data is missing (shouldn't happen if batch fetch works)
   if (!track) return null;
@@ -20,7 +22,7 @@ export function TrackCard({ trackId, className }: TrackCardProps) {
   const artistName = track.artists.map((a) => a.name).join(", ");
 
   return (
-    <Link to={`/track/${trackId}`} className={cn("block min-w-0", className)}>
+    <Link to={trackPath} className={cn("block min-w-0", className)}>
       <Card className="bg-muted hover:bg-muted/80 cursor-pointer p-4 transition-colors">
         {/* Album Artwork */}
         <div className="mb-3">

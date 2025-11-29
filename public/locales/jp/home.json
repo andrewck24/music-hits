@@ -1,0 +1,13 @@
+{
+  "hero": {
+    "title": "Music Hits",
+    "subtitle": "Spotifyで最も人気のあるアーティストや曲を探索しましょう。今日あなたの次のお気に入りを見つけてください。",
+    "ctaButton": "検索へ"
+  },
+  "popularArtists": {
+    "title": "人気アーティスト"
+  },
+  "popularTracks": {
+    "title": "人気曲"
+  }
+}

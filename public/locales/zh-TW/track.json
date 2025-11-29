@@ -1,0 +1,76 @@
+{
+  "pageTitle": "{{name}} | Music Hits",
+  "title": "歌曲詳情",
+  "artist": "藝人",
+  "album": "專輯",
+  "duration": "時長",
+  "releaseDate": "發行年份",
+  "audioFeatures": "音訊特徵",
+  "features": {
+    "danceability": "可舞性",
+    "energy": "能量",
+    "valence": "情緒",
+    "tempo": "速度",
+    "loudness": "響度"
+  },
+  "noData": "無可用資料",
+  "info": {
+    "albumLabel": "專輯",
+    "releaseYearLabel": "發行年份",
+    "popularity": "人氣度",
+    "openInSpotify": "在 Spotify 上開啟",
+    "loadError": "無法載入歌曲資訊",
+    "loadErrorMessage": "請稍後再試或檢查您的網路連線。"
+  },
+  "featureChart": {
+    "title": "音樂特徵分析",
+    "labels": {
+      "acousticness": "聲學",
+      "danceability": "舞蹈",
+      "energy": "能量",
+      "instrumentalness": "器樂",
+      "liveness": "現場",
+      "speechiness": "語音",
+      "valence": "正向"
+    },
+    "featureValue": "特徵值",
+    "loadError": "目前暫時無法取得音樂特徵"
+  },
+  "otherFeatures": {
+    "key": "調性 (Key)",
+    "mode": "調式 (Mode)",
+    "tempo": "節奏 (Tempo)",
+    "durationLabel": "時長 (Duration)",
+    "noData": "暫時沒有數據"
+  },
+  "artists": {
+    "title": "藝人資訊",
+    "viewDetails": "點擊查看藝人詳細資訊"
+  },
+  "popularity": {
+    "title": "人氣度分析",
+    "labels": {
+      "playCount": "Spotify 播放次數",
+      "youtubeViews": "YouTube 觀看次數",
+      "youtubeLikes": "YouTube 按讚數",
+      "youtubeComments": "YouTube 留言數"
+    },
+    "legend": {
+      "median": "中位數",
+      "mean": "平均值",
+      "note": "* 使用對數刻度展示，上限為本資料庫 (2023) 最大值"
+    },
+    "stats": {
+      "median": "中位數：",
+      "mean": "平均值：",
+      "range": "範圍："
+    },
+    "loadError": "無法獲取人氣度數據"
+  },
+  "notFound": {
+    "title": "糟糕！找不到歌曲...",
+    "message": "請再嘗試重新搜尋歌曲。",
+    "backToHome": "返回首頁",
+    "searchTrack": "搜尋歌曲"
+  }
+}

@@ -1,9 +1,7 @@
 import { Hero } from "@/components/home/hero";
 import { PopularArtists } from "@/components/home/popular-artists";
 import { PopularTracks } from "@/components/home/popular-tracks";
-import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { useDocumentTitle } from "@/hooks/use-document-title";
-import { Suspense } from "react";
 
 /**
  * HomePage Component
@@ -19,14 +17,6 @@ import { Suspense } from "react";
  */
 
 export function HomePage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <HomePageContent />
-    </Suspense>
-  );
-}
-
-function HomePageContent() {
   // Set document title
   useDocumentTitle("Music Hits");
 

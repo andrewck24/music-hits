@@ -1,4 +1,3 @@
-import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { SearchBar } from "@/components/layout/search-bar";
 import { ArtistSearchResults } from "@/components/search/artist-results";
 import { SearchCategoryTabs } from "@/components/search/category-tabs";
@@ -8,7 +7,8 @@ import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
 import { useSearch } from "@/hooks/use-search";
 import type { tracksLoader } from "@/loaders/tracks-loader";
-import { Suspense, useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { RiCloseLargeFill, RiMusicLine, RiSearchLine } from "react-icons/ri";
 import {
   useNavigate,
@@ -34,21 +34,14 @@ import {
 type Category = "all" | "artists" | "tracks";
 
 export function SearchPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <SearchPageContent />
-    </Suspense>
-  );
-}
-
-function SearchPageContent() {
+  const { t } = useTranslation("search");
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
   const [category, setCategory] = useState<Category>("all");
   const navigate = useNavigate();
 
   // Set document title
-  useDocumentTitle("搜尋 | Music Hits");
+  useDocumentTitle(t("pageTitle"));
 
   // Get tracks from loader (loaded before page render)
   const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
@@ -96,9 +89,11 @@ function SearchPageContent() {
             <RiSearchLine className="text-muted-foreground h-8 w-8" />
           </div>
           <div>
-            <p className="text-foreground text-lg font-medium">開始搜尋</p>
+            <p className="text-foreground text-lg font-medium">
+              {t("emptyState.title")}
+            </p>
             <p className="text-muted-foreground mt-1">
-              在上方搜尋框輸入藝人或歌曲名稱
+              {t("emptyState.message")}
             </p>
           </div>
         </Card>
@@ -108,9 +103,11 @@ function SearchPageContent() {
             <RiMusicLine className="text-muted-foreground h-8 w-8" />
           </div>
           <div>
-            <p className="text-foreground text-lg font-medium">找不到結果</p>
+            <p className="text-foreground text-lg font-medium">
+              {t("noResults.title")}
+            </p>
             <p className="text-muted-foreground mt-1">
-              未找到 &quot;{query}&quot; 相關的藝人或歌曲
+              {t("noResults.message", { query })}
             </p>
           </div>
         </Card>

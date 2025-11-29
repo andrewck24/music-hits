@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://music-hits.example.com/schemas/common.json",
+  "title": "Common Translations Schema",
+  "description": "Schema for common UI translations (header, language switch, banner, menu)",
+  "type": "object",
+  "required": ["header", "languageSwitch", "banner", "menu"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["title", "search"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Website title displayed in header"
+        },
+        "search": {
+          "type": "string",
+          "description": "Search button label"
+        }
+      },
+      "additionalProperties": false
+    },
+    "languageSwitch": {
+      "type": "object",
+      "required": ["label", "current"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Accessible label for language switcher"
+        },
+        "current": {
+          "type": "string",
+          "description": "Label for current language indicator"
+        }
+      },
+      "additionalProperties": false
+    },
+    "banner": {
+      "type": "object",
+      "required": ["title", "message", "switchButton", "dismissButton"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Banner title"
+        },
+        "message": {
+          "type": "string",
+          "description": "Banner message suggesting language switch"
+        },
+        "switchButton": {
+          "type": "string",
+          "description": "Label for switch language button"
+        },
+        "dismissButton": {
+          "type": "string",
+          "description": "Label for dismiss banner button"
+        }
+      },
+      "additionalProperties": false
+    },
+    "menu": {
+      "type": "object",
+      "required": ["github", "close"],
+      "properties": {
+        "github": {
+          "type": "string",
+          "description": "GitHub link text"
+        },
+        "close": {
+          "type": "string",
+          "description": "Close menu button label"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

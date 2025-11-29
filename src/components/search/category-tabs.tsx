@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export type Category = "all" | "artists" | "tracks";
 
@@ -15,6 +16,8 @@ export function SearchCategoryTabs({
   artistCount,
   trackCount,
 }: SearchCategoryTabsProps) {
+  const { t } = useTranslation("search");
+
   if (artistCount === 0 && trackCount === 0) return null;
 
   return (
@@ -23,19 +26,19 @@ export function SearchCategoryTabs({
         variant={category === "all" ? "default" : "outline"}
         onClick={() => setCategory("all")}
       >
-        全部
+        {t("categories.all")}
       </Button>
       <Button
         variant={category === "artists" ? "default" : "outline"}
         onClick={() => setCategory("artists")}
       >
-        藝人 ({artistCount})
+        {t("categories.artists", { count: artistCount })}
       </Button>
       <Button
         variant={category === "tracks" ? "default" : "outline"}
         onClick={() => setCategory("tracks")}
       >
-        歌曲 ({trackCount})
+        {t("categories.tracks", { count: trackCount })}
       </Button>
     </div>
   );

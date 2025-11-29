@@ -1,0 +1,28 @@
+{
+  "pageTitle": "Search | Music Hits",
+  "emptyState": {
+    "title": "Start searching",
+    "message": "Enter artist or song name in the search box above"
+  },
+  "noResults": {
+    "title": "No results found",
+    "message": "No artists or songs found for \"{{query}}\""
+  },
+  "categories": {
+    "all": "All",
+    "artists": "Artists ({{count}})",
+    "tracks": "Tracks ({{count}})"
+  },
+  "artistResults": {
+    "title": "Artists",
+    "viewAll": "View all artists",
+    "noResults": "No artists found for \"{{query}}\"",
+    "showingAll": "Showing all {{count}} artists"
+  },
+  "trackResults": {
+    "title": "Tracks",
+    "viewAll": "View all tracks",
+    "noResults": "No tracks found for \"{{query}}\"",
+    "showingAll": "Showing all {{count}} tracks"
+  }
+}

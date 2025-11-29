@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://music-hits.example.com/schemas/track.json",
+  "title": "Track Translations Schema",
+  "description": "Schema for track page translations",
+  "type": "object",
+  "required": ["title", "artist", "album", "duration", "releaseDate", "audioFeatures", "features", "noData"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Track page title"
+    },
+    "artist": {
+      "type": "string",
+      "description": "Artist label"
+    },
+    "album": {
+      "type": "string",
+      "description": "Album label"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Duration label"
+    },
+    "releaseDate": {
+      "type": "string",
+      "description": "Release date label"
+    },
+    "audioFeatures": {
+      "type": "string",
+      "description": "Audio features section label"
+    },
+    "features": {
+      "type": "object",
+      "required": ["danceability", "energy", "valence", "tempo", "loudness"],
+      "properties": {
+        "danceability": {
+          "type": "string",
+          "description": "Danceability feature label"
+        },
+        "energy": {
+          "type": "string",
+          "description": "Energy feature label"
+        },
+        "valence": {
+          "type": "string",
+          "description": "Valence (mood) feature label"
+        },
+        "tempo": {
+          "type": "string",
+          "description": "Tempo feature label"
+        },
+        "loudness": {
+          "type": "string",
+          "description": "Loudness feature label"
+        }
+      },
+      "additionalProperties": false
+    },
+    "noData": {
+      "type": "string",
+      "description": "No data available message"
+    }
+  },
+  "additionalProperties": false
+}

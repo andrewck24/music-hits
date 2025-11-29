@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { useGetAudioFeaturesQuery, useGetTrackQuery } from "@/services";
+import { useTranslation } from "react-i18next";
 
 interface OtherFeaturesProps {
   trackId: string;
@@ -26,6 +27,7 @@ interface OtherFeaturesProps {
  *   `<OtherFeatures trackId="someTrackId" className="optional-class" />`
  */
 export function OtherFeatures({ trackId, className }: OtherFeaturesProps) {
+  const { t } = useTranslation("track");
   const {
     data: features,
     isLoading: isFeatureLoading,
@@ -60,25 +62,25 @@ export function OtherFeatures({ trackId, className }: OtherFeaturesProps) {
   return (
     <div className={cn("grid grid-cols-2 gap-4 md:grid-cols-4", className)}>
       <Feature
-        featureName="調性 (Key)"
+        featureName={t("otherFeatures.key")}
         featureValue={features ? KEY_TEXT_MAP[features.key] : null}
         isLoading={isFeatureLoading}
         error={!!featureError}
       />
       <Feature
-        featureName="調式 (Mode)"
+        featureName={t("otherFeatures.mode")}
         featureValue={features ? MODE_TEXT_MAP[features.mode] : null}
         isLoading={isFeatureLoading}
         error={!!featureError}
       />
       <Feature
-        featureName="節奏 (Tempo)"
+        featureName={t("otherFeatures.tempo")}
         featureValue={features ? features.tempo.toFixed(0).toString() : null}
         isLoading={isFeatureLoading}
         error={!!featureError}
       />
       <Feature
-        featureName="時長 (Duration)"
+        featureName={t("otherFeatures.durationLabel")}
         featureValue={track ? formatDuration(track.duration_ms) : null}
         isLoading={isTrackLoading}
         error={!!trackError}
@@ -138,11 +140,13 @@ interface ErrorFallbackProps {
 }
 
 function ErrorFallback({ featureName, className }: ErrorFallbackProps) {
+  const { t } = useTranslation("track");
+
   return (
     <Card className={cn("p-4 md:p-6", className)}>
       <h3 className="text-foreground mb-6 font-semibold">{featureName}</h3>
       <p className="text-muted-foreground mb-6 flex h-12 items-center justify-center text-center md:h-18">
-        暫時沒有數據
+        {t("otherFeatures.noData")}
       </p>
     </Card>
   );

@@ -1,0 +1,76 @@
+{
+  "pageTitle": "{{name}} | Music Hits",
+  "title": "曲の詳細",
+  "artist": "アーティスト",
+  "album": "アルバム",
+  "duration": "再生時間",
+  "releaseDate": "リリース年",
+  "audioFeatures": "オーディオ特性",
+  "features": {
+    "danceability": "ダンス性",
+    "energy": "エネルギー",
+    "valence": "ポジティブさ",
+    "tempo": "テンポ",
+    "loudness": "ラウドネス"
+  },
+  "noData": "データなし",
+  "info": {
+    "albumLabel": "アルバム",
+    "releaseYearLabel": "リリース年",
+    "popularity": "人気度",
+    "openInSpotify": "Spotifyで開く",
+    "loadError": "曲の情報を読み込めません",
+    "loadErrorMessage": "後でもう一度試すか、ネットワーク接続を確認してください。"
+  },
+  "featureChart": {
+    "title": "オーディオ特性分析",
+    "labels": {
+      "acousticness": "アコースティック",
+      "danceability": "ダンス",
+      "energy": "エネルギー",
+      "instrumentalness": "インストゥルメンタル",
+      "liveness": "ライブ",
+      "speechiness": "スピーチ",
+      "valence": "ポジティブ"
+    },
+    "featureValue": "特性値",
+    "loadError": "現在オーディオ特性を取得できません"
+  },
+  "otherFeatures": {
+    "key": "キー",
+    "mode": "モード",
+    "tempo": "テンポ",
+    "durationLabel": "再生時間",
+    "noData": "データなし"
+  },
+  "artists": {
+    "title": "アーティスト情報",
+    "viewDetails": "クリックしてアーティスト詳細を表示"
+  },
+  "popularity": {
+    "title": "人気度分析",
+    "labels": {
+      "playCount": "Spotify 再生回数",
+      "youtubeViews": "YouTube 視聴回数",
+      "youtubeLikes": "YouTube いいね数",
+      "youtubeComments": "YouTube コメント数"
+    },
+    "legend": {
+      "median": "中央値",
+      "mean": "平均値",
+      "note": "* 対数スケール表示、上限はデータベース (2023) の最大値"
+    },
+    "stats": {
+      "median": "中央値：",
+      "mean": "平均値：",
+      "range": "範囲："
+    },
+    "loadError": "人気度データを取得できません"
+  },
+  "notFound": {
+    "title": "おっと！曲が見つかりません...",
+    "message": "曲を再検索してください。",
+    "backToHome": "ホームに戻る",
+    "searchTrack": "曲を検索"
+  }
+}

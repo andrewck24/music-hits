@@ -1,12 +1,12 @@
 import { ArtistProfile } from "@/components/artist/profile";
-import { LoadingFallback } from "@/components/layout/loading-fallback";
 import { TrackItem } from "@/components/track/item";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
+import { useLocalizedPath } from "@/hooks/use-localized-path";
 import type { tracksLoader } from "@/loaders/tracks-loader";
 import { useGetArtistQuery } from "@/services";
-import { Suspense } from "react";
+import { useTranslation } from "react-i18next";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { Link, useParams, useRouteLoaderData } from "react-router-dom";
 
@@ -28,15 +28,10 @@ import { Link, useParams, useRouteLoaderData } from "react-router-dom";
  */
 
 export function ArtistPage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <ArtistPageContent />
-    </Suspense>
-  );
-}
-
-function ArtistPageContent() {
+  const { t } = useTranslation("artist");
   const { artistId } = useParams<{ artistId: string }>();
+  const homePath = useLocalizedPath("/");
+  const searchPath = useLocalizedPath("/search");
 
   // Get tracks from loader (loaded before page render)
   const { tracks: tracksDatabase } = useRouteLoaderData("root") as Awaited<
@@ -49,7 +44,7 @@ function ArtistPageContent() {
   });
 
   // Set document title
-  useDocumentTitle(artist ? `${artist.name} | Music Hits` : "Music Hits");
+  useDocumentTitle(artist ? t("pageTitle", { name: artist.name }) : "Music Hits");
 
   // Filter local tracks by artist
   const artistTracks = artistId
@@ -63,15 +58,15 @@ function ArtistPageContent() {
         <Card className="p-8 text-center">
           <RiUserUnfollowLine className="text-muted-foreground mx-auto mb-4 size-16" />
           <h2 className="text-foreground mb-2 text-2xl font-bold">
-            糟糕！找不到藝人...
+            {t("notFound.title")}
           </h2>
-          <p className="text-muted-foreground mb-6">請再嘗試重新搜尋藝人。</p>
+          <p className="text-muted-foreground mb-6">{t("notFound.message")}</p>
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild>
-              <Link to="/">返回首頁</Link>
+              <Link to={homePath}>{t("notFound.backToHome")}</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/search">搜尋藝人</Link>
+              <Link to={searchPath}>{t("notFound.searchArtist")}</Link>
             </Button>
           </div>
         </Card>
@@ -87,13 +82,13 @@ function ArtistPageContent() {
       {/* Tracks Section */}
       <div>
         <h2 className="text-foreground mb-4 text-2xl font-bold">
-          {artist?.name} 的歌曲
+          {t("tracks.sectionTitle", { name: artist?.name })}
         </h2>
 
         {artistTracks.length === 0 ? (
           <Card className="p-8 text-center">
             <p className="text-muted-foreground text-lg">
-              在我們的資料庫中未找到 {artist?.name} 的歌曲
+              {t("tracks.noTracks", { name: artist?.name })}
             </p>
           </Card>
         ) : (

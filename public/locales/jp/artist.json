@@ -1,0 +1,24 @@
+{
+  "pageTitle": "{{name}} | Music Hits",
+  "title": "アーティストプロフィール",
+  "followers": "フォロワー：{{count}}",
+  "genres": "ジャンル",
+  "topTracks": "人気曲",
+  "relatedArtists": "関連アーティスト",
+  "biography": "プロフィール",
+  "noData": "データなし",
+  "profile": {
+    "followersCount": "{{formattedCount}} フォロワー",
+    "popularity": "人気度"
+  },
+  "tracks": {
+    "sectionTitle": "{{name}} の曲",
+    "noTracks": "データベースに {{name}} の曲が見つかりませんでした"
+  },
+  "notFound": {
+    "title": "おっと！アーティストが見つかりません...",
+    "message": "アーティストを再度検索してください。",
+    "backToHome": "ホームに戻る",
+    "searchArtist": "アーティストを検索"
+  }
+}

@@ -1,5 +1,6 @@
 import { ErrorBoundary } from "@/components/error-boundary";
 import "@/globals.css";
+import "@/lib/i18n";
 import { routes } from "@/lib/routes";
 import { store } from "@/lib/store";
 import React from "react";

@@ -1,0 +1,45 @@
+{
+  "header": {
+    "title": "Music Hits",
+    "search": "搜尋",
+    "searchPlaceholder": "搜尋歌曲或藝人...",
+    "clearSearch": "清除搜尋"
+  },
+  "languageSwitch": {
+    "label": "語言",
+    "current": "當前語言：{{language}}"
+  },
+  "banner": {
+    "title": "語言建議",
+    "message": "您的瀏覽器語言設定為 {{language}}，是否要切換？",
+    "switchButton": "切換至 {{language}}",
+    "dismissButton": "保持繁體中文"
+  },
+  "menu": {
+    "label": "選單",
+    "github": "在 GitHub 上查看",
+    "close": "關閉"
+  },
+  "actions": {
+    "search": "搜尋",
+    "back": "返回",
+    "home": "首頁",
+    "backToHome": "返回首頁",
+    "close": "關閉",
+    "viewMore": "查看更多",
+    "loadMore": "載入更多",
+    "tryAgain": "重試"
+  },
+  "states": {
+    "loading": "載入中...",
+    "error": "錯誤",
+    "noData": "無資料",
+    "notFound": "找不到"
+  },
+  "errors": {
+    "notFound": "糟糕！找不到...",
+    "loadError": "載入資料失敗",
+    "tryAgainMessage": "請再嘗試重新搜尋。",
+    "genericError": "發生錯誤"
+  }
+}

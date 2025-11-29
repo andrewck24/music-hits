@@ -1,0 +1,45 @@
+{
+  "header": {
+    "title": "Music Hits",
+    "search": "Search",
+    "searchPlaceholder": "Search for songs or artists...",
+    "clearSearch": "Clear search"
+  },
+  "languageSwitch": {
+    "label": "Language",
+    "current": "Current language: {{language}}"
+  },
+  "banner": {
+    "title": "Language Suggestion",
+    "message": "Your browser language is set to {{language}}. Would you like to switch?",
+    "switchButton": "Switch to {{language}}",
+    "dismissButton": "Keep English"
+  },
+  "menu": {
+    "label": "Menu",
+    "github": "View on GitHub",
+    "close": "Close"
+  },
+  "actions": {
+    "search": "Search",
+    "back": "Back",
+    "home": "Home",
+    "backToHome": "Back to Home",
+    "close": "Close",
+    "viewMore": "View More",
+    "loadMore": "Load More",
+    "tryAgain": "Try Again"
+  },
+  "states": {
+    "loading": "Loading...",
+    "error": "Error",
+    "noData": "No data available",
+    "notFound": "Not Found"
+  },
+  "errors": {
+    "notFound": "Oops! Not found...",
+    "loadError": "Failed to load data",
+    "tryAgainMessage": "Please try searching again.",
+    "genericError": "Something went wrong"
+  }
+}

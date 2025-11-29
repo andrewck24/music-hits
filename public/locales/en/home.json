@@ -1,0 +1,13 @@
+{
+  "hero": {
+    "title": "Music Hits",
+    "subtitle": "Explore the most popular artists and tracks on Spotify. Discover your next favorite hit today.",
+    "ctaButton": "Go to Search"
+  },
+  "popularArtists": {
+    "title": "Popular Artists"
+  },
+  "popularTracks": {
+    "title": "Popular Tracks"
+  }
+}
