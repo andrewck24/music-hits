@@ -17,10 +17,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Vendor chunks for better caching
           "react-vendor": ["react", "react-dom"],
           "redux-vendor": ["@reduxjs/toolkit", "react-redux"],
           "chart-vendor": ["recharts"],
+          "i18n-vendor": [
+            "i18next",
+            "i18next-browser-languagedetector",
+            "i18next-http-backend",
+            "react-i18next",
+          ],
+          "utility-vendor": ["zod", "fuse.js"],
         },
       },
     },
