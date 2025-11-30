@@ -54,7 +54,7 @@ export function I18nBanner() {
   };
 
   return (
-    <div className="top-header-height bg-primary fixed z-40 w-full shadow-md">
+    <div className="bg-primary fixed bottom-0 z-40 w-full shadow-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex flex-1 items-center gap-3">
           <div className="flex-1">
