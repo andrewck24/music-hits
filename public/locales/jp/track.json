@@ -72,5 +72,22 @@
     "message": "曲を再検索してください。",
     "backToHome": "ホームに戻る",
     "searchTrack": "曲を検索"
+  },
+  "prediction": {
+    "title": "予測結果",
+    "categories": {
+      "niche": {
+        "title": "ニッチ / インディーズ",
+        "description": "主流の注目を集めていない。"
+      },
+      "mainstream": {
+        "title": "メジャー / 大ヒット",
+        "description": "市場で大きな成功を収め、広く人気を博している。"
+      },
+      "promising": {
+        "title": "期待作 / 有望",
+        "description": "まだバイラルになっていないが、市場の反応が良いか、専門家の評価が高く、ブレイクする可能性がある。"
+      }
+    }
   }
 }

@@ -46,7 +46,7 @@ export function TrackInfo({ trackId, className }: TrackInfoProps) {
     <Card className={cn("flex flex-col gap-6 p-6 md:flex-row", className)}>
       {/* Album Cover */}
       {albumCover && (
-        <div className="bg-muted size-40 flex-shrink-0 rounded-md">
+        <div className="bg-muted size-40 shrink-0 rounded-md">
           <img
             src={albumCover.url}
             alt={track.album?.name}

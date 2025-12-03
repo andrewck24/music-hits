@@ -10,7 +10,7 @@
  * Artist Details:
  * 1. Taylor Swift - American singer-songwriter, pop/country
  * 2. TWICE - South Korean girl group, K-pop
- * 3. Jay Chou - Taiwanese singer, pop/R&B/funk
+ * 3. Hans Zimmer - German film score composer
  * 4. Billie Eilish - American singer-songwriter, alternative/pop
  * 5. Bruno Mars - American singer, pop/R&B/funk
  * 6. Ariana Grande - American singer, pop
@@ -21,7 +21,7 @@
 export const RECOMMENDED_ARTIST_IDS = [
   "06HL4z0CvFAxyc27GXpf02", // Taylor Swift
   "7n2Ycct7Beij7Dj7meI4X0", // TWICE
-  "2elBjNSdBE2Y3f0j1mjrql", // Jay Chou
+  "0YC192cP3KPCRWx8zr8MfZ", // Hans Zimmer
   "6qqNVTkY8uBg9cP3Jd7DAH", // Billie Eilish
   "0du5cEVh5yTK9QJze8zA0C", // Bruno Mars
   "66CXWjxzNUsdJxJ2JdwvnR", // Ariana Grande
@@ -39,7 +39,7 @@ export type RecommendedArtistId = (typeof RECOMMENDED_ARTIST_IDS)[number];
 export const RECOMMENDED_TRACK_IDS = [
   "3zhbXKFjUDw40pTYyCgt1Y", // What is Love - TWICE
   "7qiZfU4dY1lWllzX7mPBI3", // Shape of You - Ed Sheeran
-  "4Rt9k4SE8dbfKzngxKJPq9", // 擱淺 - Jay Chou
+  "6ocbgoVGwYJhOv1GgI9NsF", // 7 Rings - Ariana Grande
   "1zwMYTA5nlNjZxYrvBB2pV", // Someone Like You - Adele
   "2tJulUYLDKOg9XrtVkMgcJ", // Grenade - Bruno Mars
   "3AJwUDP919kvQ9QcozQPxg", // Yellow - Coldplay
