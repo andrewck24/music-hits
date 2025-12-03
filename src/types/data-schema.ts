@@ -44,8 +44,9 @@ export interface LocalTrackData {
   // === 人氣指標 ===
   popularity: PopularityMetrics;
 
-  // === UI 狀態 ===
-  indicator: 0 | 1 | 2; // 內部使用的指示器（用途待確認）
+  // === 人氣預測 ===
+  indicator: 0 | 1 | 2; // 0 = 其他, 1 = 已爆紅, 2 = 有潛力
+  
 }
 
 /**

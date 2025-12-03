@@ -124,6 +124,23 @@ export interface TrackTranslations {
     };
     loadError: string;
   };
+  prediction: {
+    title: string;
+    categories: {
+      niche: {
+        title: string;
+        description: string;
+      };
+      mainstream: {
+        title: string;
+        description: string;
+      };
+      promising: {
+        title: string;
+        description: string;
+      };
+    };
+  };
   notFound: {
     title: string;
     message: string;

@@ -72,5 +72,22 @@
     "message": "請再嘗試重新搜尋歌曲。",
     "backToHome": "返回首頁",
     "searchTrack": "搜尋歌曲"
+  },
+  "prediction": {
+    "title": "預測結果",
+    "categories": {
+      "niche": {
+        "title": "小眾佳作 / 獨立作品",
+        "description": "並沒有符合目前主流市場的喜好。"
+      },
+      "mainstream": {
+        "title": "主流熱銷 / 爆紅作品",
+        "description": "已在市場上取得巨大成功，受到廣泛歡迎。"
+      },
+      "promising": {
+        "title": "潛力新秀 / 待發掘",
+        "description": "尚未爆發，但市場反應良好或專業評價高，有爆紅的機會。"
+      }
+    }
   }
 }

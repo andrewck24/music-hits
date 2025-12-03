@@ -67,6 +67,23 @@
     },
     "loadError": "Unable to retrieve popularity data"
   },
+  "prediction": {
+    "title": "Prediction Result",
+    "categories": {
+      "niche": {
+        "title": "Niche / Indie",
+        "description": "Not in mainstream attention."
+      },
+      "mainstream": {
+        "title": "Mainstream Hit / Blockbuster",
+        "description": "Already achieved huge success in the market and is widely popular."
+      },
+      "promising": {
+        "title": "Promising / Emerging",
+        "description": "Not yet viral, but shows good market response or high professional ratings, with potential to break out."
+      }
+    }
+  },
   "notFound": {
     "title": "Oops! Track not found...",
     "message": "Please try searching for the track again.",

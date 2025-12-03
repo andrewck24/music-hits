@@ -1,6 +1,7 @@
 import { ArtistsList } from "@/components/track/artists";
 import { TrackFeatures } from "@/components/track/features";
 import { TrackInfo } from "@/components/track/info";
+import { PopularityPrediction } from "@/components/track/prediction";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDocumentTitle } from "@/hooks/use-document-title";
@@ -65,6 +66,7 @@ export function TrackPage() {
     <div className="mx-auto max-w-7xl px-6 pb-20">
       <TrackInfo trackId={trackId} className="mb-8" />
       <TrackFeatures trackId={trackId} className="mb-8" />
+      <PopularityPrediction trackId={trackId} className="mb-8" />
       <ArtistsList trackId={trackId} />
     </div>
   );
