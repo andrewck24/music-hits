@@ -40,3 +40,6 @@ AGENT.md
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright MCP session output
+.playwright-mcp/

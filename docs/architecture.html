@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Hits — Architecture &amp; Flows</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #080c14;
+      --bg-card:     #0e1420;
+      --bg-sidebar:  #070a12;
+      --bg-header:   #0b0f1c;
+      --text-hi:     #dde4f0;
+      --text-mid:    #7888a8;
+      --text-lo:     #3a4560;
+      --border:      #161e30;
+      --border-hi:   #232f48;
+      --gold:        #f0a830;
+      --gold-bg:     rgba(240,168,48,0.10);
+      --font-mono:   'Courier New', 'Consolas', 'Lucida Console', monospace;
+      --font-ui:     -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+    }
+
+    html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text-hi); font-family: var(--font-ui); }
+
+    /* ── Layout ─────────────────────────────────────────── */
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    .app-header {
+      display: flex; align-items: center; gap: 28px;
+      padding: 13px 22px;
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0; z-index: 10;
+    }
+
+    .header-title h1 {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      color: var(--text-hi); white-space: nowrap; letter-spacing: 0.02em;
+    }
+    .header-title p { font-size: 10.5px; color: var(--text-mid); margin-top: 3px; }
+
+    .header-legend { display: flex; gap: 18px; flex-wrap: wrap; flex: 1; padding-left: 8px; }
+    .legend-item   { display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: var(--text-mid); }
+    .legend-dot    { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    .app-body { display: flex; flex: 1; min-height: 0; }
+
+    /* ── Main columns area ──────────────────────────────── */
+    .main-area { display: flex; flex: 1; overflow: auto; position: relative; align-items: center; justify-items: center; }
+
+    .columns-wrapper {
+      position: relative;
+      margin: auto;
+      /*padding: 110px 24px 40px;   /* top-padding reserves space for backward-arrow arcs */*/
+      min-width: max-content;
+    }
+
+    .columns { display: flex; gap: 10px; align-items: flex-start; }
+
+    .column { width: 172px; flex-shrink: 0; }
+
+    .column-header {
+      font-size: 8.5px; font-weight: 800; letter-spacing: 0.14em;
+      color: var(--text-lo); text-transform: uppercase;
+      padding: 0 4px 9px 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 9px;
+    }
+
+    .column-cards { display: flex; flex-direction: column; gap: 7px; }
+
+    /* ── Cards ─────────────────────────────────────────── */
+    .card {
+      padding: 9px 11px 9px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      position: relative;
+      transition: opacity 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute; left: 0; top: 3px; bottom: 3px;
+      width: 3px; border-radius: 2px;
+      background: var(--cat-color);
+      opacity: 0.45;
+      transition: opacity 0.22s ease;
+    }
+
+    .card-name     { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; color: var(--text-hi); line-height: 1.3; }
+    .card-subtitle { font-size: 9px; color: var(--text-mid); margin-top: 3px; line-height: 1.45; }
+
+    /* flow active states */
+    .has-flow .card                   { opacity: 0.13; }
+    .has-flow .card.on                { opacity: 1; border-color: var(--cat-color); background: color-mix(in srgb, var(--cat-color) 7%, var(--bg-card)); }
+    .has-flow .card.on::before        { opacity: 1; }
+
+    /* ── SVG overlay ────────────────────────────────────── */
+    .arrows-svg {
+      position: absolute; top: 0; left: 0;
+      pointer-events: none; overflow: visible;
+    }
+
+    /* ── Sidebar ────────────────────────────────────────── */
+    .sidebar {
+      width: 298px; flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    .sidebar-flows  { flex: 0 0 auto; max-height: 48%; overflow-y: auto; border-bottom: 1px solid var(--border); }
+    .sidebar-steps  { flex: 1; overflow-y: auto; }
+
+    .sec-title {
+      font-size: 8.5px; font-weight: 800; letter-spacing: 0.14em; color: var(--text-lo);
+      padding: 11px 16px 8px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: var(--bg-sidebar); z-index: 1;
+    }
+
+    /* ── Flow items ─────────────────────────────────────── */
+    .flow-item {
+      padding: 9px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(22,30,48,0.7);
+      border-left: 3px solid transparent;
+      transition: background 0.13s ease, border-color 0.13s ease;
+    }
+    .flow-item:hover { background: rgba(240,168,48,0.04); border-left-color: rgba(240,168,48,0.35); }
+    .flow-item.sel   { background: var(--gold-bg);       border-left-color: var(--gold); }
+
+    .fi-name { font-size: 11.5px; font-weight: 600; color: var(--text-hi); }
+    .flow-item.sel .fi-name { color: var(--gold); }
+    .fi-desc { font-size: 9.5px; color: var(--text-mid); margin-top: 2px; line-height: 1.4; }
+
+    .flow-clear {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 10px; color: var(--text-lo);
+      transition: color 0.13s;
+    }
+    .flow-clear:hover { color: var(--text-mid); }
+
+    /* ── Steps ─────────────────────────────────────────── */
+    .steps-empty {
+      padding: 22px 16px;
+      font-size: 10.5px; color: var(--text-lo);
+      font-style: italic; line-height: 1.5;
+    }
+
+    .step-row {
+      display: flex; gap: 9px;
+      padding: 8px 16px;
+      border-bottom: 1px solid rgba(22,30,48,0.55);
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 19px; height: 19px; border-radius: 50%;
+      background: var(--gold);
+      color: #080c14; font-size: 9.5px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .step-body {}
+    .step-route { font-family: var(--font-mono); font-size: 9.5px; color: var(--gold); margin-bottom: 2px; opacity: 0.85; }
+    .step-lbl   { font-size: 11px; font-weight: 600; color: var(--text-hi); }
+    .step-det   { font-size: 9.5px; color: var(--text-mid); margin-top: 2px; line-height: 1.45; }
+
+    /* ── Scrollbars ─────────────────────────────────────── */
+    ::-webkit-scrollbar            { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track      { background: transparent; }
+    ::-webkit-scrollbar-thumb      { background: var(--border-hi); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover{ background: var(--text-lo); }
+  </style>
+</head>
+<body>
+
+<!--
+  DATA SCHEMA
+  ═══════════════════════════════════════════════════════════
+  categories : [{ id, label, color }]
+  columns    : [{ id, label }]
+  components : [{ id, name, subtitle, column, category }]
+  flows      : [{
+    id, name, description,
+    steps: [{ from, to, label, detail }]
+  }]
+
+  from / to in steps must match a component id.
+  Self-steps (from === to) place a badge on the card without an arrow.
+  ═══════════════════════════════════════════════════════════
+-->
+<script type="application/json" id="arch-data">
+{
+  "categories": [
+    { "id": "actor",    "label": "Actor",           "color": "#58a6ff" },
+    { "id": "router",   "label": "Router / Pages",  "color": "#bc8cff" },
+    { "id": "ui",       "label": "UI Components",   "color": "#3fb950" },
+    { "id": "hooks",    "label": "Hooks",           "color": "#ff9500" },
+    { "id": "state",    "label": "State / Cache",   "color": "#ffd760" },
+    { "id": "services", "label": "Services",        "color": "#f85149" },
+    { "id": "external", "label": "External",        "color": "#7da8c0" }
+  ],
+  "columns": [
+    { "id": "actor-col",    "label": "ACTOR" },
+    { "id": "router-col",   "label": "ROUTER / PAGES" },
+    { "id": "ui-col",       "label": "UI COMPONENTS" },
+    { "id": "hooks-col",    "label": "HOOKS" },
+    { "id": "state-col",    "label": "STATE / CACHE" },
+    { "id": "services-col", "label": "SERVICES" },
+    { "id": "external-col", "label": "EXTERNAL" }
+  ],
+  "components": [
+    { "id": "user",         "name": "User",                "subtitle": "Browser interaction",                                       "column": "actor-col",    "category": "actor"    },
+
+    { "id": "react-router", "name": "React Router",        "subtitle": "Route matching, lazy loading, history API",                 "column": "router-col",   "category": "router"   },
+    { "id": "home-page",    "name": "HomePage",            "subtitle": "Popular tracks & artists",                                  "column": "router-col",   "category": "router"   },
+    { "id": "search-page",  "name": "SearchPage",          "subtitle": "Track & artist search results",                             "column": "router-col",   "category": "router"   },
+    { "id": "artist-page",  "name": "ArtistPage",          "subtitle": "Artist profile view",                                       "column": "router-col",   "category": "router"   },
+    { "id": "track-page",   "name": "TrackPage",           "subtitle": "Track detail & audio features",                             "column": "router-col",   "category": "router"   },
+
+    { "id": "layout-group", "name": "Layout",              "subtitle": "Header, SearchBar, Sidebar, i18n Banner, Language Switch",  "column": "ui-col",       "category": "ui"       },
+    { "id": "home-group",   "name": "Home Components",     "subtitle": "Hero, PopularTracks, PopularArtists",                       "column": "ui-col",       "category": "ui"       },
+    { "id": "track-group",  "name": "Track Components",    "subtitle": "TrackCard, TrackItem, TrackInfo, Features, Prediction",     "column": "ui-col",       "category": "ui"       },
+    { "id": "artist-group", "name": "Artist Components",   "subtitle": "ArtistCard, ArtistProfile",                                 "column": "ui-col",       "category": "ui"       },
+    { "id": "search-group", "name": "Search Components",   "subtitle": "CategoryTabs, TrackResults, ArtistResults",                 "column": "ui-col",       "category": "ui"       },
+
+    { "id": "use-search",   "name": "useSearch",           "subtitle": "Query state, debounce, result coordination",                "column": "hooks-col",    "category": "hooks"    },
+    { "id": "use-language", "name": "useLanguage",         "subtitle": "useLanguage, useChangeLanguage, useLocalizedPath",          "column": "hooks-col",    "category": "hooks"    },
+    { "id": "use-lang-det", "name": "useLanguageDetection","subtitle": "Reads navigator.language for redirect",                    "column": "hooks-col",    "category": "hooks"    },
+    { "id": "use-scroll",   "name": "useInfiniteScroll",   "subtitle": "IntersectionObserver-based pagination",                    "column": "hooks-col",    "category": "hooks"    },
+
+    { "id": "redux-store",  "name": "Redux Store",         "subtitle": "configureStore + RTK Query middleware",                     "column": "state-col",    "category": "state"    },
+    { "id": "rtk-cache",    "name": "RTK Query Cache",     "subtitle": "In-memory, session-based, tag invalidation",               "column": "state-col",    "category": "state"    },
+    { "id": "sess-storage", "name": "sessionStorage",      "subtitle": "tracks.json cache keyed by version",                       "column": "state-col",    "category": "state"    },
+
+    { "id": "spotify-slice","name": "spotifyApi Slice",    "subtitle": "RTK Query: getArtist, getTrack, getSeveral*, getAudioFeatures", "column": "services-col","category": "services" },
+    { "id": "tracks-loader","name": "tracksLoader",        "subtitle": "React Router loader: fetch + Zod validate + cache",         "column": "services-col", "category": "services" },
+
+    { "id": "cf-worker",    "name": "Cloudflare Worker",   "subtitle": "Proxy: /api/spotify → Spotify Web API",                    "column": "external-col", "category": "external" },
+    { "id": "spotify-api",  "name": "Spotify Web API",     "subtitle": "Artists, Tracks, Audio Features",                          "column": "external-col", "category": "external" },
+    { "id": "tracks-json",  "name": "tracks.json",         "subtitle": "Static curated track DB with metadata",                    "column": "external-col", "category": "external" }
+  ],
+  "flows": [
+    {
+      "id": "app-startup",
+      "name": "App Startup",
+      "description": "App loads; tracks.json fetched, Zod-validated, and cached in sessionStorage",
+      "steps": [
+        { "from": "user",          "to": "react-router",  "label": "navigate to URL",            "detail": "Browser loads the app; React Router initialises createBrowserRouter" },
+        { "from": "react-router",  "to": "tracks-loader", "label": "invoke root loader",          "detail": "tracksLoader runs before any page renders (attached to root route)" },
+        { "from": "tracks-loader", "to": "sess-storage",  "label": "check sessionStorage cache",  "detail": "Reads music-hits:tracks-data and music-hits:data-version keys" },
+        { "from": "tracks-loader", "to": "tracks-json",   "label": "fetch /data/tracks.json",     "detail": "Only on cache miss; validates with Zod schema + integrity check" },
+        { "from": "tracks-loader", "to": "sess-storage",  "label": "save validated data",         "detail": "Stores serialised JSON and version string for session reuse" },
+        { "from": "tracks-loader", "to": "react-router",  "label": "return { tracks }",           "detail": "Available via useRouteLoaderData('root') in all child routes" },
+        { "from": "react-router",  "to": "layout-group",  "label": "render Layout",               "detail": "Layout wraps all pages; provides Header, Sidebar, i18n Banner" }
+      ]
+    },
+    {
+      "id": "lang-detection",
+      "name": "Language Detection",
+      "description": "Root path triggers browser-language detection and redirects to /:lang/",
+      "steps": [
+        { "from": "user",          "to": "react-router",   "label": "navigate to /",              "detail": "URL has no language prefix" },
+        { "from": "react-router",  "to": "layout-group",   "label": "render RootRedirect",         "detail": "Layout validates :lang param; root path mounts RootRedirect component" },
+        { "from": "layout-group",  "to": "use-lang-det",   "label": "detect browser language",     "detail": "i18next-browser-languagedetector reads navigator.language" },
+        { "from": "use-lang-det",  "to": "react-router",   "label": "redirect to /:lang/",         "detail": "navigate('/en/', { replace: true }) or detected locale code" }
+      ]
+    },
+    {
+      "id": "lang-switch",
+      "name": "Language Switch",
+      "description": "User switches language; URL :lang segment and i18n instance sync",
+      "steps": [
+        { "from": "user",         "to": "layout-group",  "label": "click language switcher",    "detail": "LanguageSwitch dropdown rendered inside Header" },
+        { "from": "layout-group", "to": "use-language",  "label": "changeLanguage(lang)",        "detail": "useChangeLanguage hook called with new locale code" },
+        { "from": "use-language", "to": "react-router",  "label": "navigate to /:newLang/...",   "detail": "useLocalizedPath replaces :lang segment preserving the current path" },
+        { "from": "react-router", "to": "layout-group",  "label": "re-render with new :lang",    "detail": "Layout receives updated param; triggers i18n.changeLanguage sync" }
+      ]
+    },
+    {
+      "id": "browse-home",
+      "name": "Browse Home",
+      "description": "Homepage batch-fetches popular tracks and artists from Spotify",
+      "steps": [
+        { "from": "react-router",  "to": "home-page",     "label": "render HomePage",                "detail": "Lazy-loaded chunk; reads curated track list via useRouteLoaderData" },
+        { "from": "home-page",     "to": "home-group",    "label": "pass track IDs",                 "detail": "Hands curated IDs from local DB to PopularTracks & PopularArtists" },
+        { "from": "home-group",    "to": "spotify-slice", "label": "useGetSeveralTracksQuery(ids)",  "detail": "RTK Query hook; batches up to 20 IDs per request" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "check cache",                    "detail": "Returns immediately on hit; tag: Track[] keyed by ID" },
+        { "from": "spotify-slice", "to": "cf-worker",     "label": "GET /tracks?ids=...",            "detail": "Cache miss path; comma-separated IDs up to limit of 20" },
+        { "from": "cf-worker",     "to": "spotify-api",   "label": "proxy request",                  "detail": "Attaches Spotify Bearer token; forwards to api.spotify.com/v1/tracks" },
+        { "from": "spotify-api",   "to": "cf-worker",     "label": "SpotifyTrack[]",                 "detail": "name, artists[], album, popularity, preview_url per track" },
+        { "from": "cf-worker",     "to": "spotify-slice", "label": "response",                       "detail": "Raw JSON forwarded back to RTK Query" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "cache + upsert individuals",     "detail": "Batch result populates getSeveralTracks and individual getTrack entries" },
+        { "from": "rtk-cache",     "to": "home-group",    "label": "SpotifyTrack[] data",            "detail": "Components re-render with enriched Spotify metadata" }
+      ]
+    },
+    {
+      "id": "search",
+      "name": "Search Track / Artist",
+      "description": "User searches; results fetched from Spotify and rendered with pagination",
+      "steps": [
+        { "from": "user",          "to": "layout-group",  "label": "type in SearchBar",              "detail": "SearchBar in Header; submits query string" },
+        { "from": "layout-group",  "to": "react-router",  "label": "navigate to /:lang/search?q=...", "detail": "URL updated with q= param on form submit" },
+        { "from": "react-router",  "to": "search-page",   "label": "render SearchPage",              "detail": "Lazy-loaded; reads query from useSearchParams" },
+        { "from": "search-page",   "to": "use-search",    "label": "useSearch(query)",               "detail": "Hook manages query state and triggers API calls" },
+        { "from": "use-search",    "to": "spotify-slice", "label": "search queries",                 "detail": "Calls getSeveralTracks / getSeveralArtists with matched IDs" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "check cache",                    "detail": "Returns cached results immediately if available" },
+        { "from": "spotify-slice", "to": "cf-worker",     "label": "GET /search?q=...",              "detail": "Cache miss; type=track,artist query parameter" },
+        { "from": "cf-worker",     "to": "spotify-api",   "label": "proxy request",                  "detail": "Forwards to Spotify /search endpoint" },
+        { "from": "spotify-api",   "to": "cf-worker",     "label": "search results",                 "detail": "Tracks and artists matching the query string" },
+        { "from": "cf-worker",     "to": "spotify-slice", "label": "response",                       "detail": "Raw JSON forwarded back" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "cache by query key",             "detail": "Stored keyed by query string for deduplication" },
+        { "from": "rtk-cache",     "to": "use-search",    "label": "tracks[], artists[]",            "detail": "Hook returns typed results to SearchPage" },
+        { "from": "search-page",   "to": "search-group",  "label": "render results",                 "detail": "TrackResults & ArtistResults use useInfiniteScroll for pagination" }
+      ]
+    },
+    {
+      "id": "view-track",
+      "name": "View Track Details",
+      "description": "User clicks a track; detail page loads audio features from Spotify",
+      "steps": [
+        { "from": "user",          "to": "track-group",   "label": "click TrackCard",                "detail": "TrackCard or TrackItem rendered in any list view" },
+        { "from": "track-group",   "to": "react-router",  "label": "navigate to /:lang/track/:id",   "detail": "React Router Link navigates to track detail route" },
+        { "from": "react-router",  "to": "track-page",    "label": "render TrackPage",               "detail": "Lazy-loaded; receives trackId from route params" },
+        { "from": "track-page",    "to": "spotify-slice", "label": "useGetTrackQuery(trackId)",      "detail": "Requests full track data" },
+        { "from": "track-page",    "to": "spotify-slice", "label": "useGetAudioFeaturesQuery(id)",   "detail": "Requests audio features: tempo, key, energy, danceability…" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "check cache (Track)",            "detail": "Usually a hit — upserted by the earlier getSeveralTracks batch" },
+        { "from": "rtk-cache",     "to": "track-page",    "label": "SpotifyTrack (cache hit)",       "detail": "Instant data; no network round-trip needed" },
+        { "from": "spotify-slice", "to": "cf-worker",     "label": "GET /audio-features/:id",        "detail": "Always a fresh fetch — audio features not in the batch" },
+        { "from": "cf-worker",     "to": "spotify-api",   "label": "proxy request",                  "detail": "Forwards to Spotify /audio-features/:id endpoint" },
+        { "from": "spotify-api",   "to": "cf-worker",     "label": "SpotifyAudioFeatures",           "detail": "tempo, key, mode, energy, danceability, valence, loudness…" },
+        { "from": "cf-worker",     "to": "spotify-slice", "label": "response",                       "detail": "Raw JSON forwarded back" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "cache AudioFeatures",            "detail": "Stored by trackId; tag: AudioFeatures" },
+        { "from": "rtk-cache",     "to": "track-page",    "label": "SpotifyAudioFeatures",           "detail": "Features ready for chart rendering" },
+        { "from": "track-page",    "to": "track-group",   "label": "render TrackInfo + Features",    "detail": "Popularity chart, audio feature radar, prediction indicator" }
+      ]
+    },
+    {
+      "id": "view-artist",
+      "name": "View Artist Profile",
+      "description": "User clicks an artist; profile page loads from Spotify (usually a cache hit)",
+      "steps": [
+        { "from": "user",          "to": "artist-group",  "label": "click ArtistCard",               "detail": "ArtistCard in Popular Artists list or track artist links" },
+        { "from": "artist-group",  "to": "react-router",  "label": "navigate to /:lang/artist/:id",  "detail": "React Router Link navigates to artist route" },
+        { "from": "react-router",  "to": "artist-page",   "label": "render ArtistPage",              "detail": "Lazy-loaded; receives artistId from route params" },
+        { "from": "artist-page",   "to": "spotify-slice", "label": "useGetArtistQuery(artistId)",    "detail": "Requests artist profile data" },
+        { "from": "spotify-slice", "to": "rtk-cache",     "label": "check cache (Artist)",           "detail": "Usually a hit — upserted by earlier getSeveralArtists batch" },
+        { "from": "rtk-cache",     "to": "artist-page",   "label": "SpotifyArtist (cache hit)",      "detail": "name, images[], genres[], followers.total, popularity" },
+        { "from": "artist-page",   "to": "artist-group",  "label": "render ArtistProfile",           "detail": "Full profile: cover image, genres, follower count, popularity" }
+      ]
+    }
+  ]
+}
+</script>
+
+<div class="app">
+  <header class="app-header">
+    <div class="header-title">
+      <h1>Music Hits &mdash; Architecture &amp; Flows</h1>
+      <p>Every component and external service. Click a flow on the right to highlight data paths and annotated steps.</p>
+    </div>
+    <div class="header-legend" id="legend"></div>
+  </header>
+
+  <div class="app-body">
+    <div class="main-area" id="main-area">
+      <div class="columns-wrapper" id="cw">
+        <div class="columns" id="columns"></div>
+        <svg class="arrows-svg" id="svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="mh" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+              <polygon points="0 0, 9 3.5, 0 7" fill="#f0a830"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-flows">
+        <div class="sec-title">FLOWS</div>
+        <div id="flow-list"></div>
+        <div class="flow-clear" id="clear-btn">Clear selection</div>
+      </div>
+      <div class="sidebar-steps">
+        <div class="sec-title">STEPS</div>
+        <div id="steps"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── bootstrap ──────────────────────────────────────── */
+  const D    = JSON.parse(document.getElementById('arch-data').textContent);
+  const catM = Object.fromEntries(D.categories.map(c => [c.id, c]));
+  const compM= Object.fromEntries(D.components.map(c => [c.id, c]));
+  const flowM= Object.fromEntries(D.flows.map(f => [f.id, f]));
+
+  let activeId = null;
+
+  /* ── legend ─────────────────────────────────────────── */
+  const legendEl = document.getElementById('legend');
+  D.categories.forEach(c => {
+    legendEl.insertAdjacentHTML('beforeend',
+      `<div class="legend-item"><span class="legend-dot" style="background:${c.color}"></span><span>${c.label}</span></div>`);
+  });
+
+  /* ── columns + cards ─────────────────────────────────── */
+  const columnsEl = document.getElementById('columns');
+  const cardEl    = {};  // id → DOM element
+
+  D.columns.forEach(col => {
+    const div = document.createElement('div');
+    div.className = 'column';
+    div.innerHTML = `<div class="column-header">${col.label}</div><div class="column-cards" id="cc-${col.id}"></div>`;
+    columnsEl.appendChild(div);
+  });
+
+  D.components.forEach(comp => {
+    const cat  = catM[comp.category];
+    const slot = document.getElementById(`cc-${comp.column}`);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.cid = comp.id;
+    card.style.setProperty('--cat-color', cat.color);
+    card.innerHTML = `<div class="card-name">${comp.name}</div><div class="card-subtitle">${comp.subtitle}</div>`;
+    slot.appendChild(card);
+    cardEl[comp.id] = card;
+  });
+
+  /* ── flows list ─────────────────────────────────────── */
+  const flowListEl = document.getElementById('flow-list');
+  D.flows.forEach(f => {
+    const item = document.createElement('div');
+    item.className = 'flow-item';
+    item.dataset.fid = f.id;
+    item.innerHTML = `<div class="fi-name">${f.name}</div><div class="fi-desc">${f.description}</div>`;
+    item.addEventListener('click', () => selectFlow(f.id));
+    flowListEl.appendChild(item);
+  });
+  document.getElementById('clear-btn').addEventListener('click', clearFlow);
+
+  /* ── SVG helpers ─────────────────────────────────────── */
+  const svgEl = document.getElementById('svg');
+  const cw    = document.getElementById('cw');   // columns-wrapper (scrollable viewport parent)
+
+  function pos(el) {
+    const er = el.getBoundingClientRect();
+    const wr = cw.getBoundingClientRect();
+    const sl = (cw.parentElement && cw.parentElement.scrollLeft) || 0;
+    const st = (cw.parentElement && cw.parentElement.scrollTop)  || 0;
+    // coords relative to top-left of cw content (= SVG origin)
+    return {
+      l:  er.left   - wr.left + sl,
+      r:  er.right  - wr.left + sl,
+      t:  er.top    - wr.top  + st,
+      b:  er.bottom - wr.top  + st,
+      cx: er.left   - wr.left + sl + er.width  / 2,
+      cy: er.top    - wr.top  + st + er.height / 2,
+      w:  er.width,
+      h:  er.height,
+    };
+  }
+
+  function bez(t, a, b, c, d) {
+    const u = 1 - t;
+    return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d;
+  }
+
+  function mkEl(tag, attrs) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  }
+
+  function clearSVG() {
+    [...svgEl.children].forEach(n => { if (n.tagName !== 'defs') svgEl.removeChild(n); });
+  }
+
+  function badge(bx, by, num) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.appendChild(mkEl('circle', { cx: bx, cy: by, r: 11, fill: '#f0a830', stroke: '#080c14', 'stroke-width': 2 }));
+    const t = mkEl('text', { x: bx, y: by + 4, 'text-anchor': 'middle', fill: '#080c14',
+      'font-size': 10, 'font-weight': 'bold', 'font-family': 'system-ui,sans-serif' });
+    t.textContent = num;
+    g.appendChild(t);
+    svgEl.appendChild(g);
+  }
+
+  /* ── draw arrows for a flow ─────────────────────────── */
+  function drawFlow(flow) {
+    clearSVG();
+    svgEl.setAttribute('width',  cw.scrollWidth);
+    svgEl.setAttribute('height', cw.scrollHeight);
+
+    const steps = flow.steps;
+    const n     = steps.length;
+
+    steps.forEach((step, i) => {
+      const same = step.from === step.to;
+      const fe   = cardEl[step.from];
+      const te   = cardEl[step.to];
+      if (!fe) return;
+
+      if (same) {
+        const p = pos(fe);
+        badge(p.r - 12, p.t + 12, i + 1);
+        return;
+      }
+
+      if (!te) return;
+      const f = pos(fe);
+      const t = pos(te);
+
+      const goRight  = t.l >= f.r - 8;
+      const goLeft   = t.r <= f.l + 8;
+      let x1, y1, x2, y2, cx1, cy1, cx2, cy2;
+
+      if (goRight) {
+        // forward: right-edge → left-edge, slight vertical spread by step index
+        x1 = f.r; y1 = f.cy;
+        x2 = t.l; y2 = t.cy;
+        const dx   = Math.max((x2 - x1) * 0.38, 32);
+        const vOff = (i - (n - 1) / 2) * 13;
+        cx1 = x1 + dx; cy1 = y1 + vOff;
+        cx2 = x2 - dx; cy2 = y2 + vOff;
+      } else if (goLeft) {
+        // backward: arc above the diagram (using the padding-top space)
+        x1 = f.l; y1 = f.cy;
+        x2 = t.r; y2 = t.cy;
+        const hDist = Math.abs(f.cx - t.cx);
+        const arcH  = Math.max(70, hDist * 0.22) + i * 6;
+        const topY  = Math.min(f.cy, t.cy) - arcH;
+        cx1 = x1 - 55; cy1 = topY;
+        cx2 = x2 + 55; cy2 = topY;
+      } else {
+        // same column or slight overlap: vertical connection
+        const goDown = t.cy > f.cy;
+        x1 = f.cx; y1 = goDown ? f.b : f.t;
+        x2 = t.cx; y2 = goDown ? t.t : t.b;
+        const dy = Math.abs(y2 - y1) * 0.4;
+        const sx = 28;
+        cx1 = x1 + sx; cy1 = y1 + (goDown ? dy : -dy);
+        cx2 = x2 + sx; cy2 = y2 - (goDown ? dy : -dy);
+      }
+
+      const path = mkEl('path', {
+        d: `M ${x1} ${y1} C ${cx1} ${cy1} ${cx2} ${cy2} ${x2} ${y2}`,
+        stroke: '#f0a830', 'stroke-width': 1.5, fill: 'none',
+        'stroke-opacity': 0.80, 'marker-end': 'url(#mh)'
+      });
+      svgEl.appendChild(path);
+
+      badge(bez(0.5, x1, cx1, cx2, x2), bez(0.5, y1, cy1, cy2, y2), i + 1);
+    });
+  }
+
+  /* ── step panel ─────────────────────────────────────── */
+  function renderSteps(flow) {
+    const el = document.getElementById('steps');
+    el.innerHTML = '';
+    flow.steps.forEach((step, i) => {
+      const fc = compM[step.from];
+      const tc = compM[step.to];
+      const row = document.createElement('div');
+      row.className = 'step-row';
+      row.innerHTML =
+        `<div class="step-num">${i + 1}</div>` +
+        `<div class="step-body">` +
+          `<div class="step-route">${fc ? fc.name : step.from} → ${tc ? tc.name : step.to}</div>` +
+          `<div class="step-lbl">${step.label}</div>` +
+          `<div class="step-det">${step.detail}</div>` +
+        `</div>`;
+      el.appendChild(row);
+    });
+  }
+
+  /* ── select / clear ─────────────────────────────────── */
+  function selectFlow(id) {
+    if (activeId === id) { clearFlow(); return; }
+    activeId = id;
+    const flow = flowM[id];
+
+    document.querySelectorAll('.flow-item').forEach(el => {
+      el.classList.toggle('sel', el.dataset.fid === id);
+    });
+
+    const active = new Set();
+    flow.steps.forEach(s => { active.add(s.from); active.add(s.to); });
+
+    cw.classList.add('has-flow');
+    Object.entries(cardEl).forEach(([cid, el]) => el.classList.toggle('on', active.has(cid)));
+
+    drawFlow(flow);
+    renderSteps(flow);
+  }
+
+  function clearFlow() {
+    activeId = null;
+    document.querySelectorAll('.flow-item').forEach(el => el.classList.remove('sel'));
+    cw.classList.remove('has-flow');
+    Object.values(cardEl).forEach(el => el.classList.remove('on'));
+    clearSVG();
+    document.getElementById('steps').innerHTML =
+      '<div class="steps-empty">Select a flow to see steps</div>';
+  }
+
+  clearFlow(); // init state
+
+  /* ── redraw on resize / scroll ──────────────────────── */
+  window.addEventListener('resize', () => { if (activeId) drawFlow(flowM[activeId]); });
+  document.getElementById('main-area').addEventListener('scroll', () => {
+    if (activeId) drawFlow(flowM[activeId]);
+  });
+})();
+</script>
+</body>
+</html>
