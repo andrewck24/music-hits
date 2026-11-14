@@ -185,7 +185,7 @@ Configuration files:
 
 ### Code Quality
 
-- `npm run type-check` - TypeScript type checking
+- `npm run typecheck` - TypeScript type checking
 - `npm run lint` - ESLint code linting
 
 ## Deployment
@@ -305,7 +305,7 @@ This project uses:
 Please ensure all tests pass and types are correct before submitting:
 
 ```bash
-npm run type-check
+npm run typecheck
 npm run lint
 npm test
 ```

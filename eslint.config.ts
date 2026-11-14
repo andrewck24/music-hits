@@ -20,6 +20,7 @@ export default defineConfig([
       "*.log",
       "*.tsbuildinfo",
       "*.min.js",
+      "scripts/**",
     ],
   },
 
