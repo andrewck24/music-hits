@@ -1,4 +1,3 @@
-/* eslint-disable no-console -- This CLI report intentionally writes to stdout. */
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
